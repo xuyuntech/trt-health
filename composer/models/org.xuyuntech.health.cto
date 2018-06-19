@@ -8,13 +8,13 @@ enum Gender {
   o FEMALE
 }
 
-participant Patient identified by sid {
-  o String sid
-  o String name
-  o String address
-  o String phone
-  o Gender gender
-  o Integer age
+participant Patient identified by phone {
+  o String sid optional
+  o String name optional
+  o String address optional
+  o String phone 
+  o Gender gender optional
+  o Integer age optional
 }
 
 asset Commodity identified by tradingSymbol {

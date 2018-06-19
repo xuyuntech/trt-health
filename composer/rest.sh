@@ -14,7 +14,7 @@ COMPOSER_DATASOURCES='{
 COMPOSER_PROVIDERS1='{
   "jwt": {
 		"provider": "jwt",
-		"module": "/home/composer/node_modules/custom-jwt.js",
+		"module": "/home/composer/node_modules/passport-jwt.js",
 		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy",
 		"authScheme": "saml",
 		"successRedirect": "/",
