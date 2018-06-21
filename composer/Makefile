@@ -51,3 +51,6 @@ composer: importAdmin
 	composer network start --networkName trt-health --networkVersion 0.0.3 -A admin -S adminpw -c PeerAdmin@trt-health
 	composer card import -f admin@trt-health.card
 	composer network ping -c admin@trt-health
+
+
+# composer-rest-server -c admin@trt-health -n never -w true
