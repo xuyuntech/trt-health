@@ -1,4 +1,3 @@
-VERSION=0.0.4
 
 COMPOSER_PROVIDERS_TEST='{ \
 	"local": { \
@@ -44,6 +43,9 @@ COMPOSER_DATASOURCES='{ \
 		"host": "localhost" \
 	} \
 }'
+
+VERSION=0.0.7
+
 
 test:
 	BASEDIR=${BASEDIR} TEST_NAME=${COMPOSER_PROVIDERS_TEST} echo ${TEST_NAME} 
@@ -94,7 +96,7 @@ importAdmin:
 install-network:
 	composer archive create -t dir -n .
 	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna
-upgrade-network:
+upgrade-network: install-network
 	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V ${VERSION}
 composer: importAdmin install-network
 	sleep 5s
@@ -103,5 +105,5 @@ composer: importAdmin install-network
 	composer card import -f admin@trt-health.card
 	composer network ping -c admin@trt-health
 
-
-# composer-rest-server -c admin@trt-health -n never -w true
+rest-server:
+	composer-rest-server -c admin@trt-health -n never -w true
