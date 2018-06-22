@@ -82,14 +82,13 @@ asset RegisterHistory identified by id {
   o RegisterState state // 状态
   o DateTime created // 创建时间
   --> Patient patient // 患者
-  --> ArrangementHistory arrangementHistory // 挂号记录
-  --> Prescription prescription // 处方
-  --> Order order // 订单
+  --> ArrangementHistory arrangementHistory // 排班记录
 }
 
 // ArrangementHistory 排班
-asset ArrangementHistory identified by participantKey {
-  o String participantKey
+asset ArrangementHistory identified by assetKey {
+  o String assetKey
+  o String description
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
   --> Hospital hospital
@@ -144,6 +143,7 @@ enum OrderState {
 asset OutboundHistory identified by participantKey {
   o String participantKey
   o String number // 编号
+  o DateTime outboundTime
   --> Order order
   --> Prescription prescription
   --> RegisterHistory registerHistory
