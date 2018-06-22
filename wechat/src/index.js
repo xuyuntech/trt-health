@@ -3,12 +3,16 @@ import { AdminConnection } from 'composer-admin';
 import { IdCard } from 'composer-common';
 import FormData from 'form-data';
 import fetch from 'isomorphic-fetch';
+import * as jwt from 'jwt-simple';
+import moment from 'moment';
+import { participantExists } from './utils';
 
 const express = require('express');
 
 const PORT = 3001;
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 const app = express();
 const token = 'just4fun';
@@ -19,6 +23,7 @@ const REDIRECT_URI = 'http://api.trt-health.xuyuntech.com/auth/wechat/callback';
 let server = null;
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.end('<h1>Test ...</h1>');
@@ -42,20 +47,22 @@ app.get('/wx_callback', (req, res) => {
   }
 });
 
-async function addParticipant(userID) {
+async function addParticipant({
+  sid, name, address, phone, gender = 'MALE', age,
+}) {
   const businessNetworkConnection = new BusinessNetworkConnection();
 
   try {
     const bConnect = await businessNetworkConnection.connect('admin@trt-health');
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry('org.xuyuntech.health.Patient');
     const factory = bConnect.getFactory();
-    const participant = factory.newResource('org.xuyuntech.health', 'Patient', `${userID}@trt-health`);
-    participant.sid = userID;
-    participant.name = 'test name';
-    participant.address = 'test address';
-    participant.phone = 'test phone';
-    participant.gender = 'MALE';
-    participant.age = 20;
+    const participant = factory.newResource('org.xuyuntech.health', 'Patient', `${sid}@trt-health`);
+    participant.sid = sid;
+    participant.name = name;
+    participant.address = address;
+    participant.phone = phone;
+    participant.gender = gender;
+    participant.age = age;
     await participantRegistry.add(participant);
     await businessNetworkConnection.disconnect();
     console.log('addPaticipange done');
@@ -119,29 +126,118 @@ async function identityIssue(userID, accessToken) {
   }
 }
 
-// async function importCard({ userID, accessToken }) {
-//   try {
-//     await fetch('http://106.75.52.85:3000/wallet/import', {
-//       method: 'POST',
-//       body: JSON.stringify({
-//         card: '',
-//         name: '',
-//       }),
-//       headers: {
-//         'X-Access-Token': accessToken,
-//       },
-//     });
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+app.get('/auth/add_participant', async (req, res) => {
+  const { access_token } = req.cookies;
+
+  res.json({
+    access_token,
+    cookies: req.cookies,
+    query: req.query,
+  });
+});
+
+app.post('/genToken', (req, res) => {
+  const { sid, name } = req.body;
+  // gengerate token
+  const expires = moment().utc().add({ days: 7 }).unix();
+  const jwtToken = jwt.encode({
+    exp: expires,
+    username: sid,
+    realname: name,
+  }, 'gSi4WmttWuvy2ewoTGooigPwSDoxwZOy');
+  res.redirect(301, `http://localhost:3000/auth/jwt/callback?token=${jwtToken}`);
+});
+
+app.get('/register/callback', async (req, res) => {
+  res.json({
+    accessToken: req.cookies.access_token,
+  });
+});
+
+app.post('/register', async (req, res) => {
+  const { sid, name, accessToken } = req.body;
+  const businessNetworkConnection = new BusinessNetworkConnection();
+  try {
+    const exists = await participantExists(sid, 'org.xuyuntech.health.Patient');
+    if (exists === true) {
+      res.json({
+        status: 1,
+        err: `${sid} has exists already`,
+      });
+      return;
+    }
+    await addParticipant({ sid, name });
+    await businessNetworkConnection.connect('admin@trt-health');
+    const adminConnection = new AdminConnection();
+    const issuingCard = await adminConnection.exportCard('admin@trt-health');
+    // issueIdentity
+    const result = await businessNetworkConnection.issueIdentity(`org.xuyuntech.health.Patient#${sid}`, sid);
+    console.log('get result success', result);
+    console.log(`userID = ${result.userID}`);
+    console.log(`userSecret = ${result.userSecret}`);
+    await businessNetworkConnection.disconnect();
+
+    // get card buffer
+    const metadata = {
+      userName: result.userID,
+      version: 1,
+      enrollmentSecret: result.userSecret,
+      businessNetwork: issuingCard.getBusinessNetworkName(),
+    };
+    const card = new IdCard(metadata, issuingCard.getConnectionProfile());
+    const cardBuffer = await card.toArchive({ type: 'nodebuffer' });
+    // import card to composer
+    const cardName = `${sid}@trt-health`;
+    // check if card exists
+    const hasCard = await adminConnection.hasCard(cardName);
+    if (!hasCard) {
+      await adminConnection.importCard(cardName, card);
+      console.log('import card %s success.', cardName);
+    }
+
+    await businessNetworkConnection.connect(cardName);
+    const pingResult = await businessNetworkConnection.ping();
+    console.log('ping card %s success.', cardName);
+    console.log('ping result', pingResult);
+    await businessNetworkConnection.disconnect();
+
+    const expCard = await adminConnection.exportCard(cardName);
+    const expCardBuffer = await expCard.toArchive({ type: 'nodebuffer' });
+
+    // import card to wallet
+    const form = new FormData(); // eslint-disable-line
+    form.append('card', expCardBuffer, `${sid}.card`);
+    form.append('name', `${sid}.card`);
+    const importRes = await fetch(`http://localhost:3000/api/wallet/import?name=${cardName}`, {
+      method: 'POST',
+      headers: {
+        'X-Access-Token': accessToken,
+      },
+      body: form,
+    });
+    if (importRes.status === 204) {
+      console.log('wallet import success', importRes.statusText);
+    } else {
+      throw new Error(`wallet import failed: ${importRes.statusText}`);
+    }
+  } catch (error) {
+    console.log('identityIssue error:>');
+    console.error(error);
+    res.json({
+      status: 1,
+      err: error,
+    });
+  }
+});
 
 app.get('/auth/add_paticipant', async (req, res) => {
   const accessToken = req.query['access-token'];
   const userID = req.query['user-id'];
   console.log('query', { accessToken, userID });
   try {
-    await addParticipant(userID);
+    await addParticipant({
+      sid: userID,
+    });
     console.log('addParticipant success ..');
     await identityIssue(userID, accessToken);
     res.json({

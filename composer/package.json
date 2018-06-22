@@ -3,7 +3,7 @@
     "composer": "^0.19.8"
   },
   "name": "trt-health",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "trt health network",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/trt-health.bna",
@@ -37,6 +37,7 @@
     "composer-playground": "^0.19.9",
     "composer-rest-server": "^0.19.9",
     "loopback-connector-mongodb": "^3.4.4",
+    "passport-jwt": "^4.0.0",
     "wechat-oauth": "^1.4.2",
     "xtend": "^4.0.1"
   }

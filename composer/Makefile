@@ -1,4 +1,52 @@
+VERSION=0.0.4
 
+COMPOSER_PROVIDERS_TEST='{ \
+	"local": { \
+		"provider": "local",  \
+    "module": "passport-local",  \
+    "usernameField": "username",  \
+    "passwordField": "password",  \
+    "authPath": "/auth/local",  \
+    "successRedirect": "/",  \
+    "failureRedirect": "/",  \
+    "setAccessToken": true,  \
+		"passReqToCallback": false \
+	}, \
+	"jwt": { \
+		"provider": "jwt", \
+		"module": "../../../passport-jwt.js", \
+		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy", \
+		"authScheme": "saml", \
+		"successRedirect": "http://localhost:3001/register/callback", \
+		"failureRedirect":"http://localhost:3001/auth/failure" \
+  }, \
+	"wechat": { \
+		"provider":"wechat", \
+		"successRedirect":"http://wx-server.xuyuntech.com/auth/add_paticipant", \
+		"failureRedirect":"http://wx-server.xuyuntech.com/auth/failure", \
+		"passReqToCallback": true, \
+		"callbackPath":"/auth/wechat/callback", \
+		"module": "../../../passport-wechat.js", \
+		"clientID":"wx607464dd2b3f92a5", \
+		"clientSecret":"dbde02a150e545f797727c3995246682", \
+		"name":"wechat", \
+		"client":"wechat", \
+		"callbackURL":"http://api.trt-health.xuyuntech.com/auth/wechat/callback", \
+		"scope":"snsapi_userinfo", \
+		"state":"custom_state" \
+	} \
+}'
+
+COMPOSER_DATASOURCES='{ \
+	"db": { \
+		"name": "db", \
+		"connector": "mongodb", \
+		"host": "localhost" \
+	} \
+}'
+
+test:
+	BASEDIR=${BASEDIR} TEST_NAME=${COMPOSER_PROVIDERS_TEST} echo ${TEST_NAME} 
 
 nginx:
 	docker rm -f nginx || true
@@ -11,6 +59,8 @@ nginx:
 		nginx 
 rest:
 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS='${COMPOSER_PROVIDERS}' COMPOSER_DATASOURCES='${COMPOSER_DATASOURCES}' ./node_modules/composer-rest-server/cli.js
+rest-test:
+	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_TEST} COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
 rest1:
 	docker rm -f rest || true
 	docker run \
@@ -43,11 +93,12 @@ importAdmin:
 	composer card import -f PeerAdmin@trt-health.card
 install-network:
 	composer archive create -t dir -n .
-	composer network install -c PeerAdmin@trt-health -a trt-health@0.0.3.bna
+	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna
 upgrade-network:
-	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V 0.0.3
-composer: importAdmin
+	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V ${VERSION}
+composer: importAdmin install-network
 	sleep 5s
-	composer network start --networkName trt-health --networkVersion 0.0.3 -A admin -S adminpw -c PeerAdmin@trt-health
+	composer network start --networkName trt-health --networkVersion ${VERSION} -A admin -S adminpw -c PeerAdmin@trt-health
+	sleep 5s
 	composer card import -f admin@trt-health.card
 	composer network ping -c admin@trt-health
