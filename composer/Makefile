@@ -95,7 +95,7 @@ importAdmin:
 	composer card import -f PeerAdmin@trt-health.card
 install-network:
 	composer archive create -t dir -n .
-	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna
+	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna -o npmrcFile=`pwd`/.npmrc
 upgrade-network: install-network
 	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V ${VERSION}
 composer: importAdmin install-network
