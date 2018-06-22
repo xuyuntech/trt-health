@@ -13,13 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "body-parser": "^1.18.3",
     "composer-admin": "^0.19.9",
     "composer-client": "^0.19.9",
     "composer-common": "^0.19.9",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "form-data": "^2.3.2",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.22.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

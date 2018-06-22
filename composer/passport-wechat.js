@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable */
 var util = require('util');
 var passport = require('passport-strategy');
 var OAuth = require('wechat-oauth');
