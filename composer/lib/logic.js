@@ -60,8 +60,16 @@
  * @transaction
  */
 async function visiting(visiting){
-    visiting.registerHistory.state = visiting.state;
+    visiting.registerHistory.state = 'Visiting';
     // trade.commodity = trade.newOwner;
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
     await assetRegistry.update(visiting.registerHistory);
+}
+/**
+ *  incerase prescription
+ * @param {org.xuyuntech.health.prescription} prescription - the prescription to be processed
+ * @transaction
+ */
+async function prescription(prescription){
+
 }

@@ -3,13 +3,13 @@
     "composer": "^0.19.8"
   },
   "name": "trt-health",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "trt health network",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/trt-health.bna",
     "pretest": "npm run lint",
     "lint": "eslint .",
-    "test": "nyc mocha -t 0 test/*.js && cucumber-js"
+    "test": "cucumber-js"
   },
   "keywords": [
     "composer",
@@ -33,6 +33,5 @@
     "mocha": "latest",
     "nyc": "latest"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
