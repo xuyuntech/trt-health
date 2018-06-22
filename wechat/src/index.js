@@ -48,7 +48,7 @@ app.get('/wx_callback', (req, res) => {
 });
 
 async function addParticipant({
-  sid, name, address, phone, gender = 'MALE', age,
+  id, name, address, phone, gender, age,
 }) {
   const businessNetworkConnection = new BusinessNetworkConnection();
 
@@ -56,13 +56,9 @@ async function addParticipant({
     const bConnect = await businessNetworkConnection.connect('admin@trt-health');
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry('org.xuyuntech.health.Patient');
     const factory = bConnect.getFactory();
-    const participant = factory.newResource('org.xuyuntech.health', 'Patient', `${sid}@trt-health`);
-    participant.sid = sid;
+    const participant = factory.newResource('org.xuyuntech.health', 'Patient', `${id}@trt-health`);
+    participant.id = id;
     participant.name = name;
-    participant.address = address;
-    participant.phone = phone;
-    participant.gender = gender;
-    participant.age = age;
     await participantRegistry.add(participant);
     await businessNetworkConnection.disconnect();
     console.log('addPaticipange done');
@@ -125,16 +121,6 @@ async function identityIssue(userID, accessToken) {
     throw error;
   }
 }
-
-app.get('/auth/add_participant', async (req, res) => {
-  const { access_token } = req.cookies;
-
-  res.json({
-    access_token,
-    cookies: req.cookies,
-    query: req.query,
-  });
-});
 
 app.post('/genToken', (req, res) => {
   const { sid, name } = req.body;
@@ -230,18 +216,34 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.get('/auth/add_paticipant', async (req, res) => {
-  const accessToken = req.query['access-token'];
-  const userID = req.query['user-id'];
-  console.log('query', { accessToken, userID });
+app.get('/auth/callback', (req, res) => {
+  res.json({
+    status: 0,
+    data: {
+      ...req.query,
+    },
+  });
+});
+
+app.post('/auth/add_participant', async (req, res) => {
+  const accessToken = req.header('X-Access-Token');
+  console.log('body', req.body, accessToken);
+  const {
+    userID, nickName, gender, city, avatarUrl,
+  } = req.body;
   try {
     await addParticipant({
-      sid: userID,
+      id: userID,
+      name: nickName,
     });
     console.log('addParticipant success ..');
     await identityIssue(userID, accessToken);
     res.json({
       status: 0,
+      data: {
+        userID,
+        accessToken,
+      },
     });
   } catch (err) {
     res.json({

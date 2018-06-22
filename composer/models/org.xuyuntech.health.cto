@@ -13,9 +13,9 @@ enum VisitTime {
   o PM
 }
 
-participant Person identified by participantKey {
-  o String participantKey
-  o String phone
+participant Person identified by id {
+  o String id
+  o String phone optional
   o String name
   o String sid optional
   o String email optional
