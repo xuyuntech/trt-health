@@ -102,3 +102,6 @@ composer: importAdmin install-network
 	sleep 5s
 	composer card import -f admin@trt-health.card
 	composer network ping -c admin@trt-health
+
+
+# composer-rest-server -c admin@trt-health -n never -w true
