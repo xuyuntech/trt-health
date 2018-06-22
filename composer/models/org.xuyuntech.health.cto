@@ -184,6 +184,10 @@ asset OrderItem  identified by assetKey {
   排班
 */
 transaction arrangement {
+  o String doctorKey
+  o String hospitalKey
+  o VisitTime visitTime
+  o DateTime visitDate
 }
 
 /*

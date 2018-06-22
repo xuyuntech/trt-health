@@ -1,29 +1,35 @@
 /** Sample queries for Commodity Trading business network
 */
 
-query selectCommodities {
-  description: "Select all commodities"
+query selectHospitals {
+  description: "Select all hospitals"
   statement:
-      SELECT org.xuyuntech.health.Commodity
+    SELECT org.xuyuntech.health.Hospital
 }
 
-query selectCommoditiesByExchange {
-  description: "Select all commodities based on their main exchange"
-  statement:
-      SELECT org.xuyuntech.health.Commodity
-          WHERE (mainExchange==_$exchange)
-}
+// query selectCommodities {
+//   description: "Select all commodities"
+//   statement:
+//       SELECT org.xuyuntech.health.Commodity
+// }
 
-query selectCommoditiesByOwner {
-  description: "Select all commodities based on their owner"
-  statement:
-      SELECT org.xuyuntech.health.Commodity
-          WHERE (owner == _$owner)
-}
+// query selectCommoditiesByExchange {
+//   description: "Select all commodities based on their main exchange"
+//   statement:
+//       SELECT org.xuyuntech.health.Commodity
+//           WHERE (mainExchange==_$exchange)
+// }
 
-query selectCommoditiesWithHighQuantity {
-  description: "Select commodities based on quantity"
-  statement:
-      SELECT org.xuyuntech.health.Commodity
-          WHERE (quantity > 60)
-}
+// query selectCommoditiesByOwner {
+//   description: "Select all commodities based on their owner"
+//   statement:
+//       SELECT org.xuyuntech.health.Commodity
+//           WHERE (owner == _$owner)
+// }
+
+// query selectCommoditiesWithHighQuantity {
+//   description: "Select commodities based on quantity"
+//   statement:
+//       SELECT org.xuyuntech.health.Commodity
+//           WHERE (quantity > 60)
+// }
