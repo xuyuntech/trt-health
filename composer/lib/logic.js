@@ -54,3 +54,14 @@
 //         await assetRegistry.remove(trade);
 //     }
 // }
+/**
+ *  Register -> Visiting
+ * @param {org.xuyuntech.health.visiting} visiting - the visiting to be processed
+ * @transaction
+ */
+async function visiting(visiting){
+    visiting.registerHistory.state = visiting.state;
+    // trade.commodity = trade.newOwner;
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+    await assetRegistry.update(visiting.registerHistory);
+}

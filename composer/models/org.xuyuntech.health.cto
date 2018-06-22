@@ -181,7 +181,7 @@ asset OrderItem  identified by assetKey {
 /* ================= transaction: 主流程 ===================== */
 
 /*
-  排班
+  排班 (使用rest服务器生成的API，暂时不做开发)
 */
 transaction arrangement {
   o String doctorKey
@@ -191,7 +191,7 @@ transaction arrangement {
 }
 
 /*
-  挂号: 生成挂号单
+  挂号: 生成挂号单 (使用rest服务器生成的API，暂时不做开发)
     params: Patient, ArrangementHistory
 */
 transaction register {
@@ -202,6 +202,8 @@ transaction register {
     params: RegisterHistory
 */
 transaction visiting {
+  --> RegisterHistory registerHistory
+  o RegisterState state
 }
 
 /*
