@@ -57,34 +57,46 @@
 
 
 /**
- * RegisterHistory: Register -> Visiting
- * @param {org.xuyuntech.health.visiting} visiting - Register -> Visiting
+ * 更新挂号单状态: Register -> Visiting
+ * @param {org.xuyuntech.health.visiting} visiting - the visiting to be processed
  * @transaction
  */
 async function UpdateRegister(visiting){
     visiting.registerHistory.state = 'Visiting';
-    let state = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
-    await state.update(visiting.registerHistory);
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+    await assetRegistry.update(visiting.registerHistory);
 }
 
 /**
  * 支付: 更新订单状态 NotPaid -> Paid ，生成支付记录
- * @param {org.xuyuntech.health.paid} paid - NotPaid -> Paid
+ * @param {org.xuyuntech.health.paid} paid - the paid to be processed
  * @transaction
  */
-async function UpdateOrder(paid){
+async function UpdateOrder1(paid){
+
     paid.order.state = 'Paid';
-    let state = await getAssetRegistry('org.xuyuntech.health.Order');
-    await state.update(paid.order);
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
+    await assetRegistry.update(paid.order);
+
+    let totalSpend = 0;
+    for (let n = 0; n < paid.order.orderItem.length; n++) {
+        totalSpend = totalSpend + paid.order.orderItem[n].count * paid.order.orderItem[n].price;
+        // totalSpend = totalSpend + paid.order.orderItem[n].spending;
+    }
+
+    paid.paymentHistory.spending = totalSpend;
+
+    let assetPaymentHistory = await getAssetRegistry('org.xuyuntech.health.PaymentHistory');
+    await assetPaymentHistory.update(paid.paymentHistory);
 }
 
 /**
  * 取药: 更新订单状态 Paid -> Finished, 生成出库记录
- * @param {org.xuyuntech.health.finish} finish - Paid -> Finished
+ * @param {org.xuyuntech.health.finish} finish - the finish to be processed
  * @transaction
  */
-async function UpdateOrder(finish){
+async function UpdateOrder2(finish){
     finish.order.state = 'Finished';
-    let state = await getAssetRegistry('org.xuyuntech.health.Order');
-    await state.update(finish.order);
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
+    await assetRegistry.update(finish.order);
 }
