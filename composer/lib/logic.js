@@ -54,3 +54,37 @@
 //         await assetRegistry.remove(trade);
 //     }
 // }
+
+
+/**
+ * RegisterHistory: Register -> Visiting
+ * @param {org.xuyuntech.health.visiting} visiting - Register -> Visiting
+ * @transaction
+ */
+async function UpdateRegister(visiting){
+    visiting.registerHistory.state = 'Visiting';
+    let state = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+    await state.update(visiting.registerHistory);
+}
+
+/**
+ * 支付: 更新订单状态 NotPaid -> Paid ，生成支付记录
+ * @param {org.xuyuntech.health.paid} paid - NotPaid -> Paid
+ * @transaction
+ */
+async function UpdateOrder(paid){
+    paid.order.state = 'Paid';
+    let state = await getAssetRegistry('org.xuyuntech.health.Order');
+    await state.update(paid.order);
+}
+
+/**
+ * 取药: 更新订单状态 Paid -> Finished, 生成出库记录
+ * @param {org.xuyuntech.health.finish} finish - Paid -> Finished
+ * @transaction
+ */
+async function UpdateOrder(finish){
+    finish.order.state = 'Finished';
+    let state = await getAssetRegistry('org.xuyuntech.health.Order');
+    await state.update(finish.order);
+}

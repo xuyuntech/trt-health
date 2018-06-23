@@ -202,6 +202,7 @@ transaction register {
     params: RegisterHistory
 */
 transaction visiting {
+  --> RegisterHistory registerHistory
 }
 
 /*
@@ -223,10 +224,12 @@ transaction prescription {
   params: Order
 */
 transaction paid {
+  --> Order order
 }
 
 /*
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
 transaction finish {
+  --> Order order
 }

@@ -44,7 +44,7 @@ COMPOSER_DATASOURCES='{ \
 	} \
 }'
 
-VERSION=0.0.7
+VERSION=0.0.9
 
 
 test:
@@ -95,12 +95,12 @@ importAdmin:
 	composer card import -f PeerAdmin@trt-health.card
 install-network:
 	composer archive create -t dir -n .
-	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna
+	composer network install -c PeerAdmin@trt-health -a trt-health@${VERSION}.bna -o npmrcFile=`pwd`/.npmrc
 upgrade-network: install-network
-	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V ${VERSION}
+	composer network upgrade -c PeerAdmin@trt-health -n trt-health -V ${VERSION} -o npmrcFile=`pwd`/.npmrc
 composer: importAdmin install-network
 	sleep 5s
-	composer network start --networkName trt-health --networkVersion ${VERSION} -A admin -S adminpw -c PeerAdmin@trt-health
+	composer network start --networkName trt-health --networkVersion ${VERSION} -A admin -S adminpw -c PeerAdmin@trt-health -o npmrcFile=`pwd`/.npmrc
 	sleep 5s
 	composer card import -f admin@trt-health.card
 	composer network ping -c admin@trt-health
