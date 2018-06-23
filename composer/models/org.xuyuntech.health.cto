@@ -233,5 +233,5 @@ transaction paid {
 */
 transaction finish {
   --> Order order
-  --> OutboundHistory outboundHistory
+  --> MedicalItem medicalItem
 }

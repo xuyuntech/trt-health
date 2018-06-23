@@ -99,4 +99,12 @@ async function UpdateOrder2(finish){
     finish.order.state = 'Finished';
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
     await assetRegistry.update(finish.order);
+
+    for (let n = 0; n < finish.order.orderItem.length; n++) {
+        let oldQuantity = 0;
+        oldQuantity = finish.order.orderItem[n].medicalItem.quantity;
+        finish.order.orderItem[n].medicalItem.quantity = oldQuantity - finish.order.orderItem.count;
+    }
+    let assetQuantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    await assetQuantity.update(finish.medicalItem);
 }
