@@ -79,26 +79,50 @@ async function Prescribe(Prescribe){
     var NS = 'org.xuyuntech.health';
 
     //create the CaseItem
-    var CaseItem = factory.newResource(NS, 'CaseItem', Prescribe.participantKey);
-    // CaseItem.patient = factory.newRelationship(NS, 'Patient', Prescribe.patient);
-    // CaseItem.doctor = factory.newRelationship(NS, 'Doctor', Prescribe.doctor);
-    // CaseItem.hospital = factory.newRelationship(NS, 'Hospital', Prescribe.hospital);
-    CaseItem.patient = Prescribe.patient;
+    var CaseItem = factory.newResource(NS, 'CaseItem', Prescribe.participantKey_CaseItem);
+    CaseItem.patient = Prescribe.registerHistory.patient;
     CaseItem.doctor = Prescribe.doctor;
     CaseItem.hospital = Prescribe.hospital;
     CaseItem.complained = Prescribe.complained;
-    CaseItem.number = Prescribe.number;
+    CaseItem.number = Prescribe.number_CaseItem;
     CaseItem.diagnose = Prescribe.diagnose;
     CaseItem.history = Prescribe.history;
     CaseItem.familyHistory = Prescribe.familyHistory;
     CaseItem.created = Prescribe.created;
+
+
     // var growerAddress = factory.newConcept(NS, 'Address');
     // growerAddress.country = 'USA';
     // grower.address = growerAddress;
     // grower.accountBalance = 0;
-    let assetRegistry = await getAssetRegistry(NS + '.CaseItem');
-    await assetRegistry.addAll([CaseItem]);
+    // CaseItem.patient = factory.newRelationship(NS, 'Patient', Prescribe.patient);
+    // CaseItem.doctor = factory.newRelationship(NS, 'Doctor', Prescribe.doctor);
+    // CaseItem.hospital = factory.newRelationship(NS, 'Hospital', Prescribe.hospital);
 
+    //create the Prescription
+    // o String participantKey
+    // o String number // 处方编号
+    // o DateTime created // 创建时间
+    // --> Doctor doctor // 医师
+    // --> Patient patient // 患者
+    // --> MedicalItem[] medicalItems // 药品列表
+    // --> RegisterHistory registerHistory // 挂号记录
+    // --> CaseItem caseItem // 病历
+
+    var Prescription = factory.newResource(NS, 'Prescription', Prescribe.participantKey_Prescription);
+    Prescription.number = Prescribe.number_Prescription;
+    Prescription.created = Prescribe.created;
+    Prescription.doctor = Prescribe.doctor;
+    Prescription.patient = Prescribe.registerHistory.patient;
+    Prescription.medicalItems = Prescribe.medicalItems;
+    Prescription.registerHistory = Prescribe.registerHistory;
+    Prescription.CaseItem = CaseItem.participantKey_CaseItem;
+
+    let assetRegistry_CaseItem = await getAssetRegistry(NS + '.CaseItem');
+    await assetRegistry_CaseItem.addAll([CaseItem]);
+
+    let assetRegistry_Prescription = await getAssetRegistry(NS + '.Prescription');
+    await assetRegistry_Prescription.addAll([Prescription]);
 
 
 
