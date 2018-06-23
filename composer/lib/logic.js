@@ -75,6 +75,30 @@ async function Prescribe(Prescribe){
     if (Prescribe.registerHistory.state !== 'Visiting') {
         throw new Error('the state is not visiting');
     }
+    var factory = getFactory();
+    var NS = 'org.xuyuntech.health';
+
+    //create the CaseItem
+    var CaseItem = factory.newResource(NS, 'CaseItem', Prescribe.participantKey);
+    // CaseItem.patient = factory.newRelationship(NS, 'Patient', Prescribe.patient);
+    // CaseItem.doctor = factory.newRelationship(NS, 'Doctor', Prescribe.doctor);
+    // CaseItem.hospital = factory.newRelationship(NS, 'Hospital', Prescribe.hospital);
+    CaseItem.patient = Prescribe.patient;
+    CaseItem.doctor = Prescribe.doctor;
+    CaseItem.hospital = Prescribe.hospital;
+    CaseItem.complained = Prescribe.complained;
+    CaseItem.number = Prescribe.number;
+    CaseItem.diagnose = Prescribe.diagnose;
+    CaseItem.history = Prescribe.history;
+    CaseItem.familyHistory = Prescribe.familyHistory;
+    CaseItem.created = Prescribe.created;
+    // var growerAddress = factory.newConcept(NS, 'Address');
+    // growerAddress.country = 'USA';
+    // grower.address = growerAddress;
+    // grower.accountBalance = 0;
+    let assetRegistry = await getAssetRegistry(NS + '.CaseItem');
+    await assetRegistry.addAll([CaseItem]);
+
 
 
 
