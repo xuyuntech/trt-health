@@ -28,4 +28,15 @@ Feature: Sample
         Then I should have the following assets of type org.xuyuntech.health.RegisterHistory
             | id  | state | created | patient | arrangementHistory |
             |1234|Visiting|2018-06-22T11:17:43.855Z|resource:org.xuyuntech.health.Patient#5671|resource:org.xuyuntech.health.ArrangementHistory#4313|
+    
 
+    Scenario: 
+        When I submit the following transaction of type org.xuyuntech.health.visiting
+            | registerHistory|
+            |1234|
+
+        When I submit the following transaction of type org.xuyuntech.health.Prescribe
+            | registerHistory|
+            |1234|
+
+        

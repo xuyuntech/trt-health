@@ -209,15 +209,26 @@ transaction visiting {
   开处方: 
   params: ArrangementHistory, complained, diagnose,  history, familyHistory, medicalItems 
   流程:
-    1. 验证挂号单状态是否为 Visiting
-    2. 验证药品列表
+    1. 验证挂号单状态是否为 Visiting (暂时没找到可以返回错误的方法)（后续进行开发）(现阶段使用throw方法，后续继续完善)
+    2. 验证药品列表 (没想好怎么验证，是使用查询进行验证)（后续进行开发）
     3. 生成新的病例记录
     4. 生成处方
     5. 生成订单以及订单明细
     6. 更新挂号单状态 Visiting -> Finished
 */
-transaction prescription {
+transaction Prescribe {
   --> RegisterHistory registerHistory
+  // o String participantKey
+  // o String number // 病例编号
+  // o String complained // 主诉
+  // o String diagnose // 临床诊断内容, 现病史
+  // o String history // 既往史
+  // o String familyHistory // 家族史
+  // --> Patient patient
+  // --> Doctor doctor
+  // --> Hospital hospital
+  // o DateTime created
+
   
 }
 

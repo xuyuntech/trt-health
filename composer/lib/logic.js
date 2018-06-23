@@ -64,12 +64,19 @@ async function visiting(visiting){
     // trade.commodity = trade.newOwner;
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
     await assetRegistry.update(visiting.registerHistory);
+    return {status: 0};
 }
 /**
- *  incerase prescription
- * @param {org.xuyuntech.health.prescription} prescription - the prescription to be processed
+ *  incerase Prescribe
+ * @param {org.xuyuntech.health.Prescribe} Prescribe - the Prescribe to be processed
  * @transaction
  */
-async function prescription(prescription){
+async function Prescribe(Prescribe){
+    if (Prescribe.registerHistory.state !== 'Visiting') {
+        throw new Error('the state is not visiting');
+    }
+
+
+
 
 }
