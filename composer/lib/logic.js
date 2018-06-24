@@ -230,8 +230,7 @@ async function UpdateOrder2(finish){
 
     // }
     for (let n = 0; n < finish.order.orderItem.length; n++) {
-        finish.order.orderItem[n].medicalItem.quantity = finish.order.orderItem[n].medicalItem.quantity - finish.order.orderItem[n].count;
-        // finish.medicalItems[n].quantity = finish.medicalItems[n].quantity - finish.order.orderItem.count;
+        finish.order.orderItem[n].medicalItem.quantity -=  finish.order.orderItem[n].count;
         let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
         await asset_Quantity.update(finish.order.orderItem[n].medicalItem);
     }
