@@ -103,6 +103,7 @@ asset Prescription identified by participantKey {
   --> Doctor doctor // 医师
   --> Patient patient // 患者
   --> MedicalItem[] medicalItems  // 药品列表
+  o Double[] count
   --> RegisterHistory registerHistory // 挂号记录
   --> CaseItem caseItem // 病历
 }
@@ -167,12 +168,12 @@ asset Order identified by participantKey {
 }
 
 // 订单明细
-asset OrderItem  identified by assetKey {
-  o String assetKey
+asset OrderItem  identified by participantKey {
+  o String participantKey
   o String number // 编号
   --> MedicalItem medicalItem
   o Double count // 购买数量
-  o String price // 单价
+  o Double price // 单价
   o Double spending // 消费金额
 }
 
@@ -221,23 +222,27 @@ transaction Prescribe {
   --> RegisterHistory registerHistory
   //生成病历记录
   o String participantKey_CaseItem
-  // --> Patient patient
   --> Doctor doctor
   --> Hospital hospital
   o String complained // 主诉
-  o String number_CaseItem // 病例编号
   o String diagnose // 临床诊断内容, 现病史
   o String history // 既往史
   o String familyHistory // 家族史
   o DateTime created
   //生成处方
   o String participantKey_Prescription
-  o String number_Prescription // 处方编号
   --> MedicalItem[] medicalItems  // 药品列表
-  // --> CaseItem caseItem // 病历
+  o Double[] count
   //生成订单以及订单明细
-  
+  //订单明细
+  o String participantKey_OrderItem
+  o Double[] price // 单价
+  //订单
+  o String participantKey_Order
+  o OrderState orderstate
 
+
+  //更新挂号单状态
   
 }
 

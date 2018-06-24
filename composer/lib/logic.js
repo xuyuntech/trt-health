@@ -61,7 +61,6 @@
  */
 async function visiting(visiting){
     visiting.registerHistory.state = 'Visiting';
-    // trade.commodity = trade.newOwner;
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
     await assetRegistry.update(visiting.registerHistory);
 }
@@ -80,10 +79,10 @@ async function Prescribe(Prescribe){
     //create the CaseItem
     var CaseItem = factory.newResource(NS, 'CaseItem', Prescribe.participantKey_CaseItem);
     CaseItem.patient = Prescribe.registerHistory.patient;
-    CaseItem.doctor = Prescribe.doctor;
-    CaseItem.hospital = Prescribe.hospital;
+    CaseItem.doctor = Prescribe.registerHistory.arrangementHistory.doctor;
+    CaseItem.hospital = Prescribe.registerHistory.arrangementHistory.hospital;
     CaseItem.complained = Prescribe.complained;
-    CaseItem.number = Prescribe.number_CaseItem;
+    CaseItem.number = Prescribe.participantKey_CaseItem;
     CaseItem.diagnose = Prescribe.diagnose;
     CaseItem.history = Prescribe.history;
     CaseItem.familyHistory = Prescribe.familyHistory;
@@ -109,25 +108,88 @@ async function Prescribe(Prescribe){
     // --> CaseItem caseItem // 病历
 
     var Prescription = factory.newResource(NS, 'Prescription', Prescribe.participantKey_Prescription);
-    Prescription.number = Prescribe.number_Prescription;
+    Prescription.number =  Prescribe.participantKey_Prescription;
     Prescription.created = Prescribe.created;
-    Prescription.doctor = Prescribe.doctor;
+    Prescription.doctor = Prescribe.registerHistory.arrangementHistory.doctor;
     Prescription.patient = Prescribe.registerHistory.patient;
+    if (Prescribe.medicalItems.length !== 0 && Prescribe.count.length === 0) {
+        throw new Error('you must input the medical count');
+    }
+    if (Prescribe.medicalItems.length !== Prescribe.count.length) {
+        throw new Error('you hava some medical count not input ');
+    }
     Prescription.medicalItems = Prescribe.medicalItems;
+    Prescription.count = Prescribe.count;
     Prescription.registerHistory = Prescribe.registerHistory;
     Prescription.caseItem = factory.newRelationship(NS, 'CaseItem', Prescribe.participantKey_CaseItem);
 
-    let assetRegistry_CaseItem = await getAssetRegistry(NS + '.CaseItem');
-    await assetRegistry_CaseItem.addAll([CaseItem]);
 
-    let assetRegistry_Prescription = await getAssetRegistry(NS + '.Prescription');
-    await assetRegistry_Prescription.addAll([Prescription]);
+    //生成订单以及订单明细
+    //订单明细
+    // o String participantKey
+    // o String number // 编号
+    // --> MedicalItem medicalItem
+    // o Double count // 购买数量
+    // o Double price // 单价
+    // o Double spending // 消费金额
+    var spending_all = 0;
+    for (let index = 0; index < Prescribe.medicalItems.length; index++) {
+        var OrderItem = factory.newResource(NS, 'OrderItem', Prescribe.participantKey_OrderItem + '_' + index.toString());
+        OrderItem.number = Prescribe.participantKey_OrderItem + '_' +index.toString();
+        OrderItem.medicalItem = Prescribe.medicalItems[index];
+        OrderItem.count = Prescribe.count[index];
+        OrderItem.price = Prescribe.price[index];
+        OrderItem.spending = Prescribe.count[index] * Prescribe.price[index];
+        spending_all += Prescribe.count[index] * Prescribe.price[index];
+        let assetRegistry_OrderItem = await getAssetRegistry(NS + '.OrderItem');
+        await assetRegistry_OrderItem.addAll([OrderItem]);
+    }
+
+    //订单
+    // o String participantKey
+    // o String number // 订单编号
+    // o OrderState state
+    // o DateTime created
+    // o Double spending // 总金额
+    // --> OrderItem[] orderItem // 订单明细
+    // --> Prescription prescription
+    // --> RegisterHistory registerHistory
+    // --> Patient patient
+    // --> CaseItem caseItem
+    var Order = factory.newResource(NS, 'Order', Prescribe.participantKey_Order);
+    Order.number = Prescribe.participantKey_Order;
+    Order.state = Prescribe.orderstate;
+    Order.created = Prescribe.created;
+    Order.spending = spending_all;
+    var item = [];
+    for (let index = 0; index < Prescribe.medicalItems.length; index++) {
+        item.push(factory.newRelationship(NS, 'OrderItem',Prescribe.participantKey_OrderItem + '_' +index.toString()));
+    }
+    Order.orderItem  = item;
+    Order.prescription = factory.newRelationship(NS,'Prescription',Prescribe.participantKey_Prescription);
+    Order.registerHistory = Prescribe.registerHistory;
+    Order.patient = Prescribe.registerHistory.patient;
+    Order.caseItem = factory.newRelationship(NS, 'CaseItem', Prescribe.participantKey_CaseItem);
 
 
     //更新挂号单状态 Visiting -> Finished
     Prescribe.registerHistory.state = 'Finished';
-    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
-    await assetRegistry.update(Prescribe.registerHistory);
+
+
+    //上传更新
+    //CaseItem
+    let assetRegistry_CaseItem = await getAssetRegistry(NS + '.CaseItem');
+    await assetRegistry_CaseItem.addAll([CaseItem]);
+    //Prescription
+    let assetRegistry_Prescription = await getAssetRegistry(NS + '.Prescription');
+    await assetRegistry_Prescription.addAll([Prescription]);
+    //order
+    let assetRegistrystate_order = await getAssetRegistry(NS + '.Order');
+    await assetRegistrystate_order.addAll([Order]);
+    //state
+    let assetRegistrystate_state = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+    await assetRegistrystate_state.update(Prescribe.registerHistory);
+
 
 
 }

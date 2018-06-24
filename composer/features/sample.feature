@@ -29,6 +29,9 @@ Feature: Sample
             | id | name | address | zipCode | telephone | fax | webSite |
             | 1  | 恒瑞  |123   |123      |123        |123  |123      |
             | 2  | 康缘  |123   |123      |123        |123  |123      |
+        And I have added the following asset of type org.xuyuntech.health.ArrangementHistory
+        |assetKey|description|visitDate|visitTime|hospital|doctor|
+        |4313|123123|2018-06-22T11:17:43.855Z|AM|1|5672|
 
         And I have added the following asset of type org.xuyuntech.health.RegisterHistory
             | id  | state | created | patient | arrangementHistory |
@@ -65,20 +68,24 @@ Feature: Sample
   "doctor": "resource:org.xuyuntech.health.Doctor#5672",
   "hospital": "resource:org.xuyuntech.health.Hospital#1",
   "complained": "123",
-  "number_CaseItem": "123",
   "diagnose": "123",
   "history": "123",
   "familyHistory": "123",
   "created": "2018-06-22T11:17:43.855Z",
   "participantKey_Prescription": "1",
-  "number_Prescription": "123",
-  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1"]
+  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1"],
+  "count":[1],
+  "participantKey_OrderItem":"1",
+  "price":[10],
+  "participantKey_Order":"1",
+  "orderstate":"NotPaid"
+
 }
         ]
         """
         Then I should have the following assets of type org.xuyuntech.health.CaseItem
         | participantKey | patient | doctor | hospital | complained | number | diagnose | history | familyHistory | created | 
-        | 1 | 5671| 5672|1|123|123|123|123|123|2018-06-22T11:17:43.855Z|
+        | 1 | 5671| 5672|1|123|1|123|123|123|2018-06-22T11:17:43.855Z|
 
         Then I should have the following assets 
         """
@@ -86,15 +93,52 @@ Feature: Sample
            {
   "$class": "org.xuyuntech.health.Prescription",
   "participantKey": "1",
-  "number": "123",
+  "number": "1",
   "created": "2018-06-22T11:17:43.855Z",
   "doctor": "resource:org.xuyuntech.health.Doctor#5672",
   "patient": "resource:org.xuyuntech.health.Patient#5671",
   "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1"],
+  "count":[1],
   "registerHistory": "resource:org.xuyuntech.health.RegisterHistory#1234",
   "caseItem": "resource:org.xuyuntech.health.CaseItem#1"
 } 
         ]
         """
+
+        Then I should have the following assets
+               """
+        [
+{
+  "$class": "org.xuyuntech.health.OrderItem",
+  "participantKey": "1_0",
+  "number": "1_0",
+  "medicalItem": "resource:org.xuyuntech.health.MedicalItem#1",
+  "count": 1,
+  "price": 10,
+  "spending": 10
+}
+
+
+        ]
+        """ 
+
+         Then I should have the following assets
+          """
+          [
+    {
+  "$class": "org.xuyuntech.health.Order",
+  "participantKey": "1",
+  "number": "1",
+  "state": "NotPaid",
+  "created": "2018-06-22T11:17:43.855Z",
+  "spending": 10,
+  "orderItem": ["resource:org.xuyuntech.health.OrderItem#1_0"],
+  "prescription": "resource:org.xuyuntech.health.Prescription#1",
+  "registerHistory": "resource:org.xuyuntech.health.RegisterHistory#1234",
+  "patient": "resource:org.xuyuntech.health.Patient#5671",
+  "caseItem": "resource:org.xuyuntech.health.CaseItem#1"
+}
+          ]
+           """
     
         
