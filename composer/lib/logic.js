@@ -136,11 +136,14 @@ async function UpdateOrder2(finish){
 
     // 更新库存
     for (let n = 0; n < finish.order.orderItem.length; n++) {
-        finish.medicalItems[n].quantity= finish.medicalItems[n].quantity - finish.order.orderItem.count;
+        finish.order.orderItem[n].medicalItem.quantity = finish.order.orderItem[n].medicalItem.quantity - finish.order.orderItem.count;
+        // finish.medicalItems[n].quantity = finish.medicalItems[n].quantity - finish.order.orderItem.count;
+        let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+        await asset_Quantity.update(finish.order.orderItem[n].medicalItem);
     }
 
-    let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
-    await asset_Quantity.update(finish.medicalItems);
+    // let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    // await asset_Quantity.update(finish.medicalItems);
 
     // for (let n = 0; n < finish.order.orderItem.length; n++) {
     //     let oldQuantity = finish.order.orderItem[n].medicalItem.quantity;
