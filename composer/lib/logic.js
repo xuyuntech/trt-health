@@ -193,3 +193,40 @@ async function Prescribe(Prescribe){
 
 
 }
+
+
+/**
+ * 取药: 更新订单状态 Paid -> Finished, 生成出库记录
+ * @param {org.xuyuntech.health.finish} finish - the finish to be processed
+ * @transaction
+ */
+async function UpdateOrder2(finish){
+
+    // 更新订单状态 Paid -> Finished
+    finish.order.state = 'Finished';
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
+    await assetRegistry.update(finish.order);
+
+    var factory = getFactory();
+    var NS = 'org.xuyuntech.health';
+
+    // 生成出库记录
+    var OutboundHistory = factory.newResource(NS, 'OutboundHistory', finish.participantKey_finish);
+    OutboundHistory.number = finish.number;
+    OutboundHistory.outboundTime = finish.outboundTime;
+    OutboundHistory.order = finish.order;
+    OutboundHistory.prescription = finish.prescription;
+    OutboundHistory.registerHistory = finish.registerHistory;
+    OutboundHistory.medicalItems = finish.medicalItems;
+
+    let asset_OutboundHistory = await getAssetRegistry(NS + '.OutboundHistory');
+    await asset_OutboundHistory.addAll([OutboundHistory]);
+
+    // 更新库存
+    for (let n = 0; n < finish.medicalItems.length; n++) {
+        finish.medicalItems[n].quantity -= finish.order.orderItem[n].count;
+        let assetRegistry = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+        await assetRegistry.update( finish.medicalItems[n]);
+
+    }
+}
