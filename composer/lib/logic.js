@@ -74,20 +74,37 @@ async function UpdateRegister(visiting){
  */
 async function UpdateOrder1(paid){
 
+    // 更新订单状态 NotPaid -> Paid
     paid.order.state = 'Paid';
-    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
-    await assetRegistry.update(paid.order);
+    let asset_Registry = await getAssetRegistry('org.xuyuntech.health.Order');
+    await asset_Registry.update(paid.order);
 
-    let totalSpend = 0;
-    for (let n = 0; n < paid.order.orderItem.length; n++) {
-        totalSpend = totalSpend + paid.order.orderItem[n].count * paid.order.orderItem[n].price;
-        // totalSpend = totalSpend + paid.order.orderItem[n].spending;
-    }
+    var factory = getFactory();
+    var NS = 'org.xuyuntech.health';
 
-    paid.paymentHistory.spending = totalSpend;
+    // 生成支付记录
+    var PaymentHistory = factory.newResource(NS, 'PaymentHistory', paid.participantKey_paid);
+    PaymentHistory.number = paid.number;
+    PaymentHistory.spending = paid.order.spending;
+    PaymentHistory.created = paid.created;
+    PaymentHistory.order = paid.order;
+    PaymentHistory.prescription = paid.prescription;
+    PaymentHistory.registerHistory = paid.registerHistory;
+    PaymentHistory.patient = paid.registerHistory.patient;
 
-    let assetPaymentHistory = await getAssetRegistry('org.xuyuntech.health.PaymentHistory');
-    await assetPaymentHistory.update(paid.paymentHistory);
+    let assetRegistry_PaymentHistory = await getAssetRegistry(NS + '.PaymentHistory');
+    await assetRegistry_PaymentHistory.addAll([PaymentHistory]);
+
+    // let totalSpend = 0;
+    // for (let n = 0; n < paid.order.orderItem.length; n++) {
+    //     totalSpend = totalSpend + paid.order.orderItem[n].count * paid.order.orderItem[n].price;
+    //     // totalSpend = totalSpend + paid.order.orderItem[n].spending;
+    // }
+
+    // paid.paymentHistory.spending = totalSpend;
+
+    // let assetPaymentHistory = await getAssetRegistry('org.xuyuntech.health.PaymentHistory');
+    // await assetPaymentHistory.update(paid.paymentHistory);
 }
 
 /**
@@ -96,15 +113,42 @@ async function UpdateOrder1(paid){
  * @transaction
  */
 async function UpdateOrder2(finish){
+
+    // 更新订单状态 Paid -> Finished
     finish.order.state = 'Finished';
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
     await assetRegistry.update(finish.order);
 
+    var factory = getFactory();
+    var NS = 'org.xuyuntech.health';
+
+    // 生成出库记录
+    var OutboundHistory = factory.newResource(NS, 'OutboundHistory', finish.participantKey_finish);
+    OutboundHistory.number = finish.number;
+    OutboundHistory.outboundTime = finish.outboundTime;
+    OutboundHistory.order = finish.order;
+    OutboundHistory.prescription = finish.prescription;
+    OutboundHistory.registerHistory = finish.registerHistory;
+    OutboundHistory.medicalItems = finish.medicalItems;
+
+    let asset_OutboundHistory = await getAssetRegistry(NS + '.OutboundHistory');
+    await asset_OutboundHistory.addAll([OutboundHistory]);
+
+    // 更新库存
     for (let n = 0; n < finish.order.orderItem.length; n++) {
-        let oldQuantity = 0;
-        oldQuantity = finish.order.orderItem[n].medicalItem.quantity;
-        finish.order.orderItem[n].medicalItem.quantity = oldQuantity - finish.order.orderItem.count;
+        finish.medicalItems[n].quantity= finish.medicalItems[n].quantity - finish.order.orderItem.count;
     }
-    let assetQuantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
-    await assetQuantity.update(finish.medicalItem);
+
+    let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    await asset_Quantity.update(finish.medicalItems);
+
+    // for (let n = 0; n < finish.order.orderItem.length; n++) {
+    //     let oldQuantity = finish.order.orderItem[n].medicalItem.quantity;
+    //     finish.order.orderItem[n].medicalItem.quantity = oldQuantity - finish.order.orderItem.count;
+
+    //     let assetQuantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    //     await assetQuantity.update(finish.medicalItem[n]);
+    // }
+    // let assetQuantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    // await assetQuantity.update(finish.medicalItem);
 }

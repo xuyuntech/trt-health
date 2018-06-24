@@ -224,14 +224,23 @@ transaction prescription {
   params: Order
 */
 transaction paid {
+  o String participantKey_paid
+  o String number // 编号
+  o DateTime created
   --> Order order
-  --> PaymentHistory paymentHistory
+  --> Prescription prescription
+  --> RegisterHistory registerHistory
 }
 
 /*
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
 transaction finish {
+  o String participantKey_finish
+  o String number // 编号
+  o DateTime outboundTime
   --> Order order
-  --> MedicalItem medicalItem
+  --> Prescription prescription
+  --> RegisterHistory registerHistory
+  --> MedicalItem[] medicalItems
 }
