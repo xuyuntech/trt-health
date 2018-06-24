@@ -3,7 +3,7 @@
     "composer": "^0.19.8"
   },
   "name": "trt-health",
-  "version": "0.0.25",
+  "version": "0.0.28",
   "description": "trt health network",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/trt-health.bna",

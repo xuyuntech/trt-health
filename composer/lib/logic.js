@@ -64,7 +64,6 @@ async function visiting(visiting){
     // trade.commodity = trade.newOwner;
     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
     await assetRegistry.update(visiting.registerHistory);
-    return {status: 0};
 }
 /**
  *  incerase Prescribe
@@ -116,7 +115,7 @@ async function Prescribe(Prescribe){
     Prescription.patient = Prescribe.registerHistory.patient;
     Prescription.medicalItems = Prescribe.medicalItems;
     Prescription.registerHistory = Prescribe.registerHistory;
-    Prescription.CaseItem = CaseItem.participantKey_CaseItem;
+    Prescription.caseItem = factory.newRelationship(NS, 'CaseItem', Prescribe.participantKey_CaseItem);
 
     let assetRegistry_CaseItem = await getAssetRegistry(NS + '.CaseItem');
     await assetRegistry_CaseItem.addAll([CaseItem]);
@@ -125,6 +124,10 @@ async function Prescribe(Prescribe){
     await assetRegistry_Prescription.addAll([Prescription]);
 
 
+    //更新挂号单状态 Visiting -> Finished
+    Prescribe.registerHistory.state = 'Finished';
+    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+    await assetRegistry.update(Prescribe.registerHistory);
 
 
 }
