@@ -73,10 +73,10 @@ Feature: Sample
   "familyHistory": "123",
   "created": "2018-06-22T11:17:43.855Z",
   "participantKey_Prescription": "1",
-  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1"],
-  "count":[1],
+  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1","resource:org.xuyuntech.health.MedicalItem#2"],
+  "count":[1,2],
   "participantKey_OrderItem":"1",
-  "price":[10],
+  "price":[10,20],
   "participantKey_Order":"1",
   "orderstate":"NotPaid"
 
@@ -97,8 +97,8 @@ Feature: Sample
   "created": "2018-06-22T11:17:43.855Z",
   "doctor": "resource:org.xuyuntech.health.Doctor#5672",
   "patient": "resource:org.xuyuntech.health.Patient#5671",
-  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1"],
-  "count":[1],
+  "medicalItems": ["resource:org.xuyuntech.health.MedicalItem#1","resource:org.xuyuntech.health.MedicalItem#2"],
+  "count":[1,2],
   "registerHistory": "resource:org.xuyuntech.health.RegisterHistory#1234",
   "caseItem": "resource:org.xuyuntech.health.CaseItem#1"
 } 
@@ -116,6 +116,15 @@ Feature: Sample
   "count": 1,
   "price": 10,
   "spending": 10
+},
+{
+  "$class": "org.xuyuntech.health.OrderItem",
+  "participantKey": "1_1",
+  "number": "1_1",
+  "medicalItem": "resource:org.xuyuntech.health.MedicalItem#2",
+  "count": 2,
+  "price": 20,
+  "spending": 40
 }
 
 
@@ -131,8 +140,8 @@ Feature: Sample
   "number": "1",
   "state": "NotPaid",
   "created": "2018-06-22T11:17:43.855Z",
-  "spending": 10,
-  "orderItem": ["resource:org.xuyuntech.health.OrderItem#1_0"],
+  "spending": 50,
+  "orderItem": ["resource:org.xuyuntech.health.OrderItem#1_0","resource:org.xuyuntech.health.OrderItem#1_1"],
   "prescription": "resource:org.xuyuntech.health.Prescription#1",
   "registerHistory": "resource:org.xuyuntech.health.RegisterHistory#1234",
   "patient": "resource:org.xuyuntech.health.Patient#5671",
@@ -140,5 +149,9 @@ Feature: Sample
 }
           ]
            """
+
+            Then I should have the following assets of type org.xuyuntech.health.RegisterHistory
+            | id  | state | created | patient | arrangementHistory |
+            |1234|Finished|2018-06-22T11:17:43.855Z|5671|4313|
     
         
