@@ -223,10 +223,16 @@ async function UpdateOrder2(finish){
     await asset_OutboundHistory.addAll([OutboundHistory]);
 
     // 更新库存
-    for (let n = 0; n < finish.medicalItems.length; n++) {
-        finish.medicalItems[n].quantity -= finish.order.orderItem[n].count;
-        let assetRegistry = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
-        await assetRegistry.update( finish.medicalItems[n]);
+    // for (let n = 0; n < finish.medicalItems.length; n++) {
+    //     finish.medicalItems[n].quantity -= finish.order.orderItem[n].count;
+    //     let assetRegistry = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    //     await assetRegistry.update( finish.medicalItems[n]);
 
+    // }
+    for (let n = 0; n < finish.order.orderItem.length; n++) {
+        finish.order.orderItem[n].medicalItem.quantity = finish.order.orderItem[n].medicalItem.quantity - finish.order.orderItem[N].count;
+        // finish.medicalItems[n].quantity = finish.medicalItems[n].quantity - finish.order.orderItem.count;
+        let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+        await asset_Quantity.update(finish.order.orderItem[n].medicalItem);
     }
 }
