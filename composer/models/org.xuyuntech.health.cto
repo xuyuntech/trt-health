@@ -102,12 +102,13 @@ asset Prescription identified by participantKey {
   o DateTime created // 创建时间
   --> Doctor doctor // 医师
   --> Patient patient // 患者
-  --> MedicalItem[] medicalItems // 药品列表
+  --> MedicalItem[] medicalItems  // 药品列表
+  o Double[] count
   --> RegisterHistory registerHistory // 挂号记录
-  --> CaseItem caseItem // 病例
+  --> CaseItem caseItem // 病历
 }
 
-// CaseItem 病例
+// CaseItem 病历
 asset CaseItem identified by participantKey {
   o String participantKey
   o String number // 病例编号
@@ -167,12 +168,12 @@ asset Order identified by participantKey {
 }
 
 // 订单明细
-asset OrderItem  identified by assetKey {
-  o String assetKey
+asset OrderItem  identified by participantKey {
+  o String participantKey
   o String number // 编号
   --> MedicalItem medicalItem
   o Double count // 购买数量
-  o String price // 单价
+  o Double price // 单价
   o Double spending // 消费金额
 }
 
@@ -181,7 +182,7 @@ asset OrderItem  identified by assetKey {
 /* ================= transaction: 主流程 ===================== */
 
 /*
-  排班
+  排班 (使用rest服务器生成的API，暂时不做开发)
 */
 transaction arrangement {
   o String doctorKey
@@ -191,7 +192,7 @@ transaction arrangement {
 }
 
 /*
-  挂号: 生成挂号单
+  挂号: 生成挂号单 (使用rest服务器生成的API，暂时不做开发)
     params: Patient, ArrangementHistory
 */
 transaction register {
@@ -202,20 +203,47 @@ transaction register {
     params: RegisterHistory
 */
 transaction visiting {
+  --> RegisterHistory registerHistory
 }
 
 /*
   开处方: 
   params: ArrangementHistory, complained, diagnose,  history, familyHistory, medicalItems 
   流程:
-    1. 验证挂号单状态是否为 Visiting
-    2. 验证药品列表
-    3. 生成新的病例记录
-    4. 生成处方
+    1. 验证挂号单状态是否为 Visiting (暂时没找到可以返回错误的方法)（后续进行开发）(现阶段使用throw方法，后续继续完善)(测试成功)
+    2. 验证药品列表 (没想好怎么验证，是使用查询进行验证)（后续进行开发）（暂未测试）
+    3. 生成新的病例记录（完成，并且完成测试）
+    4. 生成处方(medicalItems未实现)
     5. 生成订单以及订单明细
     6. 更新挂号单状态 Visiting -> Finished
 */
-transaction prescription {
+transaction Prescribe {
+  // 验证挂号单状态是否为 Visiting
+  --> RegisterHistory registerHistory
+  //生成病历记录
+  o String participantKey_CaseItem
+  --> Doctor doctor
+  --> Hospital hospital
+  o String complained // 主诉
+  o String diagnose // 临床诊断内容, 现病史
+  o String history // 既往史
+  o String familyHistory // 家族史
+  o DateTime created
+  //生成处方
+  o String participantKey_Prescription
+  --> MedicalItem[] medicalItems  // 药品列表
+  o Double[] count
+  //生成订单以及订单明细
+  //订单明细
+  o String participantKey_OrderItem
+  o Double[] price // 单价
+  //订单
+  o String participantKey_Order
+  o OrderState orderstate
+
+
+  //更新挂号单状态
+  
 }
 
 /*
@@ -229,4 +257,11 @@ transaction paid {
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
 transaction finish {
+  o String participantKey_finish
+  o String number // 编号
+  o DateTime outboundTime
+  --> Order order
+  --> Prescription prescription
+  --> RegisterHistory registerHistory
+  --> MedicalItem[] medicalItems
 }

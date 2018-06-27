@@ -7,6 +7,19 @@ query selectHospitals {
     SELECT org.xuyuntech.health.Hospital
 }
 
+query selectPrescription {
+  description: "Select all hospitals"
+  statement:
+    SELECT org.xuyuntech.health.Prescription
+}
+
+query selectOrderItem {
+  description: "Select all hospitals"
+  statement:
+    SELECT org.xuyuntech.health.OrderItem
+}
+
+
 // query selectCommodities {
 //   description: "Select all commodities"
 //   statement:

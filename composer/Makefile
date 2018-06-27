@@ -1,5 +1,49 @@
-VERSION=0.0.9
+COMPOSER_PROVIDERS_TEST='{ \
+	"local": { \
+		"provider": "local",  \
+    "module": "passport-local",  \
+    "usernameField": "username",  \
+    "passwordField": "password",  \
+    "authPath": "/auth/local",  \
+    "successRedirect": "/",  \
+    "failureRedirect": "/",  \
+    "setAccessToken": true,  \
+		"passReqToCallback": false \
+	}, \
+	"jwt": { \
+		"provider": "jwt", \
+		"module": "../../../passport-jwt.js", \
+		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy", \
+		"authScheme": "saml", \
+		"successRedirect": "http://localhost:3001/register/callback", \
+		"failureRedirect":"http://localhost:3001/auth/failure" \
+  }, \
+	"wechat": { \
+		"provider":"wechat", \
+		"successRedirect":"http://wx-server.xuyuntech.com/auth/add_paticipant", \
+		"failureRedirect":"http://wx-server.xuyuntech.com/auth/failure", \
+		"passReqToCallback": true, \
+		"callbackPath":"/auth/wechat/callback", \
+		"module": "../../../passport-wechat.js", \
+		"clientID":"wx607464dd2b3f92a5", \
+		"clientSecret":"dbde02a150e545f797727c3995246682", \
+		"name":"wechat", \
+		"client":"wechat", \
+		"callbackURL":"http://api.trt-health.xuyuntech.com/auth/wechat/callback", \
+		"scope":"snsapi_userinfo", \
+		"state":"custom_state" \
+	} \
+}'
 
+COMPOSER_DATASOURCES='{ \
+	"db": { \
+		"name": "db", \
+		"connector": "mongodb", \
+		"host": "localhost" \
+	} \
+}'
+
+VERSION=0.0.9
 
 test:
 	BASEDIR=${BASEDIR} TEST_NAME=${COMPOSER_PROVIDERS_TEST} echo ${TEST_NAME} 
