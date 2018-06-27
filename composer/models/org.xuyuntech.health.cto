@@ -251,6 +251,12 @@ transaction Prescribe {
   params: Order
 */
 transaction paid {
+  o String participantKey_paid
+  o String number // 编号
+  o DateTime created
+  --> Order order
+  --> Prescription prescription
+  --> RegisterHistory registerHistory
 }
 
 /*
