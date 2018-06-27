@@ -3,6 +3,10 @@
  */
 namespace org.xuyuntech.health
 
+transaction initData {
+}
+
+
 enum Gender {
   o MALE
   o FEMALE
@@ -36,14 +40,15 @@ participant Hospital identified by id {
   o String address optional
   o String phone1 optional // 座机区号
   o String phone2 optional // 座机号码 或 手机号
-  o String CountryID optional // 邮编
+  o String zipCode optional // 邮编
   o String headImg optional // 头图
 }
 
 // Doctor 医师
 participant Doctor extends Person {
   o String title // 职称
-  o String description // 描述，擅长什么什么
+  o String description // 描述
+  o String skilledIn // 擅长什么什么
 }
 
 participant Supplier identified by id {
