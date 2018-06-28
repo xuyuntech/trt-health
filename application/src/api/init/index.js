@@ -162,7 +162,7 @@ router.get('/auth/wechat/success', async (req, res) => {
     const currentUser = await currentUserRes.json();
     const currentCardName = `${currentUser.username}@trt-health`;
     await addParticipantIdentity({
-      currentCardName, username: currentUser.username, accessToken, resourceType: 'Patient',
+      currentCardName: 'admin@trt-health', username: currentUser.username, accessToken, resourceType: 'Patient',
     });
     console.log('add Patient done');
     res.json({
