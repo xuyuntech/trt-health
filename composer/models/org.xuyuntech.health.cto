@@ -3,10 +3,6 @@
  */
 namespace org.xuyuntech.health
 
-transaction initData {
-}
-
-
 enum Gender {
   o MALE
   o FEMALE
@@ -17,10 +13,10 @@ enum VisitTime {
   o PM
 }
 
-participant Person identified by id {
-  o String id
+participant Person identified by name {
+  o String name // 用户名, 登录用，唯一
+  o String realName optional // 真名
   o String phone optional
-  o String name
   o String sid optional
   o String email optional
   o String address optional
@@ -29,6 +25,13 @@ participant Person identified by id {
   o Gender gender optional
   o Integer age optional
 }
+
+participant OrgAdmin extends Person {
+}
+
+participant HospitalAdmin extends Person {
+}
+
 
 participant Patient extends Person {
   o Double totalSpend optional

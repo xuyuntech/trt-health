@@ -14,11 +14,12 @@ COMPOSER_PROVIDERS_TEST='{ \
 	}, \
 	"jwt": { \
 		"provider": "jwt", \
+		"session": false, \
 		"module": "../../../passport-jwt.js", \
 		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy", \
 		"authScheme": "saml", \
-		"successRedirect": "http://localhost:3001/register/callback", \
-		"failureRedirect":"http://localhost:3001/auth/failure" \
+		"successRedirect": "http://localhost:3002/init/auth_success", \
+		"failureRedirect":"http://localhost:3002/init/auth_failure" \
   }, \
 	"wechat": { \
 		"provider":"wechat", \
@@ -60,6 +61,9 @@ rest:
 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS='${COMPOSER_PROVIDERS}' COMPOSER_DATASOURCES='${COMPOSER_DATASOURCES}' ./node_modules/composer-rest-server/cli.js
 rest-test:
 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_TEST} COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
+rest-noauth:
+	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_MULTIUSER=true COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
+
 
 mongo:
 	docker rm -f mongo || true

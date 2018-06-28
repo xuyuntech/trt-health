@@ -43,7 +43,7 @@ COMPOSER_DATASOURCES='{ \
 	} \
 }'
 
-VERSION=0.0.9
+VERSION=$(shell node -e 'console.log(require("./package.json").version)')
 
 test:
 	BASEDIR=${BASEDIR} TEST_NAME=${COMPOSER_PROVIDERS_TEST} echo ${TEST_NAME} 
