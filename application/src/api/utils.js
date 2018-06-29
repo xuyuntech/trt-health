@@ -48,6 +48,9 @@ export async function bfetch(url, {
 export async function addParticipantIdentity({
   currentCardName, username, accessToken, resourceType,
 }) {
+  console.log('addParticipantIdentity -->>>', {
+    currentCardName, username, accessToken, resourceType,
+  });
   const businessNetworkConnection = new BusinessNetworkConnection();
   try {
     // add participant

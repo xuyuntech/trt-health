@@ -51,16 +51,15 @@ router.get('/admin', async (req, res) => {
       throw new Error(`get current user failed: ${currentUserRes.statusText}`);
     }
     const currentUser = await currentUserRes.json();
-    if (currentUser.username !== 'admin') {
+    if (currentUser.username !== 'trt-admin') {
       res.json({
         status: 1,
         err: 'not admin user',
       });
       return;
     }
-    const currentCardName = `${currentUser.username}@trt-health`;
     await addParticipantIdentity({
-      currentCardName, username: currentUser.username, accessToken, resourceType: 'OrgAdmin',
+      currentCardName: 'admin@trt-health', username: currentUser.username, accessToken, resourceType: 'OrgAdmin',
     });
     console.log('add hospitalAdmin done');
     res.json({

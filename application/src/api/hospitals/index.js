@@ -34,11 +34,11 @@ router.post('/', async (req, res) => {
     const data = await bfetch(API.Hospitals.Create(), {
       method: 'POST',
       req,
-      body: JSON.stringify({
+      body: {
         ...req.body,
         $class: 'org.xuyuntech.health.Hospital',
         id: uuidv1(),
-      }),
+      },
     });
     res.json({
       status: 0,
