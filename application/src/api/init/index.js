@@ -1,18 +1,125 @@
 import express from 'express';
-import { BusinessNetworkConnection } from 'composer-client';
+// import { BusinessNetworkConnection } from 'composer-client';
 import moment from 'moment';
 import * as jwt from 'jwt-simple';
-import FormData from 'form-data';
-
-import { AdminConnection } from 'composer-admin';
-import { IdCard } from 'composer-common';
+// import FormData from 'form-data';
+// import { AdminConnection } from 'composer-admin';
+// import { IdCard } from 'composer-common';
 import fetch from 'isomorphic-fetch';
+
+import { addParticipantIdentity } from '../utils';
 
 // userID = bjtrt-ts01
 // userSecret = kZYafhQWZnMw
 
 const router = express.Router();
 
+router.get('/auth_success', (req, res) => {
+  res.json({
+    status: 0,
+    result: req.query,
+    cookies: req.cookies,
+  });
+});
+
+router.get('/genJwtToken', async (req, res) => {
+  if (!req.query.username) {
+    res.json({
+      status: 1,
+      err: 'need username',
+    });
+    return;
+  }
+  const expires = moment().utc().add({ days: 7 }).unix();
+  const jwtToken = jwt.encode({
+    exp: expires,
+    system: 'admin', // admin | client | reg
+    username: req.query.username,
+  }, 'gSi4WmttWuvy2ewoTGooigPwSDoxwZOy');
+  const res1 = await fetch(`http://localhost:3000/auth/jwt/callback?token=${jwtToken}`);
+  const result = await res1.json();
+  res.json(result);
+});
+
+
+router.get('/admin', async (req, res) => {
+  const accessToken = req.header('X-Access-Token');
+  const userID = req.header('X-Access-UserID');
+  try {
+    const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
+    if (currentUserRes.status !== 200) {
+      throw new Error(`get current user failed: ${currentUserRes.statusText}`);
+    }
+    const currentUser = await currentUserRes.json();
+    if (currentUser.username !== 'admin') {
+      res.json({
+        status: 1,
+        err: 'not admin user',
+      });
+      return;
+    }
+    const currentCardName = `${currentUser.username}@trt-health`;
+    await addParticipantIdentity({
+      currentCardName, username: currentUser.username, accessToken, resourceType: 'OrgAdmin',
+    });
+    console.log('add hospitalAdmin done');
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    res.json({
+      status: 1,
+      err: `${err}`,
+    });
+  }
+});
+
+router.post('/hospitalAdmin', async (req, res) => {
+  const { username, password, email } = req.body;
+  const accessToken = req.header('X-Access-Token');
+  const userID = req.header('X-Access-USERID');
+  try {
+    const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
+    if (currentUserRes.status !== 200) {
+      throw new Error(`get current user failed: ${currentUserRes.statusText}`);
+    }
+    const currentUser = await currentUserRes.json();
+    const currentCardName = `${currentUser.username}@trt-health`;
+    // add user
+    const addUserRes = await fetch('http://localhost:3000/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        email,
+      }),
+    });
+    if (addUserRes.status !== 200) {
+      throw new Error(`add user failed: ${addUserRes.statusText}`);
+    }
+    await addParticipantIdentity({
+      currentCardName, username, accessToken, resourceType: 'HospitalAdmin',
+    });
+    console.log('add hospitalAdmin done');
+    res.json({
+      status: 0,
+    });
+  } catch (error) {
+    console.log(`add hospitalAdmin error:> ${error}`);
+    res.json({
+      status: 1,
+      err: `${error}`,
+    });
+  }
+});
+
+export default router;
+
+
+/*
 const hospitals = [
   {
     name: '北京同仁堂唐山中医医院',
@@ -53,40 +160,11 @@ const doctors = [
     skilledIn: '内科，妇科，皮外科，儿科',
   },
 ];
+*/
 
-const HospitalAdmin = {
-  name: 'bjtrt-ts05',
-  phone: '18618441311',
-};
 
-router.get('/auth_success', (req, res) => {
-  res.json({
-    status: 0,
-    result: req.query,
-    cookies: req.cookies,
-  });
-});
-
-router.get('/genJwtToken', async (req, res) => {
-  if (!req.query.username) {
-    res.json({
-      status: 1,
-      err: 'need username',
-    });
-    return;
-  }
-  const expires = moment().utc().add({ days: 7 }).unix();
-  const jwtToken = jwt.encode({
-    exp: expires,
-    system: 'admin', // admin | client | reg
-    username: req.query.username,
-  }, 'gSi4WmttWuvy2ewoTGooigPwSDoxwZOy');
-  const res1 = await fetch(`http://localhost:3000/auth/jwt/callback?token=${jwtToken}`);
-  const result = await res1.json();
-  res.json(result);
-});
-
-async function addParticipantIdentity({
+/*
+async function addParticipantIdentity1({
   currentCardName, username, accessToken, resourceType,
 }) {
   const businessNetworkConnection = new BusinessNetworkConnection();
@@ -150,77 +228,5 @@ async function addParticipantIdentity({
     throw error;
   }
 }
+*/
 
-router.get('/auth/wechat/success', async (req, res) => {
-  const accessToken = req.query['access-token'];
-  const userID = req.query['user-id'];
-  try {
-    const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
-    if (currentUserRes.status !== 200) {
-      throw new Error(`get current user failed: ${currentUserRes.statusText}`);
-    }
-    const currentUser = await currentUserRes.json();
-    const currentCardName = `${currentUser.username}@trt-health`;
-    await addParticipantIdentity({
-      currentCardName: 'admin@trt-health', username: currentUser.username, accessToken, resourceType: 'Patient',
-    });
-    console.log('add Patient done');
-    res.json({
-      status: 0,
-      result: {
-        accessToken,
-        userID,
-      },
-    });
-  } catch (error) {
-    console.log(`add Patient error:> ${error}`);
-    res.json({
-      status: 1,
-      err: `${error}`,
-    });
-  }
-});
-
-router.post('/hospitalAdmin', async (req, res) => {
-  const { username, password, email } = req.body;
-  const accessToken = req.header('X-Access-Token');
-  const userID = req.header('X-Access-USERID');
-  try {
-    const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
-    if (currentUserRes.status !== 200) {
-      throw new Error(`get current user failed: ${currentUserRes.statusText}`);
-    }
-    const currentUser = await currentUserRes.json();
-    const currentCardName = `${currentUser.username}@trt-health`;
-    // add user
-    const addUserRes = await fetch('http://localhost:3000/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        email,
-      }),
-    });
-    if (addUserRes.status !== 200) {
-      throw new Error(`add user failed: ${addUserRes.statusText}`);
-    }
-    await addParticipantIdentity({
-      currentCardName, username, accessToken, resourceType: 'HospitalAdmin',
-    });
-    console.log('add hospitalAdmin done');
-    res.json({
-      status: 0,
-    });
-  } catch (error) {
-    console.log(`add hospitalAdmin error:> ${error}`);
-    res.json({
-      status: 1,
-      err: `${error}`,
-    });
-  }
-});
-
-export default router;

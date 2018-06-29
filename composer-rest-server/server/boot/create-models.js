@@ -2,18 +2,36 @@
 
     module.exports = function(app) {
         //FIXME only run this script AT first TIME . For create table.
-        app.dataSources.db.automigrate(['user', 'userIdentity', 'accessToken', 'ACL', 'RoleMapping', 'Role'], function(err) {
-            if (err) throw err;
-            app.models.user.create([{
-                username: 'admin',
-                email:'admin@email.com',
-                password: 'adminpw',
-            }], function(err, coffeeShops) {
-                if (err) throw err;
-                console.log('Models created: \n', coffeeShops);
-            });
-        });
+        // app.dataSources.db.automigrate(['user', 'userIdentity', 'accessToken', 'ACL', 'RoleMapping', 'Role'], function(err) {
+        //     if (err) throw err;
+        //     app.models.user.create([{
+        //         username: 'admin',
+        //         email:'admin@email.com',
+        //         password: 'adminpw',
+        //     }], function(err, coffeeShops) {
+        //         if (err) throw err;
+        //         console.log('Models created: \n', coffeeShops);
+        //     });
+        // });
     
+        app.models.user.findOne({
+            username: 'admin',
+        }, function(err, user){
+            if (err) {
+                throw err;
+            }
+            if (!user) {
+                app.models.user.create([{
+                    username: 'admin',
+                    email: 'admin@example.com',
+                    password: 'adminpw',
+                }], function(err, res) {
+                    if (err) throw err;
+                    console.log('admin created: \n', res);
+                });
+            }
+        })
+
         app.models.user.disableRemoteMethodByName("upsert");                               // disables PATCH /app.models.users
         // app.models.user.disableRemoteMethodByName("find");                                 // disables GET /app.models.users
         app.models.user.disableRemoteMethodByName("replaceOrCreate");                      // disables PUT /app.models.users

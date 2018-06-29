@@ -14,7 +14,7 @@
         "module": "../../../passport-wechat.js",
         "clientID":"wx149a1255ff3dbc5f",
         "clientSecret":"c781e5fcd8d08c911bea5e91e7d8cb07",
-        "successRedirect":"http://localhost:3002/init/auth/wechat/success",
+        "successRedirect":"http://localhost:3002/auth/wechat/success",
         "realm":"http://localhost:3002"
     }
 }
