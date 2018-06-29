@@ -58,7 +58,7 @@ router.get('/admin', async (req, res) => {
       });
       return;
     }
-    const currentCardName = `${currentUser.username}@trt-health`;
+    const currentCardName = 'admin@trt-health';
     await addParticipantIdentity({
       currentCardName, username: currentUser.username, accessToken, resourceType: 'OrgAdmin',
     });

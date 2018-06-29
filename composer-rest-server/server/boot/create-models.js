@@ -15,23 +15,22 @@
         // });
     
         app.models.user.findOne({
-            username: 'admin',
+            where: {username: 'trt-admin'},
         }, function(err, user){
             if (err) {
                 throw err;
             }
             if (!user) {
                 app.models.user.create([{
-                    username: 'admin',
-                    email: 'admin@example.com',
-                    password: 'adminpw',
+                    username: 'trt-admin',
+                    email: 'trt-admin@example.com',
+                    password: 'trt-adminpw',
                 }], function(err, res) {
                     if (err) throw err;
-                    console.log('admin created: \n', res);
+                    console.log('trt-admin created: \n', res);
                 });
             }
         })
-
         app.models.user.disableRemoteMethodByName("upsert");                               // disables PATCH /app.models.users
         // app.models.user.disableRemoteMethodByName("find");                                 // disables GET /app.models.users
         app.models.user.disableRemoteMethodByName("replaceOrCreate");                      // disables PUT /app.models.users
