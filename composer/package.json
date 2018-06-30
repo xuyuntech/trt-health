@@ -1,9 +1,9 @@
 {
+  "version": "0.0.21",
   "engines": {
     "composer": "^0.19.8"
   },
   "name": "trt-health",
-  "version": "0.0.10",
   "description": "trt health network",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/trt-health.bna",

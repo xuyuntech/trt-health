@@ -12,18 +12,29 @@ export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 
 export async function bfetch(url, {
-  req, method = 'GET', headers, body,
+  req, method = 'GET', headers, body, params,
 }) {
+  const options = {
+    method,
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json',
+      'X-Access-Token': req.header('X-Access-Token'),
+    },
+    // body: JSON.stringify(body),
+  };
+  let uri = url;
+  if (method === 'GET') {
+    const paramStr = Object.keys(params).map(k => `${k}=${encodeURIComponent(params[k])}`).join('&');
+    if (paramStr) {
+      uri += (url.indexOf('?') >= 0 ? '&' : '?') + paramStr;
+    }
+  } else {
+    options.body = JSON.stringify(body);
+  }
+  console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)}`);
   try {
-    const res = await fetch(url, {
-      method,
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json',
-        'X-Access-Token': req.header('X-Access-Token'),
-      },
-      body: JSON.stringify(body),
-    });
+    const res = await fetch(uri, options);
     if (res.status === 404) {
       throw ErrNotFound;
     }

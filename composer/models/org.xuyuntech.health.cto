@@ -4,6 +4,7 @@
 namespace org.xuyuntech.health
 
 enum Gender {
+  o UNKNOW
   o MALE
   o FEMALE
 }
@@ -94,9 +95,9 @@ asset RegisterHistory identified by id {
 }
 
 // ArrangementHistory 排班
-asset ArrangementHistory identified by assetKey {
-  o String assetKey
-  o String description
+asset ArrangementHistory identified by id {
+  o String id
+  o String description optional
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
   --> Hospital hospital
@@ -192,9 +193,9 @@ asset OrderItem  identified by participantKey {
 /*
   排班 (使用rest服务器生成的API，暂时不做开发)
 */
-transaction arrangement {
-  o String doctorKey
-  o String hospitalKey
+transaction Arrangement {
+  --> Doctor doctor
+  --> Hospital hospital
   o VisitTime visitTime
   o DateTime visitDate
 }

@@ -170,7 +170,8 @@ async function addParticipantIdentity1({
   try {
     // add participant
     const bConnect = await businessNetworkConnection.connect(currentCardName);
-    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
+    const participantRegistry = await businessNetworkConnection
+    .getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
     const adminExists = await participantRegistry.exists(username);
     if (!adminExists) {
       const factory = bConnect.getFactory();
@@ -183,7 +184,8 @@ async function addParticipantIdentity1({
     // identityIssue
     const adminConnection = new AdminConnection();
     const issuingCard = await adminConnection.exportCard('admin@trt-health');
-    const result = await businessNetworkConnection.issueIdentity(`org.xuyuntech.health.${resourceType}#${username}`, username, { issuer: true });
+    const result = await businessNetworkConnection
+    .issueIdentity(`org.xuyuntech.health.${resourceType}#${username}`, username, { issuer: true });
     await businessNetworkConnection.disconnect();
     console.log('issueIdentity result', result);
     const metadata = {

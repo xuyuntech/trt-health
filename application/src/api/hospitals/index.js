@@ -29,6 +29,32 @@ router.get('/', async (req, res) => {
     res.json(err);
   }
 });
+
+router.put('/', async (req, res) => {
+  const {
+    id, address, name, phone1, phone2,
+  } = req.body;
+  try {
+    const data = await bfetch(API.Hospitals.Update(id), {
+      method: 'PUT',
+      req,
+      body: {
+        address,
+        name,
+        phone1,
+        phone2,
+        $class: 'org.xuyuntech.health.Hospital',
+      },
+    });
+    res.json({
+      status: 0,
+      results: data,
+    });
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const data = await bfetch(API.Hospitals.Create(), {

@@ -1,23 +1,37 @@
 /** Sample queries for Commodity Trading business network
 */
 
-query selectHospitals {
-  description: "Select all hospitals"
-  statement:
-    SELECT org.xuyuntech.health.Hospital
-}
+// query selectArrangementHistoryByDoctorAndHospital {
+//   description: "selectArrangementHistoryByDoctorAndHospital"
+//   statement:
+//     SELECT org.xuyuntech.health.ArrangementHistory
+//       WHERE (doctor == _$doctor AND hospital == _$hospital)
+// }
 
-query selectPrescription {
-  description: "Select all hospitals"
-  statement:
-    SELECT org.xuyuntech.health.Prescription
-}
+// query selectArrangementHistoryByID {
+//   description: "selectArrangementHistoryByID"
+//   statement:
+//     SELECT org.xuyuntech.health.ArrangementHistory
+//       WHERE (assetKey == _$assetKey)
+// }
 
-query selectOrderItem {
-  description: "Select all hospitals"
-  statement:
-    SELECT org.xuyuntech.health.OrderItem
-}
+// query selectHospitals {
+//   description: "Select all hospitals"
+//   statement:
+//     SELECT org.xuyuntech.health.Hospital
+// }
+
+// query selectPrescription {
+//   description: "Select all hospitals"
+//   statement:
+//     SELECT org.xuyuntech.health.Prescription
+// }
+
+// query selectOrderItem {
+//   description: "Select all hospitals"
+//   statement:
+//     SELECT org.xuyuntech.health.OrderItem
+// }
 
 
 // query selectCommodities {
