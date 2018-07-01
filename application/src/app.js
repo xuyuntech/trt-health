@@ -5,11 +5,12 @@ import WebSocket from 'ws';
 import http from 'http';
 import config from 'config';
 import url from 'url';
+import morgan from 'morgan';
 import routes from './routes';
 
 const app = express();
 const server = http.createServer(app);
-
+app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 

@@ -9,7 +9,7 @@ export default function (app) {
   app.use('/init', initRoute);
   app.use('/auth/wechat', wechatRoute);
   app.use('/auth/users', usersRoute);
-  app.use('/hospitals', hospitalsRoute);
+  app.use('/hospital', hospitalsRoute);
   app.use('/doctor', doctorRoute);
   app.use('/arrangement_history', arrangementHistoryRoute);
 }

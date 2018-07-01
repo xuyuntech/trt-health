@@ -12,7 +12,7 @@ export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 
 export async function bfetch(url, {
-  req, method = 'GET', headers, body, params,
+  req, method = 'GET', headers = {}, body = {}, params = {},
 }) {
   const options = {
     method,

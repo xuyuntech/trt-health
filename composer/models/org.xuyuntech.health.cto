@@ -98,6 +98,7 @@ asset RegisterHistory identified by id {
 asset ArrangementHistory identified by id {
   o String id
   o String description optional
+  o Double fee
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
   --> Hospital hospital
