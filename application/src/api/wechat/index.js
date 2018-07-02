@@ -19,9 +19,29 @@ router.get('/success', async (req, res) => {
     },
   });
 });
+router.get('/callback', async (req, res) => {
+  const { code } = req.query;
+  try {
+    const res1 = await fetch(`http://localhost:3000/auth/wechat/callback?code=${code}`);
+    const data = await res1.json();
+    const { accessToken, userID } = data.result;
+    res.json({
+      status: 0,
+      result: {
+        accessToken,
+        userID,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
 router.post('/reg', async (req, res) => {
   const accessToken = req.header('X-Access-Token');
   const userID = req.header('X-Access-UserID');
+  const { userInfo } = req.body;
+  const { nickName, gender, avatarUrl } = userInfo;
   try {
     const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
     if (currentUserRes.status !== 200) {
@@ -29,12 +49,22 @@ router.post('/reg', async (req, res) => {
     }
     const currentUser = await currentUserRes.json();
     await addParticipantIdentity({
-      currentCardName: 'admin@trt-health', username: currentUser.username, accessToken, resourceType: 'Patient',
+      currentCardName: 'admin@trt-health',
+      username: currentUser.username,
+      accessToken,
+      resourceType: 'Patient',
+      participantData: {
+        realName: nickName,
+        avatar: avatarUrl,
+        gender: gender === 1 ? 'MALE' : 'FEMALE',
+      },
     });
     console.log('add Patient done');
     res.json({
       status: 0,
       result: {
+        email: currentUser.email,
+        username: currentUser.username,
         accessToken,
         userID,
       },

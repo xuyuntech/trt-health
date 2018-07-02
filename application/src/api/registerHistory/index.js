@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const data = await bfetch(API.ArrangementHistory.FindByID(id), {
+    const data = await bfetch(API.RegisterHistory.FindByID(id), {
       req,
       params: {
         filter: JSON.stringify({
@@ -27,38 +27,16 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const {
-    visitDate, f, doctorName, hospitalID,
+    f, username,
   } = req.query;
-  console.log('doctorName', doctorName);
+  console.log('username', username);
   const where = {};
   const filter = {
     include: 'resolve',
   };
   if (f === 'true') {
-    if (visitDate) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(visitDate)) {
-        res.json({
-          status: 1,
-          err: '日期格式错误',
-        });
-        return;
-      }
-      where.visitDate = new Date(visitDate).toISOString();
-    }
-
-    if (doctorName) {
-      if (!/^[0-9a-zA-Z._]+$/.test(doctorName)) {
-        res.json({
-          status: 1,
-          err: '医师名称格式不正确',
-        });
-        return;
-      }
-      where.doctor = `resource:org.xuyuntech.health.Doctor#${doctorName}`;
-    }
-
-    if (hospitalID) {
-      where.hospital = `resource:org.xuyuntech.health.Hospital#${hospitalID}`;
+    if (username) {
+      where.patient = `resource:org.xuyuntech.health.Patient#${username}`;
     }
   }
 
@@ -67,7 +45,7 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const data = await bfetch(API.ArrangementHistory.Query(), {
+    const data = await bfetch(API.RegisterHistory.Query(), {
       req,
       params: { filter: JSON.stringify(filter) },
     });
@@ -83,11 +61,15 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = {
     ...req.body,
+    created: new Date().toISOString(),
+    visitor: `resource:org.xuyuntech.health.Visitor#${req.body.visitor}`,
+    patient: `resource:org.xuyuntech.health.Patient#${req.body.patient}`,
+    arrangementHistory: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.arrangementHistory}`,
     id: uuidv1(),
-    $class: 'org.xuyuntech.health.ArrangementHistory',
+    $class: 'org.xuyuntech.health.RegisterHistory',
   };
   try {
-    const data = await bfetch(API.ArrangementHistory.Create(), {
+    const data = await bfetch(API.RegisterHistory.Create(), {
       method: 'POST',
       req,
       body,

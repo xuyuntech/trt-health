@@ -6,6 +6,17 @@ export const API = {
   ArrangementHistory: {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,
+    FindByID: id => `${BASE_URL}/ArrangementHistory/${id}`,
+  },
+  RegisterHistory: {
+    Create: () => `${BASE_URL}/RegisterHistory`,
+    Query: () => `${BASE_URL}/RegisterHistory`,
+    FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
+  },
+  Visitor: {
+    Create: () => `${BASE_URL}/Visitor`,
+    Query: () => `${BASE_URL}/Visitor`,
+    FindByID: id => `${BASE_URL}/Visitor/${id}`,
   },
   Hospitals: {
     Query: () => `${BASE_URL}/Hospital`,

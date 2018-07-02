@@ -27,38 +27,16 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const {
-    visitDate, f, doctorName, hospitalID,
+    creator, f,
   } = req.query;
-  console.log('doctorName', doctorName);
+  console.log('creator', creator);
   const where = {};
   const filter = {
     include: 'resolve',
   };
   if (f === 'true') {
-    if (visitDate) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(visitDate)) {
-        res.json({
-          status: 1,
-          err: '日期格式错误',
-        });
-        return;
-      }
-      where.visitDate = new Date(visitDate).toISOString();
-    }
-
-    if (doctorName) {
-      if (!/^[0-9a-zA-Z._]+$/.test(doctorName)) {
-        res.json({
-          status: 1,
-          err: '医师名称格式不正确',
-        });
-        return;
-      }
-      where.doctor = `resource:org.xuyuntech.health.Doctor#${doctorName}`;
-    }
-
-    if (hospitalID) {
-      where.hospital = `resource:org.xuyuntech.health.Hospital#${hospitalID}`;
+    if (creator) {
+      where.creator = `resource:org.xuyuntech.health.Patient#${creator}`;
     }
   }
 
@@ -67,7 +45,7 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const data = await bfetch(API.ArrangementHistory.Query(), {
+    const data = await bfetch(API.Visitor.Query(), {
       req,
       params: { filter: JSON.stringify(filter) },
     });
@@ -84,10 +62,10 @@ router.post('/', async (req, res) => {
   const body = {
     ...req.body,
     id: uuidv1(),
-    $class: 'org.xuyuntech.health.ArrangementHistory',
+    $class: 'org.xuyuntech.health.Visitor',
   };
   try {
-    const data = await bfetch(API.ArrangementHistory.Create(), {
+    const data = await bfetch(API.Visitor.Create(), {
       method: 'POST',
       req,
       body,
