@@ -19,6 +19,12 @@ export const API = {
     Create: () => `${BASE_URL}/Doctor`,
     FindByID: id => `${BASE_URL}/Doctor/${id}`,
   },
+  Patient: {
+    Query: () => `${BASE_URL}/Patient`,
+    Update: id => `${BASE_URL}/Patient/${id}`,
+    Create: () => `${BASE_URL}/Patient`,
+    FindByID: id => `${BASE_URL}/Patient/${id}`,
+  },
   Supplier: {
     Query: () => `${BASE_URL}/Supplier`,
     Update: id => `${BASE_URL}/Supplier/${id}`,
@@ -30,5 +36,11 @@ export const API = {
     Update: id => `${BASE_URL}/MedicalItem/${id}`,
     Create: () => `${BASE_URL}/MedicalItem`,
     FindByID: id => `${BASE_URL}/MedicalItem/${id}`,
+  },
+  RegisterHistory: {
+    Query: () => `${BASE_URL}/RegisterHistory`,
+    Update: id => `${BASE_URL}/RegisterHistory/${id}`,
+    Create: () => `${BASE_URL}/RegisterHistory`,
+    FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
   },
 };
