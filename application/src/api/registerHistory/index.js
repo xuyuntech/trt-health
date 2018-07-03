@@ -8,7 +8,14 @@ const router = express.Router();
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const data = await bfetch(API.RegisterHistory.FindByID(id), { req });
+    const data = await bfetch(API.RegisterHistory.FindByID(id), {
+      req,
+      params: {
+        filter: JSON.stringify({
+          include: 'resolve',
+        }),
+      },
+    });
     res.json({
       status: 0,
       result: data,
@@ -19,20 +26,18 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const { created, f } = req.query;
+  const {
+    f, username,
+  } = req.query;
+  console.log('username', username);
   const where = {};
   const filter = {
     include: 'resolve',
   };
   if (f === 'true') {
-    if (created && !/^\d{4}-\d{2}-\d{2}$/.test(created)) {
-      res.json({
-        status: 1,
-        err: '日期格式错误',
-      });
-      return;
+    if (username) {
+      where.patient = `resource:org.xuyuntech.health.Patient#${username}`;
     }
-    where.created = new Date(created).toISOString();
   }
 
   if (Object.keys(where).length > 0) {
@@ -53,47 +58,32 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
-  const {
-    id, state, created,
-  } = req.body;
-  try {
-    const data = await bfetch(API.RegisterHistory.Update(id), {
-      method: 'PUT',
-      req,
-      body: {
-        state,
-        created,
-        $class: 'org.xuyuntech.health.RegisterHistory',
-      },
-    });
-    res.json({
-      status: 0,
-      results: data,
-    });
-  } catch (err) {
-    res.json(err);
-  }
-});
-
 router.post('/', async (req, res) => {
+  const body = {
+    ...req.body,
+    created: new Date().toISOString(),
+    visitor: `resource:org.xuyuntech.health.Visitor#${req.body.visitor}`,
+    patient: `resource:org.xuyuntech.health.Patient#${req.body.patient}`,
+    arrangementHistory: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.arrangementHistory}`,
+    id: uuidv1(),
+    $class: 'org.xuyuntech.health.RegisterHistory',
+  };
   try {
     const data = await bfetch(API.RegisterHistory.Create(), {
       method: 'POST',
       req,
-      body: {
-        ...req.body,
-        $class: 'org.xuyuntech.health.RegisterHistory',
-        id: uuidv1(),
-      },
+      body,
     });
+    console.log('data', data);
     res.json({
       status: 0,
       result: data,
     });
   } catch (err) {
+    console.log('err', err);
     res.json(err);
   }
 });
+
 
 export default router;

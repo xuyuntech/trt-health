@@ -6,6 +6,7 @@ export const API = {
   ArrangementHistory: {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,
+    FindByID: id => `${BASE_URL}/ArrangementHistory/${id}`,
   },
   Hospitals: {
     Query: () => `${BASE_URL}/Hospital`,
@@ -31,6 +32,11 @@ export const API = {
     Create: () => `${BASE_URL}/Supplier`,
     FindByID: id => `${BASE_URL}/Supplier/${id}`,
   },
+  Visitor: {
+    Create: () => `${BASE_URL}/Visitor`,
+    Query: () => `${BASE_URL}/Visitor`,
+    FindByID: id => `${BASE_URL}/Visitor/${id}`,
+  },
   MedicalItems: {
     Query: () => `${BASE_URL}/MedicalItem`,
     Update: id => `${BASE_URL}/MedicalItem/${id}`,
@@ -42,5 +48,10 @@ export const API = {
     Update: id => `${BASE_URL}/RegisterHistory/${id}`,
     Create: () => `${BASE_URL}/RegisterHistory`,
     FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
+  },
+  CaseItem: {
+    Create: () => `${BASE_URL}/CaseItem`,
+    Query: () => `${BASE_URL}/CaseItem`,
+    FindByID: id => `${BASE_URL}/CaseItem/${id}`,
   },
 };

@@ -12,7 +12,7 @@ export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 
 export async function bfetch(url, {
-  req, method = 'GET', headers, body, params,
+  req, method = 'GET', headers = {}, body = {}, params = {},
 }) {
   const options = {
     method,
@@ -57,7 +57,7 @@ export async function bfetch(url, {
 
 
 export async function addParticipantIdentity({
-  currentCardName, username, accessToken, resourceType,
+  currentCardName, username, accessToken, resourceType, participantData,
 }) {
   console.log('addParticipantIdentity -->>>', {
     currentCardName, username, accessToken, resourceType,
@@ -67,14 +67,20 @@ export async function addParticipantIdentity({
     // add participant
     const bConnect = await businessNetworkConnection.connect(currentCardName);
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
-    const adminExists = await participantRegistry.exists(username);
-    if (!adminExists) {
+    const participantExists = await participantRegistry.exists(username);
+    if (!participantExists) {
+      console.log(`participant ${username} not exists, start to add.`);
       const factory = bConnect.getFactory();
       const participant = factory.newResource('org.xuyuntech.health', resourceType, username);
+      Object.assign(participant, participantData);
       // participant.phone = HospitalAdmin.phone;
       await participantRegistry.addAll([participant]);
     } else {
-      console.log(`participant ${username} already exists, ignore.`);
+      const participantSaved = await participantRegistry.get(username);
+      console.log(`participant ${username} already exists, start to update.`);
+      Object.assign(participantSaved, participantData);
+      await participantRegistry.update(participantSaved);
+      console.log(`participant ${username} updated successfully.`);
     }
     // identityIssue
     const adminConnection = new AdminConnection();

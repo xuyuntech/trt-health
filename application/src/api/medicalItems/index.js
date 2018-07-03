@@ -19,29 +19,35 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const { productionDate, expiredDate, f } = req.query;
+  const {
+    productionDate, expiredDate, f,
+  } = req.query;
   const where = {};
   const filter = {
     include: 'resolve',
   };
   if (f === 'true') {
-    if (productionDate && !/^\d{4}-\d{2}-\d{2}$/.test(productionDate)) {
-      res.json({
-        status: 1,
-        err: '日期格式错误',
-      });
-      return;
+    if (productionDate) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(productionDate)) {
+        res.json({
+          status: 1,
+          err: '日期格式错误',
+        });
+        return;
+      }
+      where.productionDate = new Date(productionDate).toISOString();
     }
-    where.productionDate = new Date(productionDate).toISOString();
 
-    if (expiredDate && !/^\d{4}-\d{2}-\d{2}$/.test(expiredDate)) {
-      res.json({
-        status: 1,
-        err: '日期格式错误',
-      });
-      return;
+    if (expiredDate) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(expiredDate)) {
+        res.json({
+          status: 1,
+          err: '日期格式错误',
+        });
+        return;
+      }
+      where.expiredDate = new Date(expiredDate).toISOString();
     }
-    where.expiredDate = new Date(expiredDate).toISOString();
   }
 
   if (Object.keys(where).length > 0) {
@@ -91,21 +97,25 @@ router.put('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+  const body = {
+    ...req.body,
+    supplier: `resource:org.xuyuntech.health.Supplier#${req.body.supplier}`,
+    id: uuidv1(),
+    $class: 'org.xuyuntech.health.MedicalItem',
+  };
   try {
     const data = await bfetch(API.MedicalItems.Create(), {
       method: 'POST',
       req,
-      body: {
-        ...req.body,
-        $class: 'org.xuyuntech.health.MedicalItem',
-        id: uuidv1(),
-      },
+      body,
     });
+    console.log('data', data);
     res.json({
       status: 0,
       result: data,
     });
   } catch (err) {
+    console.log('err', err);
     res.json(err);
   }
 });

@@ -8,6 +8,8 @@ import arrangementHistoryRoute from './api/arrangementHistory';
 import supplierRoute from './api/supplier';
 import medicalItemsRoute from './api/medicalItems';
 import registerHistoryRoute from './api/registerHistory';
+import visitorRoute from './api/visitor';
+import caseItemRoute from './api/caseItem';
 
 export default function (app) {
   app.use('/init', initRoute);
@@ -19,5 +21,7 @@ export default function (app) {
   app.use('/arrangement_history', arrangementHistoryRoute);
   app.use('/supplier', supplierRoute);
   app.use('/medicalItems', medicalItemsRoute);
-  app.use('/registerHistory', registerHistoryRoute);
+  app.use('/register_History', registerHistoryRoute);
+  app.use('/visitor', visitorRoute);
+  app.use('/caseItem', caseItemRoute);
 }
