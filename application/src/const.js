@@ -13,6 +13,18 @@ export const API = {
     Query: () => `${BASE_URL}/RegisterHistory`,
     FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
   },
+  Department1: {
+    Create: () => `${BASE_URL}/Department1`,
+    Delete: id => `${BASE_URL}/Department1/${id}`,
+    Query: () => `${BASE_URL}/Department1`,
+    FindByID: id => `${BASE_URL}/Department1/${id}`,
+  },
+  Department2: {
+    Create: () => `${BASE_URL}/Department2`,
+    Delete: id => `${BASE_URL}/Department2/${id}`,
+    Query: () => `${BASE_URL}/Department2`,
+    FindByID: id => `${BASE_URL}/Department2/${id}`,
+  },
   Visitor: {
     Create: () => `${BASE_URL}/Visitor`,
     Query: () => `${BASE_URL}/Visitor`,

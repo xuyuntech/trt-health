@@ -83,6 +83,21 @@ participant Supplier identified by id {
 
 /* ==================  asset  ==================== */
 
+
+asset Department1 identified by id {
+  o String id
+  o String name
+  --> Hospital hospital
+  --> Department2[] department2s
+}
+
+asset Department2 identified by id {
+  o String id
+  o String name
+  --> Doctor[] doctors
+}
+
+
 asset Visitor identified by id {
   o String id
   o String realName
@@ -137,6 +152,8 @@ asset ArrangementHistory identified by id {
   o VisitTime visitTime // 出诊时间(上午|下午)
   --> Hospital hospital
   --> Doctor doctor
+  --> Department1 department1
+  --> Department2 department2
 }
 
 // Prescription 处方

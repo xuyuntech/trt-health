@@ -11,6 +11,63 @@ import { IdCard } from 'composer-common';
 export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 
+export function getFilterParams({
+  query = {}, paramsMapFunc, include,
+}) {
+  const filter = {};
+  const where = {};
+  const { f } = query;
+  if (include === true) {
+    filter.include = 'resolve';
+  }
+  if (f === 'true') {
+    const keys = Object.keys(paramsMapFunc);
+    for (let i = 0; i < keys.length; i += 1) {
+      const paramName = keys[i];
+      const paramValue = query[paramName];
+      console.log(paramName, paramValue);
+      const fn = paramsMapFunc[paramName];
+      if (typeof fn === 'function') {
+        const validateResult = fn.call(null, paramValue);
+        if (validateResult && validateResult.err) {
+          return {
+            filter: null,
+            err: validateResult.err,
+          };
+        }
+      } else if (typeof fn === 'object' && fn.test) {
+        // required 校验
+        if (fn.test === 'required' && !paramValue) {
+          return {
+            filter: null,
+            err: fn.errMsg || `${paramName} is required`,
+          };
+        // 正则校验
+        } else if (Object.prototype.toString.call(fn.test) === '[object RegExp]' && !fn.test(paramValue)) {
+          return {
+            filter: null,
+            err: fn.errMsg || `${paramName} validation failed`,
+          };
+        }
+      }
+      where[paramName] = typeof fn.getValue === 'function' ? fn.getValue(paramValue) : paramValue;
+    }
+
+    if (Object.keys(where).length > 0) {
+      filter.where = where;
+    }
+    return {
+      filter,
+      err: null,
+    };
+  }
+  return {
+    filter: null,
+    err: null,
+  };
+}
+
+
 export async function bfetch(url, {
   req, method = 'GET', headers = {}, body = {}, params = {},
 }) {
