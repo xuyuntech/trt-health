@@ -76,3 +76,6 @@ composer: importAdmin install-network
 
 rest-server:
 	composer-rest-server -c admin@trt-health -n never -w true
+
+clear:
+	rm -rf *.bna *.card

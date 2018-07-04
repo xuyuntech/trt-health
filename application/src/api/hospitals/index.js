@@ -1,7 +1,9 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
+import Promise from 'promise';
 import { bfetch } from '../utils';
 import { API } from '../../const';
+import initData from './data';
 
 const router = express.Router();
 
@@ -56,6 +58,43 @@ router.put('/', async (req, res) => {
   }
 });
 
+router.post('/init', async (req, res) => {
+  const ds = [
+    {
+      name: '北京同仁堂唐山中医医院',
+      address: '唐山市路北区河东路三益楼5-12号',
+      phone1: '0575',
+      phone2: '5918781',
+    },
+  ];
+  Object.keys(initData.data).forEach((key) => {
+    const {
+      name, address, phone1, phone2,
+    } = initData.data[key];
+    ds.push({
+      name, address, phone1, phone2,
+    });
+  });
+  try {
+    const results = await Promise.all(ds.map(async (item, k) => {
+      const res1 = await bfetch(API.Hospitals.Create(), {
+        req,
+        method: 'POST',
+        body: {
+          ...item,
+          id: `hospital-${k + 1}`,
+        },
+      });
+      return res1;
+    }));
+    res.json({
+      status: 0,
+      results,
+    });
+  } catch (err) {
+    res.json(err);
+  }
+});
 router.post('/', async (req, res) => {
   try {
     const data = await bfetch(API.Hospitals.Create(), {

@@ -124,8 +124,8 @@ export async function addParticipantIdentity({
     // add participant
     const bConnect = await businessNetworkConnection.connect(currentCardName);
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
-    const participantSaved = await participantRegistry.get(username);
-    if (!participantSaved) {
+    const participantExists = await participantRegistry.exists(username);
+    if (!participantExists) {
       const factory = bConnect.getFactory();
       const participant = factory.newResource('org.xuyuntech.health', resourceType, username);
       Object.assign(participant, participantData);
@@ -133,6 +133,7 @@ export async function addParticipantIdentity({
       await participantRegistry.addAll([participant]);
     } else {
       console.log(`participant ${username} already exists, start to update.`);
+      const participantSaved = await participantRegistry.get(username);
       Object.assign(participantSaved, participantData);
       await participantRegistry.update(participantSaved);
       console.log(`participant ${username} updated successfully.`);

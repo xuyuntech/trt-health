@@ -88,13 +88,13 @@ asset Department1 identified by id {
   o String id
   o String name
   --> Hospital hospital
-  --> Department2[] department2s
+  --> Department2[] department2s optional
 }
 
 asset Department2 identified by id {
   o String id
   o String name
-  --> Doctor[] doctors
+  --> Doctor[] doctors optional
 }
 
 
@@ -252,7 +252,12 @@ transaction Arrangement {
   挂号: 生成挂号单 (使用rest服务器生成的API，暂时不做开发)
     params: Patient, ArrangementHistory
 */
-transaction register {
+transaction RegisterAction {
+  --> RegisterHistory registerHistory
+}
+// 核销挂号
+transaction VerifyRegisterAction {
+  --> RegisterHistory registerHistory
 }
 
 /*

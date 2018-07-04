@@ -58,6 +58,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.put('/verify/:id', async (req, res) => {
+  try {
+    const body = {
+      registerHistory: req.params.id,
+    };
+    const result = await bfetch(API.VerifyRegisterAction.Create(), {
+      method: 'POST',
+      req,
+      body,
+    });
+    res.json({
+      status: 0,
+      result,
+    });
+  } catch (err) { res.json(err); }
+});
+
 router.post('/', async (req, res) => {
   const body = {
     ...req.body,

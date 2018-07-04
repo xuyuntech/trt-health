@@ -5,6 +5,28 @@ import { API } from '../../const';
 
 const router = express.Router();
 
+router.get('/clear', async (req, res) => {
+  try {
+    const data = await bfetch(API.Department1.Query(), {
+      req,
+    });
+    await Promise.all(data.map(async (item) => {
+      await bfetch(API.Department1.Delete(item.id), { req, method: 'DELETE' });
+    }));
+    const data1 = await bfetch(API.Department2.Query(), {
+      req,
+    });
+    await Promise.all(data1.map(async (item) => {
+      await bfetch(API.Department2.Delete(item.id), { req, method: 'DELETE' });
+    }));
+    res.json({
+      status: 0,
+    });
+  } catch (err1) {
+    res.json(err1);
+  }
+});
+
 router.get('/', async (req, res) => {
   // const { hospitalID } = req.query;
   const { filter, err } = getFilterParams({
@@ -35,18 +57,31 @@ router.get('/', async (req, res) => {
   }
 });
 
-const hospital = '61cd06e0-7d37-11e8-b8bd-33dbbb63e067';
-const doctor = 'songqing.zuo';
+const hospital = 'hospital-1';
+
 // const ns = 'org.xuyuntech.health';
 // const hospital = `resource:${ns}.Hospital#$${hospitalID}`;
 
+// 胡桂荣，张慧月, 宋瑞华,
 const depMap = {
-  中医: ['中医一', '中医二', '中医三', '中医五', '中医六', '中医七', '中医八', '中医九'],
-  针灸理疗科: ['针灸理疗科'],
-  中医妇科: ['中医妇科'],
-  简易门诊: ['简易门诊'],
-  慢病门诊: ['慢病门诊'],
-  综合病房: ['综合病房'],
+  中医: [
+    { name: '中医一', doctors: [] },
+    { name: '中医二', doctors: ['liangyuan.li'] },
+    { name: '中医三', doctors: [] },
+    { name: '中医五', doctors: ['zhuhe.liu'] },
+    { name: '中医六', doctors: ['ying.liu'] },
+    { name: '中医七', doctors: [] },
+    { name: '中医八', doctors: ['songqing.zuo', 'qiuxia.zhang', 'hongge.xing', 'zhiguo.wang', 'yun.zhao'] },
+    { name: '中医九', doctors: ['hailong.shu'] },
+  ],
+  针灸理疗科: [{
+    name: '针灸理疗科',
+    doctors: ['zhuhe.liu'],
+  }],
+  中医妇科: [{ name: '中医妇科', doctors: ['jianxun.zhou'] }],
+  简易门诊: [{ name: '简易门诊', doctors: [] }],
+  慢病门诊: [{ name: '慢病门诊', doctors: [] }],
+  综合病房: [{ name: '综合病房', doctors: ['hailong.shu'] }],
 };
 
 const initData = {
@@ -65,11 +100,10 @@ deps.map((name, k) => ({
 Object.keys(depMap).forEach((name, k) => {
   const dep2 = depMap[name];
   const dep1id = `${hospital}-dep1-${k + 1}`;
-  const dep2s = dep2.map((name1, k1) => ({
+  const dep2s = dep2.map((item, k1) => ({
     id: `${dep1id}-${k1 + 1}`,
-    name: name1,
+    ...item,
     $class: 'org.xuyuntech.health.Department2',
-    doctors: [doctor],
   }));
   initData.department2 = initData.department2.concat(dep2s);
   const dep1 = {

@@ -1,8 +1,23 @@
 /* eslint-disable import/prefer-default-export */
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.108:3000' : 'localhost:3000';
+const BASE_URL = `http://${BASE_HOST}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
+const AUTH_URL = `http://${BASE_HOST}`;
 
 export const API = {
+
+  VerifyRegisterAction: {
+    Create: () => `${BASE_URL}/VerifyRegisterAction`,
+    Query: () => `${BASE_URL}/VerifyRegisterAction`,
+    FindByID: id => `${BASE_URL}/VerifyRegisterAction/${id}`,
+  },
+  Users: {
+    FindByID: id => `${BASE_URL}/users/${id}`,
+    Login: () => `${BASE_URL}/users/login`,
+  },
+  Auth: {
+    WechatCallback: code => `${AUTH_URL}/auth/wechat/callback?code=${code}`,
+  },
   ArrangementHistory: {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,

@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch from 'isomorphic-fetch';
 import { addParticipantIdentity } from '../utils';
+import { API } from '../../const';
 
 
 // userID = bjtrt-ts01
@@ -22,7 +23,7 @@ router.get('/success', async (req, res) => {
 router.get('/callback', async (req, res) => {
   const { code } = req.query;
   try {
-    const res1 = await fetch(`http://localhost:3000/auth/wechat/callback?code=${code}`);
+    const res1 = await fetch(API.Auth.WechatCallback(code));
     const data = await res1.json();
     const { accessToken, userID } = data.result;
     res.json({
@@ -43,7 +44,7 @@ router.post('/reg', async (req, res) => {
   const { userInfo } = req.body;
   const { nickName, gender, avatarUrl } = userInfo;
   try {
-    const currentUserRes = await fetch(`http://localhost:3000/api/users/${userID}`, { headers: { 'X-Access-Token': accessToken } });
+    const currentUserRes = await fetch(API.Users.FindByID(userID), { headers: { 'X-Access-Token': accessToken } });
     if (currentUserRes.status !== 200) {
       throw new Error(`get current user failed: ${currentUserRes.statusText}`);
     }

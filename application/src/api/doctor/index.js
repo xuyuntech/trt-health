@@ -1,8 +1,42 @@
 import express from 'express';
+import Promise from 'promise';
 import { bfetch } from '../utils';
 import { API } from '../../const';
+import initData from './data';
 
 const router = express.Router();
+
+router.post('/init', async (req, res) => {
+  const { data } = initData;
+  try {
+    const results = await Promise.all(data.map(async (item) => {
+      const {
+        name, realname, phone, title, skilledln, description,
+      } = item;
+      const res1 = await bfetch(API.Doctor.Create(), {
+        req,
+        method: 'POST',
+        body: {
+          name,
+          realName: realname,
+          phone,
+          title,
+          skilledIn: skilledln,
+          description,
+          gender: 'UNKNOW',
+        },
+      });
+      return res1;
+    }));
+    res.json({
+      status: 0,
+      results,
+    });
+  } catch (err) {
+    res.json(err);
+  }
+  res.end(data);
+});
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
