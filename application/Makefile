@@ -6,4 +6,4 @@ push:
 restart:
 	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application:latest
 	docker rm -f trt-health-application || true
-	docker run -d -p 3002:3002 --name trt-health-application registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application
+	docker run --restart -d -p 3002:3002 --name trt-health-application registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application
