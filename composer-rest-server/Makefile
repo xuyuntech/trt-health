@@ -109,4 +109,7 @@ push: container
 restart:
 	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
 	docker rm -f trt-health-compsoer-rest-server || true
-	docker run --restart=always -d -p 3000:3000 --name trt-health-compsoer-rest-server -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} -e COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
+	docker run --restart=always -d -p 3000:3000 \
+		--name trt-health-compsoer-rest-server \
+		--add-host orderer.example.com:10.6.29.108 --add-host peer0.org1.example.com:10.6.29.108 --add-host ca.org1.example.com:10.6.29.108 \
+		-v /root/.composer:/root/.composer -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} -e COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
