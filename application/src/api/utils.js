@@ -98,6 +98,9 @@ export async function bfetch(url, {
     if (res.status === 401) {
       throw ErrUnauthorized;
     }
+    if (res.status === 500) {
+      console.log('request 500:> ', res.statusText);
+    }
     if (res.status !== 200) {
       const err = {
         status: res.status,

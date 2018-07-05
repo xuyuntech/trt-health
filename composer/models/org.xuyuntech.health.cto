@@ -259,6 +259,10 @@ transaction RegisterAction {
 transaction VerifyRegisterAction {
   --> RegisterHistory registerHistory
 }
+// 完成挂号单
+transaction FinishRegisterAction {
+  --> RegisterHistory registerHistory
+}
 
 /*
   就诊: 更新挂号单状态 Register -> Visiting

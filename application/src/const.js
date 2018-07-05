@@ -11,6 +11,11 @@ export const API = {
     Query: () => `${BASE_URL}/VerifyRegisterAction`,
     FindByID: id => `${BASE_URL}/VerifyRegisterAction/${id}`,
   },
+  FinishRegisterAction: {
+    Create: () => `${BASE_URL}/FinishRegisterAction`,
+    Query: () => `${BASE_URL}/FinishRegisterAction`,
+    FindByID: id => `${BASE_URL}/FinishRegisterAction/${id}`,
+  },
   Users: {
     FindByID: id => `${BASE_URL}/users/${id}`,
     Login: () => `${BASE_URL}/users/login`,
