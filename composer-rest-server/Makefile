@@ -1,6 +1,6 @@
 
 
-COMPOSER_PROVIDERS_TEST='{ \
+COMPOSER_PROVIDERS='{ \
 	"local": { \
 		"provider": "local",  \
     "module": "passport-local",  \
@@ -12,26 +12,47 @@ COMPOSER_PROVIDERS_TEST='{ \
     "setAccessToken": true,  \
 		"passReqToCallback": false \
 	}, \
-	"jwt": { \
-		"provider": "jwt", \
-		"session": false, \
-		"module": "../../../passport-jwt.js", \
-		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy", \
-		"authScheme": "saml", \
-		"successRedirect": "http://localhost:3002/init/auth_success", \
-		"failureRedirect":"http://localhost:3002/init/auth_failure" \
-  }, \
 	"wechat": { \
 		"provider":"wechat", \
 		"session": false, \
 		"module": "../../../passport-wechat.js", \
 		"clientID":"wx149a1255ff3dbc5f", \
 		"clientSecret":"c781e5fcd8d08c911bea5e91e7d8cb07", \
-		"successRedirect":"http://localhost:3001/auth/callback", \
-		"realm":"http://localhost:3001" \
+		"successRedirect":"http://localhost:3002/auth/wechat/success", \
+		"realm":"http://localhost:3002" \
 	} \
 }'
-
+COMPOSER_PROVIDERS_PRO='{ \
+	"local": { \
+		"provider": "local",  \
+    "module": "passport-local",  \
+    "usernameField": "username",  \
+    "passwordField": "password",  \
+    "authPath": "/auth/local",  \
+    "successRedirect": "/",  \
+    "failureRedirect": "/",  \
+    "setAccessToken": true,  \
+		"passReqToCallback": false \
+	}, \
+	"wechat": { \
+		"provider":"wechat", \
+		"session": false, \
+		"module": "../../../passport-wechat.js", \
+		"clientID":"wx149a1255ff3dbc5f", \
+		"clientSecret":"c781e5fcd8d08c911bea5e91e7d8cb07", \
+		"successRedirect":"http://10.6.29.108:3002/auth/wechat/success", \
+		"realm":"http://10.6.29.108:3002" \
+	} \
+}'
+# "jwt": { \
+# 		"provider": "jwt", \
+# 		"session": false, \
+# 		"module": "../../../passport-jwt.js", \
+# 		"secretOrKey": "gSi4WmttWuvy2ewoTGooigPwSDoxwZOy", \
+# 		"authScheme": "saml", \
+# 		"successRedirect": "http://localhost:3002/init/auth_success", \
+# 		"failureRedirect":"http://localhost:3002/init/auth_failure" \
+#   }, \
 # "wechat": { \
 	# 	"provider":"wechat", \
 	# 	"successRedirect":"http://localhost:3001/auth/add_participant", \
@@ -71,3 +92,13 @@ mongo:
 
 rest-build:
 	docker build -t localhost/composer-rest-server .
+
+
+container:
+	docker build -t registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest .
+push: container
+	docker push registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
+restart:
+	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
+	docker rm -f trt-health-compsoer-rest-server || true
+	docker run --restart=always -d -p 3000:3000 --name trt-health-compsoer-rest-server -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
