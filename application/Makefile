@@ -1,7 +1,8 @@
+all: push
 
 container:
 	docker build -t registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application:latest .
-push:
+push: container
 	docker push registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application:latest
 restart:
 	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application:latest
