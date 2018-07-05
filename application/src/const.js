@@ -22,7 +22,6 @@ export const API = {
   },
   Patient: {
     Query: () => `${BASE_URL}/Patient`,
-    Update: id => `${BASE_URL}/Patient/${id}`,
     Create: () => `${BASE_URL}/Patient`,
     FindByID: id => `${BASE_URL}/Patient/${id}`,
   },
@@ -45,13 +44,32 @@ export const API = {
   },
   RegisterHistory: {
     Query: () => `${BASE_URL}/RegisterHistory`,
-    Update: id => `${BASE_URL}/RegisterHistory/${id}`,
     Create: () => `${BASE_URL}/RegisterHistory`,
     FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
   },
+  Prescription: {
+    Query: () => `${BASE_URL}/Prescription`,
+    FindByID: id => `${BASE_URL}/Prescription/${id}`,
+  },
   CaseItem: {
-    Create: () => `${BASE_URL}/CaseItem`,
+    // Create: () => `${BASE_URL}/CaseItem`,
     Query: () => `${BASE_URL}/CaseItem`,
     FindByID: id => `${BASE_URL}/CaseItem/${id}`,
+  },
+  Order: {
+    Query: () => `${BASE_URL}/Order`,
+    FindByID: id => `${BASE_URL}/Order/${id}`,
+  },
+  OrderItem: {
+    Query: () => `${BASE_URL}/OrderItem`,
+    FindByID: id => `${BASE_URL}/OrderItem/${id}`,
+  },
+  PaymentHistory: {
+    Query: () => `${BASE_URL}/PaymentHistory`,
+    FindByID: id => `${BASE_URL}/PaymentHistory/${id}`,
+  },
+  OutboundHistory: {
+    Query: () => `${BASE_URL}/OutboundHistory`,
+    FindByID: id => `${BASE_URL}/OutboundHistory/${id}`,
   },
 };

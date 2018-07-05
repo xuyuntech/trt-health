@@ -1,5 +1,5 @@
 import express from 'express';
-import uuidv1 from 'uuid/v1';
+// import uuidv1 from 'uuid/v1';
 import { bfetch } from '../utils';
 import { API } from '../../const';
 
@@ -30,25 +30,25 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const data = await bfetch(API.CaseItem.Create(), {
-      method: 'POST',
-      req,
-      body: {
-        ...req.body,
-        created: new Date().toISOString(),
-        $class: 'org.xuyuntech.health.CaseItem',
-        id: uuidv1(),
-      },
-    });
-    res.json({
-      status: 0,
-      result: data,
-    });
-  } catch (err) {
-    res.json(err);
-  }
-});
+// router.post('/', async (req, res) => {
+//   try {
+//     const data = await bfetch(API.CaseItem.Create(), {
+//       method: 'POST',
+//       req,
+//       body: {
+//         ...req.body,
+//         created: new Date().toISOString(),
+//         $class: 'org.xuyuntech.health.CaseItem',
+//         id: uuidv1(),
+//       },
+//     });
+//     res.json({
+//       status: 0,
+//       result: data,
+//     });
+//   } catch (err) {
+//     res.json(err);
+//   }
+// });
 
 export default router;

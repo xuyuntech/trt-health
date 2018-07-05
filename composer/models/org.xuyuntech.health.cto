@@ -55,7 +55,6 @@ participant Patient extends Person {
 participant Hospital identified by id {
   o String id
   o String name
-  o String section optional // 科室
   o HospitalGrade grade optional // 评级
   o Integer reservationQuantity optional // 预约量
   o String address optional
@@ -83,6 +82,21 @@ participant Supplier identified by id {
 }
 
 /* ==================  asset  ==================== */
+
+
+asset Department1 identified by id {
+  o String id
+  o String name
+  --> Hospital hospital
+  --> Department2[] department2s optional
+}
+
+asset Department2 identified by id {
+  o String id
+  o String name
+  --> Doctor[] doctors optional
+}
+
 
 asset Visitor identified by id {
   o String id
@@ -117,7 +131,6 @@ enum RegisterType {
   o First // 初诊
   o Second // 复诊
 }
-
 // RegisterHistory 挂号记录
 asset RegisterHistory identified by id {
   o String id
@@ -134,11 +147,13 @@ asset RegisterHistory identified by id {
 asset ArrangementHistory identified by id {
   o String id
   o String description optional
-  o Double fee optional //费用
+  o Double fee optional // 挂号费
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
   --> Hospital hospital
   --> Doctor doctor
+  --> Department1 department1
+  --> Department2 department2
 }
 
 // Prescription 处方
@@ -219,6 +234,8 @@ asset OrderItem  identified by participantKey {
   o Double spending // 消费金额
 }
 
+
+
 /* ================= transaction: 主流程 ===================== */
 
 /*
@@ -235,7 +252,16 @@ transaction Arrangement {
   挂号: 生成挂号单 (使用rest服务器生成的API，暂时不做开发)
     params: Patient, ArrangementHistory
 */
-transaction register {
+transaction RegisterAction {
+  --> RegisterHistory registerHistory
+}
+// 核销挂号
+transaction VerifyRegisterAction {
+  --> RegisterHistory registerHistory
+}
+// 完成挂号单
+transaction FinishRegisterAction {
+  --> RegisterHistory registerHistory
 }
 
 /*
@@ -280,7 +306,6 @@ transaction Prescribe {
   //订单
   o String participantKey_Order
   o OrderState orderstate
-
 
   //更新挂号单状态
   

@@ -1,5 +1,5 @@
 import express from 'express';
-import uuidv1 from 'uuid/v1';
+// import uuidv1 from 'uuid/v1';
 import { bfetch } from '../utils';
 import { API } from '../../const';
 
@@ -49,32 +49,32 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
-  const body = {
-    ...req.body,
-    created: new Date().toISOString(),
-    registerHistory: `resource:org.xuyuntech.health.Visitor#${req.body.registerHistory}`,
-    caseItem: `resource:org.xuyuntech.health.Patient#${req.body.caseItem}`,
-    patient: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.patient}`,
-    id: uuidv1(),
-    $class: 'org.xuyuntech.health.Prescription',
-  };
-  try {
-    const data = await bfetch(API.Prescription.Create(), {
-      method: 'POST',
-      req,
-      body,
-    });
-    console.log('data', data);
-    res.json({
-      status: 0,
-      result: data,
-    });
-  } catch (err) {
-    console.log('err', err);
-    res.json(err);
-  }
-});
+// router.post('/', async (req, res) => {
+//   const body = {
+//     ...req.body,
+//     created: new Date().toISOString(),
+//     registerHistory: `resource:org.xuyuntech.health.Visitor#${req.body.registerHistory}`,
+//     caseItem: `resource:org.xuyuntech.health.Patient#${req.body.caseItem}`,
+//     patient: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.patient}`,
+//     id: uuidv1(),
+//     $class: 'org.xuyuntech.health.Prescription',
+//   };
+//   try {
+//     const data = await bfetch(API.Prescription.Create(), {
+//       method: 'POST',
+//       req,
+//       body,
+//     });
+//     console.log('data', data);
+//     res.json({
+//       status: 0,
+//       result: data,
+//     });
+//   } catch (err) {
+//     console.log('err', err);
+//     res.json(err);
+//   }
+// });
 
 
 export default router;

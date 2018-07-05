@@ -29,25 +29,25 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/:name', async (req, res) => {
-  const { name } = req.params;
-  try {
-    const data = await bfetch(API.Patient.Update(name), {
-      method: 'PUT',
-      req,
-      body: {
-        ...req.body,
-        $class: 'org.xuyuntech.health.Patient',
-      },
-    });
-    res.json({
-      status: 0,
-      results: data,
-    });
-  } catch (err) {
-    res.json(err);
-  }
-});
+// router.put('/:name', async (req, res) => {
+//   const { name } = req.params;
+//   try {
+//     const data = await bfetch(API.Patient.Update(name), {
+//       method: 'PUT',
+//       req,
+//       body: {
+//         ...req.body,
+//         $class: 'org.xuyuntech.health.Patient',
+//       },
+//     });
+//     res.json({
+//       status: 0,
+//       results: data,
+//     });
+//   } catch (err) {
+//     res.json(err);
+//   }
+// });
 
 router.post('/', async (req, res) => {
   try {

@@ -9,7 +9,12 @@ import supplierRoute from './api/supplier';
 import medicalItemsRoute from './api/medicalItems';
 import registerHistoryRoute from './api/registerHistory';
 import visitorRoute from './api/visitor';
+import prescriptionRoute from './api/prescription';
 import caseItemRoute from './api/caseItem';
+import orderRoute from './api/order';
+import orderItemRoute from './api/orderItem';
+import paymentHistoryRoute from './api/paymentHistory';
+import outboundHistoryRoute from './api/outboundHistory';
 
 export default function (app) {
   app.use('/init', initRoute);
@@ -23,5 +28,10 @@ export default function (app) {
   app.use('/medicalItems', medicalItemsRoute);
   app.use('/register_History', registerHistoryRoute);
   app.use('/visitor', visitorRoute);
+  app.use('/prescription', prescriptionRoute);
   app.use('/caseItem', caseItemRoute);
+  app.use('/order', orderRoute);
+  app.use('/orderItem', orderItemRoute);
+  app.use('/paymentHistory', paymentHistoryRoute);
+  app.use('/outboundHistory', outboundHistoryRoute);
 }
