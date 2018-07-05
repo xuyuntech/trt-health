@@ -78,6 +78,14 @@ COMPOSER_DATASOURCES='{ \
 	} \
 }'
 
+COMPOSER_DATASOURCES_PRO='{ \
+	"db": { \
+		"name": "db", \
+		"connector": "mongodb", \
+		"host": "10.6.29.108" \
+	} \
+}'
+
 rest:
 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS='${COMPOSER_PROVIDERS}' COMPOSER_DATASOURCES='${COMPOSER_DATASOURCES}' ./node_modules/composer-rest-server/cli.js
 rest-test:
@@ -101,4 +109,4 @@ push: container
 restart:
 	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
 	docker rm -f trt-health-compsoer-rest-server || true
-	docker run --restart=always -d -p 3000:3000 --name trt-health-compsoer-rest-server -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
+	docker run --restart=always -d -p 3000:3000 --name trt-health-compsoer-rest-server -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} -e COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
