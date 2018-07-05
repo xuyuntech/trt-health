@@ -92,6 +92,7 @@ export async function bfetch(url, {
   console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)}`);
   try {
     const res = await fetch(uri, options);
+    const data = await res.json();
     if (res.status === 404) {
       throw ErrNotFound;
     }
@@ -99,7 +100,10 @@ export async function bfetch(url, {
       throw ErrUnauthorized;
     }
     if (res.status === 500) {
-      console.log('request 500:> ', res.statusText);
+      console.log('request 500:>', data);
+      if (data && data.error && data.error.message === 'A business network card has not been specified') {
+        throw ErrUnauthorized;
+      }
     }
     if (res.status !== 200) {
       const err = {
@@ -108,7 +112,7 @@ export async function bfetch(url, {
       };
       throw err;
     }
-    const data = await res.json();
+    //const data = await res.json();
     return data;
   } catch (err) {
     throw err;
