@@ -49,6 +49,7 @@ participant HospitalAdmin extends Person {
 
 
 participant Patient extends Person {
+  o Double jifen
   o Double totalSpend optional
 }
 
