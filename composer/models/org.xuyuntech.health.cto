@@ -121,6 +121,11 @@ asset MedicalItem identified by id {
   o DateTime expiredDate // 过期日期
   --> Supplier supplier
 }
+//药品列表概念
+concept MedicalList {
+  --> MedicalItem medicalItem
+  o Double count
+}
 
 enum RegisterState {
   o Register // 挂号
@@ -161,6 +166,7 @@ asset ArrangementHistory identified by id {
 asset Prescription identified by id {
   o String id // 处方编号
   o DateTime created // 创建时间
+  o MedicalList[] medicallist//药品列表
   // --> Doctor doctor // 医师
   // --> Patient patient // 患者
   // --> MedicalItem[] medicalItems  // 药品列表
@@ -226,12 +232,11 @@ asset Order identified by id {
 }
 
 // 订单明细
-asset OrderItem  identified by participantKey {
-  o String participantKey
-  o String number // 编号
-  --> MedicalItem medicalItem
+asset OrderItem  identified by id {
+  o String id
+  o String number optional // 编号
+  o MedicalItem medicalItem
   o Double count // 购买数量
-  o Double price // 单价
   o Double spending // 消费金额
 }
 
@@ -270,6 +275,7 @@ transaction FinishRegisterAction {
   o String history // 既往史
   o String familyHistory // 家族史
   o DateTime created
+  o MedicalList[] medicallist
 
 }
 
