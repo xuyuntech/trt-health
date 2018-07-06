@@ -112,7 +112,6 @@ export async function bfetch(url, {
       };
       throw err;
     }
-    //const data = await res.json();
     return data;
   } catch (err) {
     throw err;
