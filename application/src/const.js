@@ -3,6 +3,16 @@
 const BASE_URL = 'http://localhost:3000/api';
 
 export const API = {
+  VerifyRegisterAction: {
+    Create: () => `${BASE_URL}/VerifyRegisterAction`,
+    Query: () => `${BASE_URL}/VerifyRegisterAction`,
+    FindByID: id => `${BASE_URL}/VerifyRegisterAction/${id}`,
+  },
+  FinishRegisterAction: {
+    Create: () => `${BASE_URL}/FinishRegisterAction`,
+    Query: () => `${BASE_URL}/FinishRegisterAction`,
+    FindByID: id => `${BASE_URL}/FinishRegisterAction/${id}`,
+  },
   ArrangementHistory: {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,
@@ -48,27 +58,32 @@ export const API = {
     FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
   },
   Prescription: {
+    Create: () => `${BASE_URL}/Prescription`,
     Query: () => `${BASE_URL}/Prescription`,
     FindByID: id => `${BASE_URL}/Prescription/${id}`,
   },
   CaseItem: {
-    // Create: () => `${BASE_URL}/CaseItem`,
+    Create: () => `${BASE_URL}/CaseItem`,
     Query: () => `${BASE_URL}/CaseItem`,
     FindByID: id => `${BASE_URL}/CaseItem/${id}`,
   },
   Order: {
+    Create: () => `${BASE_URL}/Order`,
     Query: () => `${BASE_URL}/Order`,
     FindByID: id => `${BASE_URL}/Order/${id}`,
   },
   OrderItem: {
+    Create: () => `${BASE_URL}/OrderItem`,
     Query: () => `${BASE_URL}/OrderItem`,
     FindByID: id => `${BASE_URL}/OrderItem/${id}`,
   },
   PaymentHistory: {
+    Create: () => `${BASE_URL}/PaymentHistory`,
     Query: () => `${BASE_URL}/PaymentHistory`,
     FindByID: id => `${BASE_URL}/PaymentHistory/${id}`,
   },
   OutboundHistory: {
+    Create: () => `${BASE_URL}/OutboundHistory`,
     Query: () => `${BASE_URL}/OutboundHistory`,
     FindByID: id => `${BASE_URL}/OutboundHistory/${id}`,
   },

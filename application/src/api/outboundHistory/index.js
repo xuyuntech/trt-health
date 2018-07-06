@@ -25,10 +25,18 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const {
+    f, orderID,
+  } = req.query;
   const where = {};
   const filter = {
     include: 'resolve',
   };
+  if (f === 'true') {
+    if (orderID) {
+      where.patient = `resource:org.xuyuntech.health.Order#${orderID}`;
+    }
+  }
 
   if (Object.keys(where).length > 0) {
     filter.where = where;
@@ -47,3 +55,5 @@ router.get('/', async (req, res) => {
     res.json(err);
   }
 });
+
+export default router;

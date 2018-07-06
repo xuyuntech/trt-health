@@ -25,10 +25,19 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const {
+    f, username,
+  } = req.query;
+  console.log('username', username);
   const where = {};
   const filter = {
     include: 'resolve',
   };
+  if (f === 'true') {
+    if (username) {
+      where.patient = `resource:org.xuyuntech.health.Patient#${username}`;
+    }
+  }
 
   if (Object.keys(where).length > 0) {
     filter.where = where;
@@ -47,3 +56,5 @@ router.get('/', async (req, res) => {
     res.json(err);
   }
 });
+
+export default router;

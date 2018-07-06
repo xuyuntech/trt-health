@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const {
-    productionDate, expiredDate, f,
+    productionDate, expiredDate, f, supplierID,
   } = req.query;
   const where = {};
   const filter = {
@@ -47,6 +47,10 @@ router.get('/', async (req, res) => {
         return;
       }
       where.expiredDate = new Date(expiredDate).toISOString();
+    }
+
+    if (supplierID) {
+      where.supplier = `resource:org.xuyuntech.health.Supplier#${supplierID}`;
     }
   }
 
