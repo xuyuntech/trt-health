@@ -167,7 +167,7 @@ asset Prescription identified by id {
   // o Double[] count
   --> RegisterHistory registerHistory // 挂号记录
   --> CaseItem caseItem // 病历
-  --> Patient patient // 创建人
+  // --> Patient patient // 创建人
 }
 
 // CaseItem 病历
