@@ -57,4 +57,14 @@ export const API = {
     Create: () => `${BASE_URL}/Doctor`,
     FindByID: id => `${BASE_URL}/Doctor/${id}`,
   },
+  Prescription: {
+    Query: () => `${BASE_URL}/Prescription`,
+    FindByID: id => `${BASE_URL}/Prescription/${id}`,
+  },
+  Prescribe: {
+    Create: () => `${BASE_URL}/Prescribe`,
+    Query: () => `${BASE_URL}/Prescribe`,
+    FindByID: id => `${BASE_URL}/Prescribe/${id}`,
+  },
+
 };

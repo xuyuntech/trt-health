@@ -89,7 +89,7 @@ Feature: Sample
   "$class": "org.xuyuntech.health.Prescribe",
   "registerHistory": "resource:org.xuyuntech.health.RegisterHistory#1234",
   "participantKey_CaseItem": "1",
-  "doctor": "resource:org.xuyuntech.health.Doctor#5672",
+  "doctor": "resource:org.xuyuntech.health.Doctor#lee.si",
   "hospital": "resource:org.xuyuntech.health.Hospital#1",
   "complained": "123",
   "diagnose": "123",
