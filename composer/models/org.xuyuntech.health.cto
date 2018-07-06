@@ -263,7 +263,14 @@ transaction VerifyRegisterAction {
 // 完成挂号单
 transaction FinishRegisterAction {
   --> RegisterHistory registerHistory
+  o String id
   o Double points
+  o String complained // 主诉
+  o String diagnose // 临床诊断内容, 现病史
+  o String history // 既往史
+  o String familyHistory // 家族史
+  o DateTime created
+
 }
 
 /*
