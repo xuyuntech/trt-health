@@ -166,7 +166,7 @@ asset Prescription identified by id {
   // o Double[] count
   --> RegisterHistory registerHistory // 挂号记录
   --> CaseItem caseItem // 病历
-  --> Patient patient // 创建人
+  // --> Patient patient // 创建人
 }
 
 // CaseItem 病历
@@ -293,15 +293,15 @@ transaction Prescribe {
   o DateTime created
   //生成处方
   o String participantKey_Prescription
-  --> MedicalItem[] medicalItems  // 药品列表
-  o Double[] count
+  // --> MedicalItem[] medicalItems  // 药品列表
+  // o Double[] count
   //生成订单以及订单明细
   //订单明细
-  o String participantKey_OrderItem
-  o Double[] price // 单价
+  // o String participantKey_OrderItem
+  // o Double[] price // 单价
   //订单
-  o String participantKey_Order
-  o OrderState orderstate
+  // o String participantKey_Order
+  // o OrderState orderstate
 
 
   //更新挂号单状态
