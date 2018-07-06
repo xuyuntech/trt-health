@@ -49,6 +49,7 @@ participant HospitalAdmin extends Person {
 
 
 participant Patient extends Person {
+  o Double points
   o Double totalSpend optional
 }
 
@@ -262,6 +263,7 @@ transaction VerifyRegisterAction {
 // 完成挂号单
 transaction FinishRegisterAction {
   --> RegisterHistory registerHistory
+  o Double points
 }
 
 /*

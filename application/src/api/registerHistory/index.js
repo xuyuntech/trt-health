@@ -78,6 +78,7 @@ router.put('/finish/:id', async (req, res) => {
   try {
     const body = {
       registerHistory: req.params.id,
+      points: 50,
     };
     const result = await bfetch(API.FinishRegisterAction.Create(), {
       method: 'POST',
