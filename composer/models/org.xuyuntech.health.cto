@@ -266,6 +266,10 @@ transaction FinishRegisterAction {
   --> RegisterHistory registerHistory
   o Double points
 }
+//挂号费支付
+transaction payRegisterAction {
+  --> RegisterHistory registerHistory
+}
 
 /*
   就诊: 更新挂号单状态 Register -> Visiting
