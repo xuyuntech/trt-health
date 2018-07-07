@@ -55,17 +55,17 @@ async function finishRegisterHistoryAction(tx){
   var Prescription = factory.newResource(NS, 'Prescription', tx.id);
   Prescription.created = tx.created;
   Prescription.registerHistory = item;
-  Prescription.medicallist = tx.medicallist;
+  Prescription.medicallistform = tx.medicallistform;
   Prescription.caseItem = factory.newRelationship(NS, 'CaseItem', tx.id);
   let assetRegistry_Prescription = await getAssetRegistry(NS + '.Prescription');
   await assetRegistry_Prescription.addAll([Prescription]);
 
   var spending_all = 0;
-  for (let index = 0; index < tx.medicallist.length; index++) {
+  for (let index = 0; index < tx.medicallistform.length; index++) {
     var OrderItem = factory.newResource(NS, 'OrderItem', tx.id + '_' + index.toString());
-    OrderItem.medicalItem = tx.medicallist[index].medicalItem;
-    OrderItem.count = tx.medicallist[index].count;
-    OrderItem.spending = tx.medicallist[index].count * tx.medicallist[index].medicalItem.price;
+    OrderItem.medicalItem = tx.medicallistform[index].medicalItem;
+    OrderItem.count = tx.medicallistform[index].count;
+    OrderItem.spending = tx.medicallistform[index].count * tx.medicallistform[index].medicalItem.price;
     spending_all +=  OrderItem.spending;
     let assetRegistry_OrderItem = await getAssetRegistry(NS + '.OrderItem');
     await assetRegistry_OrderItem.addAll([OrderItem]);
@@ -77,7 +77,7 @@ async function finishRegisterHistoryAction(tx){
   Order.state = 'NotPaid';
   Order.created = tx.created;
   var items = [];
-  for (let index = 0; index <  tx.medicallist.length; index++) {
+  for (let index = 0; index <  tx.medicallistform.length; index++) {
     items.push(factory.newRelationship(NS, 'OrderItem',tx.id + '_' + index.toString()));
   }
   Order.orderItem  = items;

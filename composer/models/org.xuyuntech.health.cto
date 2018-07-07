@@ -166,7 +166,7 @@ asset ArrangementHistory identified by id {
 asset Prescription identified by id {
   o String id // 处方编号
   o DateTime created // 创建时间
-  o MedicalListForm[] medicallist//药品列表
+  o MedicalListForm[] medicallistform//药品列表
   // --> Doctor doctor // 医师
   // --> Patient patient // 患者
   // --> MedicalItem[] medicalItems  // 药品列表
@@ -275,7 +275,7 @@ transaction FinishRegisterAction {
   o String history // 既往史
   o String familyHistory // 家族史
   o DateTime created
-  o MedicalListForm[] medicallist
+  o MedicalListForm[] medicallistform
 
 }
 
