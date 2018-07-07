@@ -122,7 +122,7 @@ asset MedicalItem identified by id {
   --> Supplier supplier
 }
 //药品列表概念
-concept MedicalList {
+concept MedicalListForm {
   --> MedicalItem medicalItem
   o Double count
 }
@@ -166,7 +166,7 @@ asset ArrangementHistory identified by id {
 asset Prescription identified by id {
   o String id // 处方编号
   o DateTime created // 创建时间
-  o MedicalList[] medicallist//药品列表
+  o MedicalListForm[] medicallist//药品列表
   // --> Doctor doctor // 医师
   // --> Patient patient // 患者
   // --> MedicalItem[] medicalItems  // 药品列表
@@ -275,7 +275,7 @@ transaction FinishRegisterAction {
   o String history // 既往史
   o String familyHistory // 家族史
   o DateTime created
-  o MedicalList[] medicallist
+  o MedicalListForm[] medicallist
 
 }
 
