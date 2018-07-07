@@ -1,5 +1,5 @@
 import express from 'express';
-import uuidv1 from 'uuid/v1';
+// import uuidv1 from 'uuid/v1';
 import { bfetch } from '../utils';
 import { API } from '../../const';
 
@@ -12,15 +12,18 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
   console.log('req.currentUser', req.currentUser);
+  console.log(`resource:org.xuyuntech.health.OrgAdmin#${req.currentUser.username}`);
   try {
+    const body = {
+      ...req.body,
+      name: req.body.name,
+      creator: `resource:org.xuyuntech.health.OrgAdmin#${req.currentUser.username}`,
+      $class: 'org.xuyuntech.health.HospitalAdmin',
+    };
     const data = await bfetch(API.HospitalAdmin.Create(), {
       method: 'POST',
       req,
-      body: {
-        ...req.body,
-        $class: 'org.xuyuntech.health.HospitalAdmin',
-        id: uuidv1(),
-      },
+      body,
     });
     res.json({
       status: 0,
