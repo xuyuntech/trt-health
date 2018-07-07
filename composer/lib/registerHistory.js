@@ -66,10 +66,24 @@ async function finishRegisterHistoryAction(tx){
     OrderItem.medicalItem = tx.medicallist[index].medicalItem;
     OrderItem.count = tx.medicallist[index].count;
     OrderItem.spending = tx.medicallist[index].count * tx.medicallist[index].medicalItem.price;
-    spending_all += tx.count[index] * tx.price[index];
+    spending_all +=  OrderItem.spending;
     let assetRegistry_OrderItem = await getAssetRegistry(NS + '.OrderItem');
     await assetRegistry_OrderItem.addAll([OrderItem]);
   }
+
+
+  var Order = factory.newResource(NS, 'Order', tx.id);
+  Order.spending = spending_all;
+  Order.state = 'NotPaid';
+  Order.created = tx.created;
+  var items = [];
+  for (let index = 0; index <  tx.medicallist.length; index++) {
+    items.push(factory.newRelationship(NS, 'OrderItem',tx.id + '_' + index.toString()));
+  }
+  Order.orderItem  = items;
+  Order.registerHistory = tx.registerHistory;
+  let assetRegistrystate_order = await getAssetRegistry(NS + '.Order');
+  await assetRegistrystate_order.addAll([Order]);
 
   item.state = 'Finished';
   const registry = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');

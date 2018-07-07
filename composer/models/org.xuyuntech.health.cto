@@ -225,7 +225,7 @@ asset Order identified by id {
   --> OrderItem[] orderItem // 订单明细
   --> RegisterHistory registerHistory
 
-  --> Patient patient // 创建人
+  // --> Patient patient // 创建人
   // --> Prescription prescription
   // --> Patient patient
   // --> CaseItem caseItem
