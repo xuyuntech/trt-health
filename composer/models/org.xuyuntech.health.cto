@@ -45,6 +45,7 @@ participant OrgAdmin extends Person {
 }
 
 participant HospitalAdmin extends Person {
+  --> OrgAdmin creator
 }
 
 

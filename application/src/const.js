@@ -6,6 +6,12 @@ const AUTH_URL = `http://${BASE_HOST}`;
 
 export const API = {
 
+  // auth
+  Auth: {
+    WechatCallback: code => `${AUTH_URL}/auth/wechat/callback?code=${code}`,
+  },
+
+  // transaction
   VerifyRegisterAction: {
     Create: () => `${BASE_URL}/VerifyRegisterAction`,
     Query: () => `${BASE_URL}/VerifyRegisterAction`,
@@ -16,13 +22,26 @@ export const API = {
     Query: () => `${BASE_URL}/FinishRegisterAction`,
     FindByID: id => `${BASE_URL}/FinishRegisterAction/${id}`,
   },
+
+  // participant
   Users: {
     FindByID: id => `${BASE_URL}/users/${id}`,
     Login: () => `${BASE_URL}/users/login`,
   },
-  Auth: {
-    WechatCallback: code => `${AUTH_URL}/auth/wechat/callback?code=${code}`,
+  Doctor: {
+    Query: () => `${BASE_URL}/Doctor`,
+    Update: id => `${BASE_URL}/Doctor/${id}`,
+    Create: () => `${BASE_URL}/Doctor`,
+    FindByID: id => `${BASE_URL}/Doctor/${id}`,
   },
+  HospitalAdmin: {
+    Create: () => `${BASE_URL}/HospitalAdmin`,
+    Query: () => `${BASE_URL}/HospitalAdmin`,
+    Update: id => `${BASE_URL}/HospitalAdmin/${id}`,
+    FindByID: id => `${BASE_URL}/HospitalAdmin/${id}`,
+  },
+
+  // asset
   ArrangementHistory: {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,
@@ -55,11 +74,5 @@ export const API = {
     Update: id => `${BASE_URL}/Hospital/${id}`,
     Create: () => `${BASE_URL}/Hospital`,
     FindByID: id => `${BASE_URL}/Hospital/${id}`,
-  },
-  Doctor: {
-    Query: () => `${BASE_URL}/Doctor`,
-    Update: id => `${BASE_URL}/Doctor/${id}`,
-    Create: () => `${BASE_URL}/Doctor`,
-    FindByID: id => `${BASE_URL}/Doctor/${id}`,
   },
 };
