@@ -338,12 +338,10 @@ transaction Prescribe {
   支付: 更新订单状态 NotPaid -> Paid ，生成支付记录
   params: Order
 */
-transaction paid {
+transaction PayAction {
   o String id
   o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
 }
 
 /*
@@ -355,4 +353,4 @@ transaction finish {
   o DateTime created
   --> Order order
   --> StoreKeeper operator
-}
+ }

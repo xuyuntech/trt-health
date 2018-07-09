@@ -200,10 +200,10 @@ async function Prescribe(Prescribe){
 
 /**
  * 支付: 更新订单状态 NotPaid -> Paid ，生成支付记录
- * @param {org.xuyuntech.health.paid} paid - the paid to be processed
+ * @param {org.xuyuntech.health.PayAction} paid - the paid to be processed
  * @transaction
  */
-async function paid(paid){
+async function PayAction(paid){
 
   // 更新订单状态 NotPaid -> Paid
   paid.order.state = 'Paid';
@@ -218,7 +218,7 @@ async function paid(paid){
   PaymentHistory.spending = paid.order.spending;
   PaymentHistory.created = paid.created;
   PaymentHistory.order = paid.order;
-  PaymentHistory.patient = paid.registerHistory.patient;
+  PaymentHistory.patient = paid.order.registerHistory.patient;
 
   let assetRegistry_PaymentHistory = await getAssetRegistry(NS + '.PaymentHistory');
   await assetRegistry_PaymentHistory.addAll([PaymentHistory]);
@@ -252,7 +252,7 @@ async function finish(finish){
 
   // 生成出库记录
   var OutboundHistory = factory.newResource(NS, 'OutboundHistory', finish.id);
-  OutboundHistory.outboundTime = finish.created;
+  OutboundHistory.created = finish.created;
   OutboundHistory.order = finish.order;
   OutboundHistory.operator = finish.operator;
 
@@ -260,10 +260,12 @@ async function finish(finish){
   await asset_OutboundHistory.addAll([OutboundHistory]);
 
   // 更新库存
-  for (let n = 0; n < finish.medicalItems.length; n++) {
-    finish.medicalItems[n].quantity -= finish.order.orderItem[n].count;
-    let assetRegistry = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
-    await assetRegistry.update( finish.medicalItems[n]);
+  for (let n = 0; n < finish.order.orderItem.length; n++) {
+    let MedicalItems = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
+    let name = finish.order.orderItem[n].medicalItem.id;
+    let MedicalItem = await MedicalItems.get(name.toString());
+    MedicalItem.quantity -= finish.order.orderItem[n].count;
+    await MedicalItems.update(MedicalItem);
   }
 
   // let asset_Quantity = await getAssetRegistry('org.xuyuntech.health.MedicalItem');
