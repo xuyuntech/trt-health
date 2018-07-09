@@ -122,7 +122,7 @@ router.post('/', async (req, res) => {
     state: 'Init',
     type: req.body.type,
     visitor: `resource:org.xuyuntech.health.Visitor#${req.body.visitor}`,
-    patient: `resource:org.xuyuntech.health.Patient#${req.body.patient}`,
+    patient: `resource:org.xuyuntech.health.Patient#${req.currentUser.username}`,
     arrangementHistory: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.arrangementHistory}`,
     id: uuidv1(),
     $class: 'org.xuyuntech.health.RegisterHistory',

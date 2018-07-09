@@ -26,6 +26,7 @@ app.use(async (req, res, next) => {
     const user = await bfetch(API.Users.FindByID(userID), {
       req,
     });
+    // console.log('user:::   ', user);
     req.currentUser = user;
     next();
   } catch (err) {
