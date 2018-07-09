@@ -50,7 +50,7 @@ participant HospitalAdmin extends Person {
 
 
 participant Patient extends Person {
-  o Double points
+  o Double points optional
   o Double totalSpend optional
 }
 
