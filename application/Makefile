@@ -13,6 +13,7 @@ restart:
 	docker rm -f trt-health-application || true
 	docker run --restart=always -d \
 			-p 3002:3002 \
+			--add-host orderer.example.com:10.6.29.108 --add-host peer0.org1.example.com:10.6.29.108 --add-host ca.org1.example.com:10.6.29.108 \
 			-v /root/.composer:/root/.composer \
 			-e NODE_ENV=production \
 			--name trt-health-application \
