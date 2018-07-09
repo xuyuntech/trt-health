@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "version": "0.0.52",
+=======
+  "version": "0.0.46",
+>>>>>>> 20180707-hospitaladmin
   "engines": {
     "composer": "^0.19.8"
   },
