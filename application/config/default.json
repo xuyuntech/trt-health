@@ -1,6 +1,6 @@
 {
   "restServer": {
     "webSocketURL": "ws://localhost:3000",
-    "httpURL": "http://localhost:3000"
+    "httpURL": "localhost:3000"
   }
 }

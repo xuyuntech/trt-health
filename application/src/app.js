@@ -5,7 +5,7 @@ import WebSocket from 'ws';
 import http from 'http';
 import url from 'url';
 import morgan from 'morgan';
-import config from './config';
+import { RestServerConfig } from './config';
 import routes from './routes';
 import { bfetch, ErrUnauthorized } from './api/utils';
 import { API } from './const';
@@ -43,29 +43,17 @@ app.use(async (req, res, next) => {
 
 routes(app);
 
-let { restServerConfig } = config;
-
-if (process.env.REST_SERVER_CONFIG) {
-  try {
-    const restServerEnv = JSON.parse(process.env.REST_SERVER_CONFIG);
-    // allow for them to only specify some fields
-    restServerConfig = Object.assign(config.restServerConfig, restServerEnv);
-  } catch (err) {
-    console.error('Error getting rest config from env vars, using default');
-  }
-}
-
-console.log('Rest server config: ', restServerConfig);
+console.log('Rest server config: ', RestServerConfig);
 
 app.set('config', {
-  restServer: restServerConfig,
+  restServer: RestServerConfig,
 });
 
 const wss = new WebSocket.Server({ server });
 wss.on('connection', (ws) => {
   const location = url.parse(ws.upgradeReq.url, true);
   console.log('client connected', location.pathname);
-  const remoteURL = restServerConfig.webSocketURL + location.pathname;
+  const remoteURL = RestServerConfig.webSocketURL + location.pathname;
   console.log('creating remote connection', remoteURL);
   const remote = new WebSocket(remoteURL);
   ws.on('close', (code, reason) => {
