@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.108:3000' : 'localhost:3000';
+const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.109:3000' : 'localhost:3000';
 const BASE_URL = `http://${BASE_HOST}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
 const AUTH_URL = `http://${BASE_HOST}`;
 
@@ -27,6 +27,12 @@ export const API = {
   Users: {
     FindByID: id => `${BASE_URL}/users/${id}`,
     Login: () => `${BASE_URL}/users/login`,
+  },
+  Patient: {
+    Query: () => `${BASE_URL}/Patient`,
+    Update: name => `${BASE_URL}/Patient/${name}`,
+    Create: () => `${BASE_URL}/Patient`,
+    FindByName: name => `${BASE_URL}/Patient/${name}`,
   },
   Doctor: {
     Query: () => `${BASE_URL}/Doctor`,

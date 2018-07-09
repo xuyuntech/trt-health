@@ -133,6 +133,7 @@ export async function bfetch(url, {
 export async function addParticipantIdentity({
   currentCardName, username, accessToken, resourceType, participantData,
 }) {
+  // const ns = 'org.xuyuntech.health';
   console.log('addParticipantIdentity -->>>', {
     currentCardName, username, accessToken, resourceType,
   });
@@ -142,6 +143,7 @@ export async function addParticipantIdentity({
     const bConnect = await businessNetworkConnection.connect(currentCardName);
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
     const participantExists = await participantRegistry.exists(username);
+    console.log(`participant:${resourceType}#${username} exists: ${participantExists}`);
     if (!participantExists) {
       const factory = bConnect.getFactory();
       const participant = factory.newResource('org.xuyuntech.health', resourceType, username);
@@ -149,27 +151,29 @@ export async function addParticipantIdentity({
       // participant.phone = HospitalAdmin.phone;
       await participantRegistry.addAll([participant]);
     } else {
-      console.log(`participant ${username} already exists, start to update.`);
+      // console.log(`participant ${username} already exists, start to update.`);
       const participantSaved = await participantRegistry.get(username);
       Object.assign(participantSaved, participantData);
       await participantRegistry.update(participantSaved);
       console.log(`participant ${username} updated successfully.`);
     }
-    // identityIssue
+    // get identity, add new one when not exists
     const adminConnection = new AdminConnection();
+    const issuingCard = await adminConnection.exportCard('admin@trt-health');
+    const result = await businessNetworkConnection.issueIdentity(`org.xuyuntech.health.${resourceType}#${username}`, `${username}-${new Date().getTime()}`, { issuer: true });
+    await businessNetworkConnection.disconnect();
+    console.log('issueIdentity result', result);
+    const metadata = {
+      userName: result.userID,
+      version: 1,
+      enrollmentSecret: result.userSecret,
+      businessNetwork: issuingCard.getBusinessNetworkName(),
+    };
+    // issueIdentity
     const cardName = `${username}@trt-health`;
     const hasCard = await adminConnection.hasCard(cardName);
+    console.log(`participant ${username} card exists: ${hasCard}`);
     if (!hasCard) {
-      const issuingCard = await adminConnection.exportCard('admin@trt-health');
-      const result = await businessNetworkConnection.issueIdentity(`org.xuyuntech.health.${resourceType}#${username}`, username, { issuer: true });
-      await businessNetworkConnection.disconnect();
-      console.log('issueIdentity result', result);
-      const metadata = {
-        userName: result.userID,
-        version: 1,
-        enrollmentSecret: result.userSecret,
-        businessNetwork: issuingCard.getBusinessNetworkName(),
-      };
       const card = new IdCard(metadata, issuingCard.getConnectionProfile());
       await adminConnection.importCard(cardName, card);
       console.log('import card %s success.', cardName);

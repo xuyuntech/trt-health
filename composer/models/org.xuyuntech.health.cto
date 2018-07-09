@@ -45,12 +45,13 @@ participant OrgAdmin extends Person {
 }
 
 participant HospitalAdmin extends Person {
+  o DateTime created
   --> OrgAdmin creator
 }
 
 
 participant Patient extends Person {
-  o Double points
+  o Double points optional
   o Double totalSpend optional
 }
 

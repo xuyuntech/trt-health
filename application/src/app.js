@@ -7,7 +7,7 @@ import config from 'config';
 import url from 'url';
 import morgan from 'morgan';
 import routes from './routes';
-import { bfetch } from './api/utils';
+import { bfetch, ErrUnauthorized } from './api/utils';
 import { API } from './const';
 
 const app = express();
@@ -17,7 +17,19 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
+  if ([
+    '/auth/wechat/callback',
+    '/auth/wechat/success',
+    '/auth/users/login',
+  ].indexOf(req.path) >= 0) {
+    next();
+    return;
+  }
   const userID = req.header('X-Access-UserID');
+  if (!userID) {
+    res.json(ErrUnauthorized);
+    return;
+  }
   try {
     const user = await bfetch(API.Users.FindByID(userID), {
       req,

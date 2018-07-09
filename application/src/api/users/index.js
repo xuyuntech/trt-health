@@ -1,12 +1,34 @@
 import express from 'express';
 import fetch from 'isomorphic-fetch';
+import crypto from 'crypto';
 import { API } from '../../const';
+import { bfetch } from '../utils';
 
 
 // userID = bjtrt-ts01
 // userSecret = kZYafhQWZnMw
 
 const router = express.Router();
+
+router.get('/userinfo', async (req, res) => {
+  try {
+    const { username } = req.currentUser;
+    const patientRes = await bfetch(API.Patient.FindByName(username), {
+      req,
+    });
+    const shasum = crypto.createHash('sha1');
+    const secret = shasum.update([username].sort().join('')).digest('hex');
+    res.json({
+      status: 0,
+      result: {
+        ...patientRes,
+        walletAddress: secret,
+      },
+    });
+  } catch (err) {
+    res.json(err);
+  }
+});
 
 router.get('/:id', async (req, res) => {
   try {

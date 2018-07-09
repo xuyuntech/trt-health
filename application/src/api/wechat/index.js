@@ -12,6 +12,13 @@ const router = express.Router();
 router.get('/success', async (req, res) => {
   const accessToken = req.query['access-token'];
   const userID = req.query['user-id'];
+  if (!accessToken || !userID) {
+    res.json({
+      status: 5,
+      err: `微信认证失败, accessToken:${accessToken}, userID:${userID}`,
+    });
+    return;
+  }
   res.json({
     status: 0,
     result: {
@@ -25,7 +32,7 @@ router.get('/callback', async (req, res) => {
   try {
     const res1 = await fetch(API.Auth.WechatCallback(code));
     const data = await res1.json();
-    const { accessToken, userID } = data.result;
+    const { accessToken, userID } = data.result || {};
     res.json({
       status: 0,
       result: {
@@ -55,6 +62,7 @@ router.post('/reg', async (req, res) => {
       accessToken,
       resourceType: 'Patient',
       participantData: {
+        points: 0,
         realName: nickName,
         avatar: avatarUrl,
         gender: gender === 1 ? 'MALE' : 'FEMALE',
