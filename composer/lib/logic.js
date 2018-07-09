@@ -237,10 +237,10 @@ async function PayAction(paid){
 
 /**
  * 取药: 更新订单状态 Paid -> Finished, 生成出库记录
- * @param {org.xuyuntech.health.finish} finish - the finish to be processed
+ * @param {org.xuyuntech.health.FinishAction} finish - the finish to be processed
  * @transaction
  */
-async function finish(finish){
+async function FinishAction(finish){
 
   // 更新订单状态 Paid -> Finished
   finish.order.state = 'Finished';

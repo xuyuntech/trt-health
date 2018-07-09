@@ -347,7 +347,7 @@ transaction PayAction {
 /*
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
-transaction finish {
+transaction FinishAction {
   o String id
   // o String number // 编号
   o DateTime created
