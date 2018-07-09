@@ -72,22 +72,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
-  const {
-    id, title, quantity, price, barcode, batchNumber, productionDate, expireDate,
-  } = req.body;
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
     const data = await bfetch(API.MedicalItems.Update(id), {
       method: 'PUT',
       req,
       body: {
-        title,
-        quantity,
-        price,
-        barcode,
-        batchNumber,
-        productionDate,
-        expireDate,
+        ...req.body,
         $class: 'org.xuyuntech.health.MedicalItem',
       },
     });

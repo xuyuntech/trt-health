@@ -30,21 +30,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
-  const {
-    id, name, address, zipCode, telephone, fax, webSite,
-  } = req.body;
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
   try {
     const data = await bfetch(API.Supplier.Update(id), {
       method: 'PUT',
       req,
       body: {
-        name,
-        address,
-        zipCode,
-        telephone,
-        fax,
-        webSite,
+        ...req.body,
         $class: 'org.xuyuntech.health.Supplier',
       },
     });

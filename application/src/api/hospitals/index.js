@@ -33,19 +33,29 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
-  const {
-    id, address, name, phone1, phone2,
-  } = req.body;
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  // const {
+  //   address, name, phone1, phone2,
+  // } = req.body;
+  // try {
+  //   const data = await bfetch(API.Hospitals.Update(id), {
+  //     method: 'PUT',
+  //     req,
+  //     body: {
+  //       address,
+  //       name,
+  //       phone1,
+  //       phone2,
+  //       $class: 'org.xuyuntech.health.Hospital',
+  //     },
+  //   });
   try {
     const data = await bfetch(API.Hospitals.Update(id), {
       method: 'PUT',
       req,
       body: {
-        address,
-        name,
-        phone1,
-        phone2,
+        ...req.body,
         $class: 'org.xuyuntech.health.Hospital',
       },
     });
