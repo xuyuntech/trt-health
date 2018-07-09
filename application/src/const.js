@@ -1,8 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 
-const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.109:3000' : 'localhost:3000';
-const BASE_URL = `http://${BASE_HOST}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
-const AUTH_URL = `http://${BASE_HOST}`;
+import config from './config';
+
+const { restServerConfig } = config;
+const { httpURL } = restServerConfig;
+
+// const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.108:3000' : 'localhost:3000';
+const BASE_URL = `http://${httpURL}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
+const AUTH_URL = `http://${httpURL}`;
 
 export const API = {
 

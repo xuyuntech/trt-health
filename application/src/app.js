@@ -3,9 +3,9 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import WebSocket from 'ws';
 import http from 'http';
-import config from 'config';
 import url from 'url';
 import morgan from 'morgan';
+import config from './config';
 import routes from './routes';
 import { bfetch, ErrUnauthorized } from './api/utils';
 import { API } from './const';
@@ -43,26 +43,20 @@ app.use(async (req, res, next) => {
 
 routes(app);
 
-let restServerConfig;
-
-try {
-  restServerConfig = Object.assign({}, config.get('restServer'));
-} catch (err) {
-  if (!process.env.REST_SERVER_CONFIG) {
-    throw new Error('Cannot get restServer from config, the config file may not exist. Provide this file or a value for REST_SERVER_CONFIG');
-  }
-  restServerConfig = {};
-}
+let { restServerConfig } = config;
 
 if (process.env.REST_SERVER_CONFIG) {
   try {
     const restServerEnv = JSON.parse(process.env.REST_SERVER_CONFIG);
     // allow for them to only specify some fields
-    restServerConfig = Object.assign(restServerConfig, restServerEnv);
+    restServerConfig = Object.assign(config.restServerConfig, restServerEnv);
   } catch (err) {
     console.error('Error getting rest config from env vars, using default');
   }
 }
+
+console.log('Rest server config: ', restServerConfig);
+
 app.set('config', {
   restServer: restServerConfig,
 });
