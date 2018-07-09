@@ -1,6 +1,7 @@
 all: push
 
-VERSION=$(shell node -e 'console.log(require("./package.json").version)')
+# VERSION=$(shell node -e 'console.log(require("./package.json").version)')
+VERSION=1.0.1
 
 IMAGE_NAME=registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-application:${VERSION}
 
