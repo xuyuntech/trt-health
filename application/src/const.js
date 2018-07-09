@@ -27,6 +27,16 @@ export const API = {
     Query: () => `${BASE_URL}/FinishRegisterAction`,
     FindByID: id => `${BASE_URL}/FinishRegisterAction/${id}`,
   },
+  PayAction: {
+    Create: () => `${BASE_URL}/PayAction`,
+    Query: () => `${BASE_URL}/PayAction`,
+    FindByID: id => `${BASE_URL}/PayAction/${id}`,
+  },
+  FinishAction: {
+    Create: () => `${BASE_URL}/FinishAction`,
+    Query: () => `${BASE_URL}/FinishAction`,
+    FindByID: id => `${BASE_URL}/FinishAction/${id}`,
+  },
 
   // participant
   Users: {

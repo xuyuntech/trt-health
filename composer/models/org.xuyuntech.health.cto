@@ -215,7 +215,7 @@ asset OutboundHistory identified by id {
   // o String number // 编号
   o DateTime created
   --> Order order
-  --> StoreKeeper operator
+  --> StoreKeeper storekeeper
 }
 
 // Order 订单
@@ -352,5 +352,5 @@ transaction FinishAction {
   // o String number // 编号
   o DateTime created
   --> Order order
-  --> StoreKeeper operator
+  --> StoreKeeper storekeeper
  }
