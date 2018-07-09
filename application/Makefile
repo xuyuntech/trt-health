@@ -9,7 +9,7 @@ HOST_IP=10.6.29.108
 
 REST_SERVER_CONFIG='{ \
 	"webSocketURL": "ws://${HOST_IP}:3000", \
-	"httpURL": "http://${HOST_IP}:3000" \
+	"httpURL": "${HOST_IP}:3000" \
 }'
 
 container:
