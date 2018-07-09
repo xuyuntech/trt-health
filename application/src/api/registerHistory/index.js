@@ -74,6 +74,22 @@ router.put('/verify/:id', async (req, res) => {
     });
   } catch (err) { res.json(err); }
 });
+router.put('/paid/:id', async (req, res) => {
+  try {
+    const body = {
+      registerHistory: req.params.id,
+    };
+    const result = await bfetch(API.PayRegisterAction.Create(), {
+      method: 'POST',
+      req,
+      body,
+    });
+    res.json({
+      status: 0,
+      result,
+    });
+  } catch (err) { res.json(err); }
+});
 router.put('/finish/:id', async (req, res) => {
   try {
     const body = {
@@ -96,6 +112,8 @@ router.post('/', async (req, res) => {
   const body = {
     ...req.body,
     created: new Date().toISOString(),
+    state: 'Init',
+    type: req.body.type,
     visitor: `resource:org.xuyuntech.health.Visitor#${req.body.visitor}`,
     patient: `resource:org.xuyuntech.health.Patient#${req.body.patient}`,
     arrangementHistory: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.arrangementHistory}`,

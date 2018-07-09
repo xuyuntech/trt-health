@@ -138,7 +138,7 @@ enum RegisterType {
 asset RegisterHistory identified by id {
   o String id
   o RegisterState state // 状态
-  o String diseaseInfo // 疾病信息
+  o String diseaseInfo optional// 疾病信息
   o RegisterType type // 初复诊
   o DateTime created // 创建时间
   --> Visitor visitor // 就诊人
@@ -268,7 +268,7 @@ transaction FinishRegisterAction {
   o Double points
 }
 //挂号费支付
-transaction payRegisterAction {
+transaction PayRegisterAction {
   --> RegisterHistory registerHistory
 }
 

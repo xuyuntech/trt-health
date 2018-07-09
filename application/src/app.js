@@ -17,6 +17,10 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
+  if (req.url === '/auth/users/login') {
+    next();
+    return;
+  }
   const userID = req.header('X-Access-UserID');
   try {
     const user = await bfetch(API.Users.FindByID(userID), {

@@ -17,6 +17,11 @@ export const API = {
     Query: () => `${BASE_URL}/VerifyRegisterAction`,
     FindByID: id => `${BASE_URL}/VerifyRegisterAction/${id}`,
   },
+  PayRegisterAction: {
+    Create: () => `${BASE_URL}/PayRegisterAction`,
+    Query: () => `${BASE_URL}/PayRegisterAction`,
+    FindByID: id => `${BASE_URL}/PayRegisterAction/${id}`,
+  },
   FinishRegisterAction: {
     Create: () => `${BASE_URL}/FinishRegisterAction`,
     Query: () => `${BASE_URL}/FinishRegisterAction`,
