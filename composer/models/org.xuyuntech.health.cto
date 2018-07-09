@@ -124,7 +124,8 @@ asset MedicalItem identified by id {
 }
 
 enum RegisterState {
-  o Register // 挂号
+  o Init //初始化，未支付
+  o Paid //已支付，未就诊
   o Visiting // 就诊中
   o Finished // 已开处方
 }

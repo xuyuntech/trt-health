@@ -42,3 +42,8 @@ async function finishRegisterHistoryAction(tx){
   const registry_Patient = await getParticipantRegistry('org.xuyuntech.health.Patient');
   await registry_Patient.update(patient);
 }
+/**
+ * 支付挂号费:  -> Finish
+ * @param {org.xuyuntech.health.FinishRegisterAction} tx - the visiting to be processed
+ * @transaction
+ */
