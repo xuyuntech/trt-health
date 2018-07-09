@@ -77,15 +77,15 @@ router.put('/verify/:id', async (req, res) => {
 router.put('/finish/:id', async (req, res) => {
   try {
     const body = {
-      registerHistory: req.params.id,
-      id: uuidv1,
+      registerHistory: `resource:org.xuyuntech.health.RegisterHistory#${req.params.id}`,
+      id: uuidv1(),
       complained: req.body.complained,
       diagnose: req.body.diagnose,
       history: req.body.history,
       familyHistory: req.body.familyHistory,
       created: new Date().toISOString(),
       medicallistform: req.body.medicallistform,
-      points: 50,
+      points: req.body.points,
     };
     const result = await bfetch(API.FinishRegisterAction.Create(), {
       method: 'POST',
