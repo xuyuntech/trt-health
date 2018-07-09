@@ -45,6 +45,7 @@ participant OrgAdmin extends Person {
 }
 
 participant HospitalAdmin extends Person {
+  --> OrgAdmin creator
 }
 
 
@@ -63,6 +64,9 @@ participant Hospital identified by id {
   o String phone2 optional // 座机号码 或 手机号
   o String zipCode optional // 邮编
   o String headImg optional // 头图
+}
+participant StoreKeeper extends Person {
+  --> Hospital hospital
 }
 
 // Doctor 医师
@@ -128,7 +132,8 @@ concept MedicalListForm {
 }
 
 enum RegisterState {
-  o Register // 挂号
+  o Init //初始化，未支付
+  o Paid //已支付，未就诊
   o Visiting // 就诊中
   o Finished // 已开处方
 }
@@ -141,7 +146,7 @@ enum RegisterType {
 asset RegisterHistory identified by id {
   o String id
   o RegisterState state // 状态
-  o String diseaseInfo // 疾病信息
+  o String diseaseInfo optional// 疾病信息
   o RegisterType type // 初复诊
   o DateTime created // 创建时间
   --> Visitor visitor // 就诊人
@@ -189,12 +194,12 @@ asset CaseItem identified by id {
 // PaymentHistory 支付记录
 asset PaymentHistory identified by participantKey {
   o String participantKey
-  o String number // 编号
+  // o String number // 编号
   o Double spending // 总消费
   o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
+  // --> Prescription prescription
+  // --> RegisterHistory registerHistory
   --> Patient patient
 }
 
@@ -205,14 +210,12 @@ enum OrderState {
 }
 
 // OutboundHistory 出库记录
-asset OutboundHistory identified by participantKey {
-  o String participantKey
-  o String number // 编号
-  o DateTime outboundTime
+asset OutboundHistory identified by id {
+  o String id
+  // o String number // 编号
+  o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
-  --> MedicalItem[] medicalItems
+  --> StoreKeeper operator
 }
 
 // Order 订单
@@ -278,6 +281,10 @@ transaction FinishRegisterAction {
   o MedicalListForm[] medicallistform
 
 }
+//挂号费支付
+transaction PayRegisterAction {
+  --> RegisterHistory registerHistory
+}
 
 /*
   就诊: 更新挂号单状态 Register -> Visiting
@@ -332,8 +339,7 @@ transaction Prescribe {
   params: Order
 */
 transaction paid {
-  o String participantKey_paid
-  o String number // 编号
+  o String id
   o DateTime created
   --> Order order
   --> Prescription prescription
@@ -344,11 +350,9 @@ transaction paid {
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
 transaction finish {
-  o String participantKey_finish
-  o String number // 编号
-  o DateTime outboundTime
+  o String id
+  // o String number // 编号
+  o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
-  --> MedicalItem[] medicalItems
+  --> StoreKeeper operator
 }

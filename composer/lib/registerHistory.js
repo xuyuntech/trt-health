@@ -13,7 +13,7 @@ async function createRegisterHistoryAction(tx){
 }
 
 /**
- * 更新挂号单状态: Register -> Visiting
+ * 更新挂号单状态: Paid -> Visiting
  * @param {org.xuyuntech.health.VerifyRegisterAction} tx - the visiting to be processed
  * @transaction
  */
@@ -92,4 +92,16 @@ async function finishRegisterHistoryAction(tx){
   patient.points += tx.points;
   const registry_Patient = await getParticipantRegistry('org.xuyuntech.health.Patient');
   await registry_Patient.update(patient);
+}
+/**
+ * 支付挂号费:  Init-> Paid
+ * @param {org.xuyuntech.health.PayRegisterAction} tx - the visiting to be processed
+ * @transaction
+ */
+async function PayRegisterAction(tx) {
+  const item = tx.registerHistory;
+  console.log('PayRegisterAction:', item);
+  item.state = 'Paid';
+  const registry_RegisterHistory = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+  await registry_RegisterHistory.update(item);
 }

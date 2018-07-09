@@ -10,6 +10,7 @@ import { IdCard } from 'composer-common';
 
 export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
+export const ErrInternalServerError = msg => ({ status: 500, err: msg });
 
 export function getFilterParams({
   query = {}, paramsMapFunc, include,
@@ -89,10 +90,13 @@ export async function bfetch(url, {
   } else {
     options.body = JSON.stringify(body);
   }
+  console.log('----------->>>');
   console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)}`);
   try {
     const res = await fetch(uri, options);
     const data = await res.json();
+    console.log(`response -> [${res.status}]:${res.statusText} -> ${JSON.stringify(data)}`);
+    console.log('<<<-----------');
     if (res.status === 404) {
       throw ErrNotFound;
     }
@@ -101,8 +105,15 @@ export async function bfetch(url, {
     }
     if (res.status === 500) {
       console.log('request 500:>', data);
-      if (data && data.error && data.error.message === 'A business network card has not been specified') {
-        throw ErrUnauthorized;
+      if (data && data.error) {
+        const msg = data.error;
+        if (msg === 'A business network card has not been specified') {
+          throw ErrUnauthorized;
+        } else {
+          throw ErrInternalServerError(msg);
+        }
+      } else {
+        throw ErrInternalServerError(data);
       }
     }
     if (res.status !== 200) {
