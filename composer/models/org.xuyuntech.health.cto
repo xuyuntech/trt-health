@@ -65,6 +65,9 @@ participant Hospital identified by id {
   o String zipCode optional // 邮编
   o String headImg optional // 头图
 }
+participant StoreKeeper extends Person {
+  --> Hospital hospital
+}
 
 // Doctor 医师
 participant Doctor extends Person {
@@ -185,12 +188,12 @@ asset CaseItem identified by id {
 // PaymentHistory 支付记录
 asset PaymentHistory identified by participantKey {
   o String participantKey
-  o String number // 编号
+  // o String number // 编号
   o Double spending // 总消费
   o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
+  // --> Prescription prescription
+  // --> RegisterHistory registerHistory
   --> Patient patient
 }
 
@@ -201,14 +204,12 @@ enum OrderState {
 }
 
 // OutboundHistory 出库记录
-asset OutboundHistory identified by participantKey {
-  o String participantKey
-  o String number // 编号
-  o DateTime outboundTime
+asset OutboundHistory identified by id {
+  o String id
+  // o String number // 编号
+  o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
-  --> MedicalItem[] medicalItems
+  --> StoreKeeper operator
 }
 
 // Order 订单
@@ -221,7 +222,7 @@ asset Order identified by id {
   --> OrderItem[] orderItem // 订单明细
   --> RegisterHistory registerHistory
 
-  --> Patient patient // 创建人
+  // --> Patient patient // 创建人
   // --> Prescription prescription
   // --> Patient patient
   // --> CaseItem caseItem
@@ -325,8 +326,7 @@ transaction Prescribe {
   params: Order
 */
 transaction paid {
-  o String participantKey_paid
-  o String number // 编号
+  o String id
   o DateTime created
   --> Order order
   --> Prescription prescription
@@ -337,11 +337,9 @@ transaction paid {
   取药: 更新订单状态 Paid -> Finished, 生成出库记录
 */
 transaction finish {
-  o String participantKey_finish
-  o String number // 编号
-  o DateTime outboundTime
+  o String id
+  // o String number // 编号
+  o DateTime created
   --> Order order
-  --> Prescription prescription
-  --> RegisterHistory registerHistory
-  --> MedicalItem[] medicalItems
+  --> StoreKeeper operator
 }

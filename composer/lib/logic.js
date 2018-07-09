@@ -203,7 +203,7 @@ async function Prescribe(Prescribe){
  * @param {org.xuyuntech.health.paid} paid - the paid to be processed
  * @transaction
  */
-async function UpdateOrder1(paid){
+async function paid(paid){
 
   // 更新订单状态 NotPaid -> Paid
   paid.order.state = 'Paid';
@@ -214,13 +214,10 @@ async function UpdateOrder1(paid){
   var NS = 'org.xuyuntech.health';
 
   // 生成支付记录
-  var PaymentHistory = factory.newResource(NS, 'PaymentHistory', paid.participantKey_paid);
-  PaymentHistory.number = paid.number;
+  var PaymentHistory = factory.newResource(NS, 'PaymentHistory', paid.id);
   PaymentHistory.spending = paid.order.spending;
   PaymentHistory.created = paid.created;
   PaymentHistory.order = paid.order;
-  PaymentHistory.prescription = paid.prescription;
-  PaymentHistory.registerHistory = paid.registerHistory;
   PaymentHistory.patient = paid.registerHistory.patient;
 
   let assetRegistry_PaymentHistory = await getAssetRegistry(NS + '.PaymentHistory');
@@ -243,7 +240,7 @@ async function UpdateOrder1(paid){
  * @param {org.xuyuntech.health.finish} finish - the finish to be processed
  * @transaction
  */
-async function UpdateOrder2(finish){
+async function finish(finish){
 
   // 更新订单状态 Paid -> Finished
   finish.order.state = 'Finished';
@@ -254,13 +251,10 @@ async function UpdateOrder2(finish){
   var NS = 'org.xuyuntech.health';
 
   // 生成出库记录
-  var OutboundHistory = factory.newResource(NS, 'OutboundHistory', finish.participantKey_finish);
-  OutboundHistory.number = finish.number;
-  OutboundHistory.outboundTime = finish.outboundTime;
+  var OutboundHistory = factory.newResource(NS, 'OutboundHistory', finish.id);
+  OutboundHistory.outboundTime = finish.created;
   OutboundHistory.order = finish.order;
-  OutboundHistory.prescription = finish.prescription;
-  OutboundHistory.registerHistory = finish.registerHistory;
-  OutboundHistory.medicalItems = finish.medicalItems;
+  OutboundHistory.operator = finish.operator;
 
   let asset_OutboundHistory = await getAssetRegistry(NS + '.OutboundHistory');
   await asset_OutboundHistory.addAll([OutboundHistory]);
