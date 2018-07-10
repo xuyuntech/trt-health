@@ -48,7 +48,9 @@ async function PayAction(paid){
    * @transaction
    */
 async function FinishAction(finish){
-
+  if (finish.order.state !== 'Paid') {
+    throw new Error('the state is not Paid');
+  }
   // 更新订单状态 Paid -> Finished
   finish.order.state = 'Finished';
   let assetRegistry = await getAssetRegistry('org.xuyuntech.health.Order');
