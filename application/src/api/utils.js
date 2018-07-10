@@ -7,13 +7,14 @@ import fetch from 'isomorphic-fetch';
 
 import { AdminConnection } from 'composer-admin';
 import { IdCard } from 'composer-common';
+import { API } from '../const';
 
 export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 export const ErrInternalServerError = msg => ({ status: 500, err: msg });
 
 export function getFilterParams({
-  query = {}, paramsMapFunc, include,
+  query = {}, paramsMapFunc = {}, include = false,
 }) {
   const filter = {};
   const where = {};
@@ -22,6 +23,11 @@ export function getFilterParams({
     filter.include = 'resolve';
   }
   if (f === 'true') {
+    const { order, limit, skip } = query;
+    console.log(`order:${order}, limit:${limit}, skip:${skip}`);
+    filter.order = order;
+    filter.limit = limit;
+    filter.skip = skip;
     const keys = Object.keys(paramsMapFunc);
     for (let i = 0; i < keys.length; i += 1) {
       const paramName = keys[i];
@@ -51,7 +57,9 @@ export function getFilterParams({
           };
         }
       }
-      where[paramName] = typeof fn.getValue === 'function' ? fn.getValue(paramValue) : paramValue;
+      if (paramValue) {
+        where[paramName] = typeof fn.getValue === 'function' ? fn.getValue(paramValue) : paramValue;
+      }
     }
 
     if (Object.keys(where).length > 0) {
@@ -191,7 +199,7 @@ export async function addParticipantIdentity({
     form.append('card', expCardBuffer, `${username}.card`);
     form.append('name', `${username}.card`);
     console.log('accessToken', accessToken);
-    const importRes = await fetch(`http://localhost:3000/api/wallet/import?name=${cardName}`, {
+    const importRes = await fetch(API.Wallet.Import(cardName), {
       method: 'POST',
       headers: {
         'X-Access-Token': accessToken,

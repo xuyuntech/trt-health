@@ -1,7 +1,7 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
 import Promise from 'promise';
-import { bfetch } from '../utils';
+import { bfetch, getFilterParams } from '../utils';
 import { API } from '../../const';
 import initData from './data';
 
@@ -21,15 +21,26 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const { filter, err } = getFilterParams({
+    query: req.query,
+    include: true,
+  });
+  if (err) {
+    res.json(err);
+    return;
+  }
   try {
-    const data = await bfetch(API.Hospitals.Query(), { req });
+    const data = await bfetch(API.Hospitals.Query(), {
+      req,
+      params: { filter: JSON.stringify(filter) },
+    });
     res.json({
       status: 0,
       results: data,
     });
-  } catch (err) {
-    console.error(err);
-    res.json(err);
+  } catch (err1) {
+    console.error(err1);
+    res.json(err1);
   }
 });
 

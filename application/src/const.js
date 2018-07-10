@@ -15,6 +15,10 @@ export const API = {
     WechatCallback: code => `${AUTH_URL}/auth/wechat/callback?code=${code}`,
   },
 
+  Wallet: {
+    Import: cardName => `${BASE_URL}/wallet/import?name=${cardName}`,
+  },
+
   // transaction
   VerifyRegisterAction: {
     Create: () => `${BASE_URL}/VerifyRegisterAction`,

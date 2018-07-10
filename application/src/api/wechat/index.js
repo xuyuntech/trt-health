@@ -19,6 +19,7 @@ router.get('/success', async (req, res) => {
     });
     return;
   }
+  console.log('auth wechat success:', accessToken, userID);
   res.json({
     status: 0,
     result: {

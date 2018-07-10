@@ -19,11 +19,15 @@ async function createRegisterHistoryAction(tx){
  */
 async function verifyRegisterHistoryAction(tx){
   const item = tx.registerHistory;
+  const hospital = tx.registerHistory.hospital;
   console.log('verifyRegisterHistoryAction:', item);
   item.state = 'Visiting';
   const registry_RegisterHistory = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
   await registry_RegisterHistory.update(item);
-
+  // update hospital reservationQuantity
+  const pr = await getParticipantRegistry('org.xuyuntech.health.Hospital');
+  hospital.reservationQuantity += 1;
+  await pr.update(hospital);
 }
 /**
  * 更新挂号单状态: Visiting -> Finish
