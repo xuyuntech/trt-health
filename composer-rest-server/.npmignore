@@ -12,4 +12,18 @@
 # limitations under the License.
 #
 
-save-exact=true
+# hidden config files
+.editorconfig
+.eslint.yml
+.eslintignore
+.eslintrc.yml
+.tern-project
+
+# test directory
+test
+
+# scripts directory
+scripts
+
+# docker directory
+docker
