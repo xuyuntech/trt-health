@@ -1,7 +1,6 @@
 {
   "db": {
-    "name": "mongo",
-    "connector": "mongodb",
-    "host": "localhost"
-   }
+    "name": "db",
+    "connector": "memory"
+  }
 }

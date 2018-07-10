@@ -12,4 +12,7 @@
 # limitations under the License.
 #
 
-save-exact=true
+coverage
+node_modules
+out
+public
