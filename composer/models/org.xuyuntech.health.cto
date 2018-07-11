@@ -149,7 +149,7 @@ asset RegisterHistory identified by id {
   o String diseaseInfo optional// 疾病信息
   o RegisterType type // 初复诊
   o DateTime created // 创建时间
-  --> Visitor visitor // 就诊人
+  o Visitor visitor // 就诊人
   --> Patient patient // 由哪位患者创建的
   --> ArrangementHistory arrangementHistory // 排班记录
 }
@@ -171,14 +171,14 @@ asset ArrangementHistory identified by id {
 asset Prescription identified by id {
   o String id // 处方编号
   o DateTime created // 创建时间
-  o MedicalListForm[] medicallistform//药品列表
+  // o MedicalListForm[] medicallistform//药品列表
   // --> Doctor doctor // 医师
   // --> Patient patient // 患者
   // --> MedicalItem[] medicalItems  // 药品列表
   // o Double[] count
   --> RegisterHistory registerHistory // 挂号记录
   --> CaseItem caseItem // 病历
-  // --> Patient patient // 创建人
+  --> Patient patient optional// 创建人
 }
 
 // CaseItem 病历
