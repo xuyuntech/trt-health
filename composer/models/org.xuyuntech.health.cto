@@ -150,6 +150,8 @@ asset RegisterHistory identified by id {
   o RegisterType type // 初复诊
   o DateTime created // 创建时间
   o Visitor visitor // 就诊人
+  o String visitorName optional
+  o String patientName optional
   --> Patient patient // 由哪位患者创建的
   --> ArrangementHistory arrangementHistory // 排班记录
 }
