@@ -74,11 +74,34 @@ router.put('/verify/:id', async (req, res) => {
     });
   } catch (err) { res.json(err); }
 });
-router.put('/finish/:id', async (req, res) => {
+router.put('/paid/:id', async (req, res) => {
   try {
     const body = {
       registerHistory: req.params.id,
-      points: 50,
+    };
+    const result = await bfetch(API.PayRegisterAction.Create(), {
+      method: 'POST',
+      req,
+      body,
+    });
+    res.json({
+      status: 0,
+      result,
+    });
+  } catch (err) { res.json(err); }
+});
+router.put('/finish/:id', async (req, res) => {
+  try {
+    const body = {
+      registerHistory: `resource:org.xuyuntech.health.RegisterHistory#${req.params.id}`,
+      id: uuidv1(),
+      complained: req.body.complained,
+      diagnose: req.body.diagnose,
+      history: req.body.history,
+      familyHistory: req.body.familyHistory,
+      created: new Date().toISOString(),
+      medicallistform: req.body.medicallistform,
+      points: req.body.points,
     };
     const result = await bfetch(API.FinishRegisterAction.Create(), {
       method: 'POST',
@@ -96,8 +119,10 @@ router.post('/', async (req, res) => {
   const body = {
     ...req.body,
     created: new Date().toISOString(),
+    state: 'Init',
+    type: req.body.type,
     visitor: `resource:org.xuyuntech.health.Visitor#${req.body.visitor}`,
-    patient: `resource:org.xuyuntech.health.Patient#${req.body.patient}`,
+    patient: `resource:org.xuyuntech.health.Patient#${req.currentUser.username}`,
     arrangementHistory: `resource:org.xuyuntech.health.ArrangementHistory#${req.body.arrangementHistory}`,
     id: uuidv1(),
     $class: 'org.xuyuntech.health.RegisterHistory',

@@ -7,12 +7,32 @@ import config from 'config';
 import url from 'url';
 import morgan from 'morgan';
 import routes from './routes';
+import { bfetch } from './api/utils';
+import { API } from './const';
 
 const app = express();
 const server = http.createServer(app);
 app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(bodyParser.json());
+
+app.use(async (req, res, next) => {
+  if (req.url === '/auth/users/login') {
+    next();
+    return;
+  }
+  const userID = req.header('X-Access-UserID');
+  try {
+    const user = await bfetch(API.Users.FindByID(userID), {
+      req,
+    });
+    // console.log('user:::   ', user);
+    req.currentUser = user;
+    next();
+  } catch (err) {
+    res.json(err);
+  }
+});
 
 routes(app);
 
