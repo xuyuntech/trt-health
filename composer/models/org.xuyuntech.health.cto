@@ -144,6 +144,8 @@ asset RegisterHistory identified by id {
   o String diseaseInfo // 疾病信息
   o RegisterType type // 初复诊
   o DateTime created // 创建时间
+  o String visitorName optional
+  o String patientName optional
   --> Visitor visitor // 就诊人
   --> Patient patient // 由哪位患者创建的
   --> ArrangementHistory arrangementHistory // 排班记录
@@ -156,6 +158,8 @@ asset ArrangementHistory identified by id {
   o Double fee optional
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
+  o String hospitalName optional
+  o String doctorName optional
   --> Hospital hospital
   --> Doctor doctor
   --> Department1 department1
