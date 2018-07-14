@@ -9,6 +9,7 @@ import visitorRoute from './api/visitor';
 import department1 from './api/department1';
 import department2 from './api/department2';
 import hospitalAdmin from './api/hospitalAdmin';
+import orderRoute from './api/order';
 
 export default function (app) {
   app.use('/init', initRoute);
@@ -22,4 +23,5 @@ export default function (app) {
   app.use('/department1', department1);
   app.use('/department2', department2);
   app.use('/hospital_admin', hospitalAdmin);
+  app.use('/order', orderRoute);
 }
