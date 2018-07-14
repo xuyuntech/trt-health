@@ -32,3 +32,25 @@ X 支付挂号费
 X 支付订单
 Y 完成挂号单（开处方）
 X 药品出库
+
+
+新添接口功能如下：
+---
+
+1.patient(病人的查询)
+具体传入参数以及返回结果，后续补上
+2.supplier(供应商的创建、查询)
+
+3.medicalItems(药品的创建、查询)
+
+4.caseItem(病例的查询)
+
+5.order(订单的查询)
+
+6.orderItem(订单明细的查询)
+
+7.prescription(处方的查询)
+
+8.paymentHistory(支付记录的查询)
+
+9.outboundHistory(出库记录的查询)

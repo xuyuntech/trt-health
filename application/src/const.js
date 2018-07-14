@@ -49,6 +49,7 @@ export const API = {
     Query: () => `${BASE_URL}/Supplier`,
     Update: id => `${BASE_URL}/Supplier/${id}`,
     Create: () => `${BASE_URL}/Supplier`,
+    Delete: id => `${BASE_URL}/Supplier/${id}`,
     FindByID: id => `${BASE_URL}/Supplier/${id}`,
   },
 
