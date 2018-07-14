@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     query: req.query,
     include: true,
     paramsMapFunc: {
-      username: { getValue: v => `resource:org.xuyuntech.health.Patient#${v}` },
+      patient: { getValue: v => `resource:org.xuyuntech.health.Patient#${v}` },
     },
   });
   if (err) {
