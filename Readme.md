@@ -201,7 +201,7 @@ X 药品出库
     "telephone": "1415532",
     "fax": "134215135135",
     "webSite": "www.hahahahaha.com"
-    }
+}
 ```
 
 # 3.medicalItems(药品的新建、查询、更新)
