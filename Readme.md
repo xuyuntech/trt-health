@@ -37,12 +37,12 @@ X 药品出库
 新添接口功能如下：
 ---
 
-1.patient(病人的新建、查询)
+#1.patient(病人的新建、查询)
 
-(1)新建:需要访问patient接口的POST方法，传入的参数是 json 字符串
+##(1)新建:需要访问patient接口的POST方法，传入的参数是 json 字符串
 
 新建实例：
-
+```
 {
   "$class": "org.xuyuntech.health.Patient",
   "points": 0,
@@ -58,11 +58,12 @@ X 药品出库
   "gender": "UNKNOW",
   "age": 30
 }
+```
 
-(2)查询：需要访问patient接口的GET方法，分为整体查询和带 '/name' 查询
+##(2)查询：需要访问patient接口的GET方法，分为整体查询和带 '/name' 查询
 
 整体查询实例：
-
+```
 {
     "status": 0,
     "results": [
@@ -98,9 +99,10 @@ X 药品出库
         }
     ]
 }
+```
 
 带 '/xiaoming' 查询实例：
-
+```
 {
     "status": 0,
     "result": {
@@ -119,22 +121,23 @@ X 药品出库
         "age": 30
     }
 }
+```
 
-2.supplier(供应商的新建、查询、更新)
+#2.supplier(供应商的新建、查询、更新)
 
-(1)新建:需要访问patient接口的POST方法，传入的参数是 json 字符串
+##(1)新建:需要访问patient接口的POST方法，传入的参数是 json 字符串
 
 新建实例：
 
 
-(2)查询：需要访问patient接口的GET方法，分为整体查询和带 '/id' 查询
+##(2)查询：需要访问patient接口的GET方法，分为整体查询和带 '/id' 查询
 
 整体查询实例：
 
 
 带 '/2' 查询实例：
 
-(3)更新：需要访问patient接口的PUT方法，需要带上 '/id'，传入的参数是 json 字符串
+##(3)更新：需要访问patient接口的PUT方法，需要带上 '/id'，传入的参数是 json 字符串
 
 更新实例：
 
