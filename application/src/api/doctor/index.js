@@ -1,5 +1,7 @@
+/* eslint-disable no-await-in-loop */
 import express from 'express';
 import Promise from 'promise';
+import XLSX from 'xlsx';
 import { bfetch } from '../utils';
 import { API } from '../../const';
 import initData from './data';
@@ -102,5 +104,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+// 上传Excel，导入医生信息
+router.post('/import', async (req) => {
+  const workbook = XLSX.readFile('/home/sunhui/trt-health/application/src/api/doctor/Doctor.xlsx');
+  const sheetNameList = workbook.SheetNames;
+  const worksheet = workbook.Sheets[sheetNameList[0]];
+  const DoctorArray = XLSX.utils.sheet_to_json(worksheet);
+
+  for (let i = 0; i < DoctorArray.length; i += 1) {
+    DoctorArray[i].$class = 'org.xuyuntech.health.Doctor';
+    const body = DoctorArray[i];
+
+    await bfetch(API.Doctor.Create(), {
+      method: 'POST',
+      req,
+      body,
+    });
+  }
+});
 
 export default router;
