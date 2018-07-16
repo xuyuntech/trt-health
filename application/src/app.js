@@ -21,6 +21,10 @@ app.use(async (req, res, next) => {
     next();
     return;
   }
+  if (req.url.indexOf('/apidoc') !== -1) {
+    next();
+    return;
+  }
   const userID = req.header('X-Access-UserID');
   try {
     const user = await bfetch(API.Users.FindByID(userID), {
