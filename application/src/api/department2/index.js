@@ -1,8 +1,40 @@
 import express from 'express';
-import { bfetch } from '../utils';
+import { bfetch, getFilterParams } from '../utils';
 import { API } from '../../const';
 
 const router = express.Router();
+
+
+router.get('/', async (req, res) => {
+  // const { hospitalID } = req.query;
+  const { filter, err } = getFilterParams({
+    query: req.query,
+    include: false,
+    paramsMapFunc: {
+      department1: { test: 'required', errMsg: '需要指定一级部门', getValue: v => `resource:org.xuyuntech.health.Department1#${v}` },
+    },
+  });
+  if (err) {
+    res.json({
+      status: 0,
+      err,
+    });
+    return;
+  }
+  try {
+    const data = await bfetch(API.Department2.Query(), {
+      req,
+      params: { filter: JSON.stringify(filter) },
+    });
+    res.json({
+      status: 0,
+      results: data,
+    });
+  } catch (err1) {
+    res.json(err1);
+  }
+});
+
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;

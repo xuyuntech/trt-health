@@ -75,6 +75,8 @@ participant Doctor extends Person {
   o String title // 职称
   o String description // 描述
   o String skilledIn // 擅长什么什么
+  --> Hospital hospital optional
+  --> Department2 department2 optional
 }
 
 participant Supplier identified by id {
@@ -94,13 +96,14 @@ asset Department1 identified by id {
   o String id
   o String name
   --> Hospital hospital
-  --> Department2[] department2s optional
+  // --> Department2[] department2s optional
 }
 
 asset Department2 identified by id {
   o String id
   o String name
-  --> Doctor[] doctors optional
+  // --> Doctor[] doctors optional
+  --> Department1 department1
 }
 
 

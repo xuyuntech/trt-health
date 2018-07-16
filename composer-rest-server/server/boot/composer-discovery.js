@@ -19,6 +19,7 @@ const IdCard = require('composer-common').IdCard;
 const LoopbackVisitor = require('composer-common').LoopbackVisitor;
 const ModelUtil = require('composer-common').ModelUtil;
 const QueryAnalyzer = require('composer-common').QueryAnalyzer;
+const modelACLs = require('../composer-model-acls');
 
 /**
  * Register a composer named query method at a GET method on the REST API. The
@@ -528,7 +529,11 @@ function generateModelSchemas(dataSource, modelDefinitions) {
  * @returns {Object} The updated model schema.
  */
 function updateModelSchema(modelSchema) {
-
+    modelSchema.acls = modelACLs[modelSchema.name];
+    if (modelSchema.acls) {
+        console.log(`custom acls for ${modelSchema.name}`);
+        return modelSchema;
+    }
     // We ensure that you have to be authenticated in order to access this model.
     modelSchema.acls = [
         {

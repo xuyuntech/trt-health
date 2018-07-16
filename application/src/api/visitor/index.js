@@ -5,22 +5,18 @@ import { API } from '../../const';
 
 const router = express.Router();
 
-router.get('/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const data = await bfetch(API.ArrangementHistory.FindByID(id), {
+    await bfetch(API.Visitor.DeleteByID(id), {
       req,
-      params: {
-        filter: JSON.stringify({
-          include: 'resolve',
-        }),
-      },
+      method: 'DELETE',
     });
     res.json({
       status: 0,
-      result: data,
     });
   } catch (err) {
+    console.error(err);
     res.json(err);
   }
 });

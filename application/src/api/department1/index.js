@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
   // const { hospitalID } = req.query;
   const { filter, err } = getFilterParams({
     query: req.query,
-    include: true,
+    include: false,
     paramsMapFunc: {
       hospital: { test: 'required', errMsg: '需要指定医院', getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
     },

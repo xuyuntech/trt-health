@@ -1,10 +1,10 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
+import moment from 'moment';
 import { bfetch, getFilterParams } from '../utils';
 import { API } from '../../const';
 
 const router = express.Router();
-
 
 router.get('/all', async (req, res) => {
   const { visitDate } = req.query;
@@ -48,10 +48,15 @@ router.get('/', async (req, res) => {
     query: req.query,
     include: true,
     paramsMapFunc: {
-      hospital: { test: 'required', errMsg: '需要指定医院', getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
-      doctor: { test: 'required', errMsg: '需要指定医师', getValue: v => `resource:org.xuyuntech.health.Doctor#${v}` },
-      department1: { test: 'required', errMsg: '需要指定一级科室', getValue: v => `resource:org.xuyuntech.health.Department1#${v}` },
-      department2: { test: 'required', errMsg: '需要指定二级科室', getValue: v => `resource:org.xuyuntech.health.Department2#${v}` },
+      // hospital: { test: 'required', errMsg: '需要指定医院', getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
+      // doctor: { test: 'required', errMsg: '需要指定医师', getValue: v => `resource:org.xuyuntech.health.Doctor#${v}` },
+      // department1: { test: 'required', errMsg: '需要指定一级科室', getValue: v => `resource:org.xuyuntech.health.Department1#${v}` },
+      // department2: { test: 'required', errMsg: '需要指定二级科室', getValue: v => `resource:org.xuyuntech.health.Department2#${v}` },
+      visitDate: { getValue: v => new Date(v).toISOString(), type: 'date' },
+      hospital: { getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
+      doctor: { getValue: v => `resource:org.xuyuntech.health.Doctor#${v}` },
+      department1: { getValue: v => `resource:org.xuyuntech.health.Department1#${v}` },
+      department2: { getValue: v => `resource:org.xuyuntech.health.Department2#${v}` },
     },
   });
   if (err) {

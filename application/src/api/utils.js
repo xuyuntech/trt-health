@@ -57,6 +57,23 @@ export function getFilterParams({
           };
         }
       }
+      // 校验数据类型
+      if (typeof fn === 'object' && fn.type) {
+        let validValue = true;
+        switch (fn.type) {
+          case 'date':
+            validValue = /^\d{4}-\d{2}-\d{2}$/.test(paramValue);
+            break;
+          case 'number':
+            validValue = !isNaN(paramValue); //eslint-disable-line
+            break;
+          default:
+        }
+        if (!validValue) {
+          console.warn(`request param value invalid: ${paramName}:${paramValue}`);
+          continue; //eslint-disable-line
+        }
+      }
       if (paramValue) {
         where[paramName] = typeof fn.getValue === 'function' ? fn.getValue(paramValue) : paramValue;
       }
@@ -102,8 +119,14 @@ export async function bfetch(url, {
   console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)}`);
   try {
     const res = await fetch(uri, options);
+    if (res.status === 204) {
+      if (method === 'DELETE') {
+        return {};
+      }
+    }
+    console.log(`response -> [${res.status}]:${res.statusText}]`);
     const data = await res.json();
-    console.log(`response -> [${res.status}]:${res.statusText} -> ${JSON.stringify(data)}`);
+    console.log(`response body -> ${JSON.stringify(data)}`);
     console.log('<<<-----------');
     if (res.status === 404) {
       throw ErrNotFound;

@@ -97,6 +97,7 @@ export const API = {
     Create: () => `${BASE_URL}/Visitor`,
     Query: () => `${BASE_URL}/Visitor`,
     FindByID: id => `${BASE_URL}/Visitor/${id}`,
+    DeleteByID: id => `${BASE_URL}/Visitor/${id}`,
   },
   Hospitals: {
     Query: () => `${BASE_URL}/Hospital`,
