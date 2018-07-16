@@ -4,7 +4,32 @@ import { bfetch } from '../utils';
 import { API } from '../../const';
 
 const router = express.Router();
-
+/**
+ * @api {put} /paid/:id Order/paid/:id
+ * @apiName put Order/paid/:id'
+ * @apiGroup Order
+ * @apiParam {Number} id Order unique ID.
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+        {
+            "status": 0,
+            "result": {
+                "$class": "org.xuyuntech.health.PayAction",
+                "id": "d1c20620-88d7-11e8-a8df-574842ac90c5",
+                "created": "2018-07-16T09:08:35.330Z",
+                "order": "resource:org.xuyuntech.health.Order#3c7c3f20-88d4-11e8-a32d-b7f577b21831",
+                "transactionId": "ada299db17eeb01e3edb01b2980e776cdf68c4d1ff888e6badf539f52f1999d8"
+            }
+        }
+ *  @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Not Found
+ *       {
+            "status": 401,
+            "err": "Unauthorized"
+ *       }
+ */
 router.put('/pay/:id', async (req, res) => {
   try {
     const body = {
@@ -23,6 +48,34 @@ router.put('/pay/:id', async (req, res) => {
     });
   } catch (err) { res.json(err); }
 });
+
+/**
+ * @api {put} /finish/:id put Order/finish/:id
+ * @apiName put Order/finish/:id'
+ * @apiGroup Order
+ * @apiParam {Number} id Order unique ID.
+ *
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+        {
+            "status": 0,
+            "result": {
+                "$class": "org.xuyuntech.health.FinishAction",
+                "id": "2d033ae0-88d8-11e8-a8df-574842ac90c5",
+                "created": "2018-07-16T09:11:08.430Z",
+                "order": "resource:org.xuyuntech.health.Order#3c7c3f20-88d4-11e8-a32d-b7f577b21831",
+                "storekeeper": "resource:org.xuyuntech.health.StoreKeeper#trt-admin",
+                "transactionId": "d018700895a1e5e99cf3360e35c9119e1faeabfa657cf80d40129cce4842b372"
+            }
+        }
+ *  @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Not Found
+ *       {
+            "status": 401,
+            "err": "Unauthorized"
+ *       }
+ */
 router.put('/finish/:id', async (req, res) => {
   try {
     const body = {

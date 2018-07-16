@@ -17,11 +17,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
-  if (req.url === '/auth/users/login') {
-    next();
-    return;
-  }
-  if (req.url.indexOf('/apidoc') !== -1) {
+  if (req.url === '/auth/users/login' || req.url.indexOf('/apidoc') !== -1) {
     next();
     return;
   }
@@ -30,7 +26,6 @@ app.use(async (req, res, next) => {
     const user = await bfetch(API.Users.FindByID(userID), {
       req,
     });
-    // console.log('user:::   ', user);
     req.currentUser = user;
     next();
   } catch (err) {
