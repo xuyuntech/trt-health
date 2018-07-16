@@ -771,6 +771,12 @@ module.exports = function (app, callback) {
         console.log('Generated schemas for all types in business network definition');
         console.log('Adding schemas for all types to Loopback ...');
         modelSchemas.forEach((modelSchema) => {
+            // if (modelSchema.name == 'Hospital') {
+            //     console.log('show model Schema:    ',modelSchema);
+            //     modelSchema.acls = 
+                
+            // }
+
 
             // Apply any required updates to the specified model schema.
             modelSchema = updateModelSchema(modelSchema);
