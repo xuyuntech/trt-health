@@ -32,10 +32,12 @@ export const API = {
     Query: () => `${BASE_URL}/Doctor`,
     Update: id => `${BASE_URL}/Doctor/${id}`,
     Create: () => `${BASE_URL}/Doctor`,
+    Delete: id => `${BASE_URL}/Doctor/${id}`,
     FindByID: id => `${BASE_URL}/Doctor/${id}`,
   },
   HospitalAdmin: {
     Create: () => `${BASE_URL}/HospitalAdmin`,
+    Delete: id => `${BASE_URL}/HospitalAdmin/${id}`,
     Query: () => `${BASE_URL}/HospitalAdmin`,
     Update: id => `${BASE_URL}/HospitalAdmin/${id}`,
     FindByID: id => `${BASE_URL}/HospitalAdmin/${id}`,
@@ -49,7 +51,7 @@ export const API = {
     Query: () => `${BASE_URL}/Supplier`,
     Update: id => `${BASE_URL}/Supplier/${id}`,
     Create: () => `${BASE_URL}/Supplier`,
-    Delete: id => `${BASE_URL}/Supplier/${id}`,
+    // Delete: id => `${BASE_URL}/Supplier/${id}`,
     FindByID: id => `${BASE_URL}/Supplier/${id}`,
   },
 
@@ -84,6 +86,7 @@ export const API = {
   },
   Visitor: {
     Create: () => `${BASE_URL}/Visitor`,
+    Delete: id => `${BASE_URL}/Visitor/${id}`,
     Query: () => `${BASE_URL}/Visitor`,
     FindByID: id => `${BASE_URL}/Visitor/${id}`,
   },
@@ -91,6 +94,7 @@ export const API = {
     Query: () => `${BASE_URL}/Hospital`,
     Update: id => `${BASE_URL}/Hospital/${id}`,
     Create: () => `${BASE_URL}/Hospital`,
+    Delete: id => `${BASE_URL}/Hospital/${id}`,
     FindByID: id => `${BASE_URL}/Hospital/${id}`,
   },
   Prescription: {

@@ -50,24 +50,24 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    if (id) {
-      await bfetch(API.Supplier.Delete(id), {
-        method: 'DELETE',
-        req,
-      });
-      console.log('Delete supplier ok.');
-    }
-    res.json({
-      status: 0,
-    });
-  } catch (err) {
-    console.error(err);
-    res.json(err);
-  }
-});
+// router.delete('/:id', async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     if (id) {
+//       await bfetch(API.Supplier.Delete(id), {
+//         method: 'DELETE',
+//         req,
+//       });
+//       console.log('Delete supplier ok.');
+//     }
+//     res.json({
+//       status: 0,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.json(err);
+//   }
+// });
 
 router.post('/', async (req, res) => {
   try {

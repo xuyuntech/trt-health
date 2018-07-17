@@ -68,6 +68,25 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (id) {
+      await bfetch(API.Hospitals.Delete(id), {
+        method: 'DELETE',
+        req,
+      });
+      console.log('Delete hospital ok.');
+    }
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
+
 router.post('/init', async (req, res) => {
   const ds = [
     {

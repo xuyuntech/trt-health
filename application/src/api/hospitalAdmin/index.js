@@ -10,6 +10,25 @@ router.get('/', (req, res) => {
   res.end('123');
 });
 
+router.delete('/:name', async (req, res) => {
+  const { name } = req.params;
+  try {
+    if (name) {
+      await bfetch(API.HospitalAdmin.Delete(name), {
+        method: 'DELETE',
+        req,
+      });
+      console.log('Delete hospitalAdmin ok.');
+    }
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
+
 router.post('/', async (req, res) => {
   console.log('req.currentUser', req.currentUser);
   try {

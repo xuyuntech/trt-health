@@ -85,6 +85,25 @@ router.put('/:name', async (req, res) => {
   }
 });
 
+router.delete('/:name', async (req, res) => {
+  const { name } = req.params;
+  try {
+    if (name) {
+      await bfetch(API.Doctor.Delete(name), {
+        method: 'DELETE',
+        req,
+      });
+      console.log('Delete doctor ok.');
+    }
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const data = await bfetch(API.Doctor.Create(), {

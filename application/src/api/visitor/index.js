@@ -58,6 +58,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (id) {
+      await bfetch(API.Visitor.Delete(id), {
+        method: 'DELETE',
+        req,
+      });
+      console.log('Delete visitor ok.');
+    }
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
+
 router.post('/', async (req, res) => {
   const body = {
     ...req.body,
