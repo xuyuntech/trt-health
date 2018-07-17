@@ -147,7 +147,7 @@ router.post('/', async (req, res) => {
 
 
 // 使用 multer 上传文件，读取、导入 excel，
-router.post('/import', upload.single('excel'), async (req, res) => {
+router.post('/upload', upload.single('excel'), async (req, res) => {
   const workbook = xlsx.readFile(req.file.path);
   const sheetNameList = workbook.SheetNames;
   const worksheet = workbook.Sheets[sheetNameList[0]];
@@ -156,7 +156,6 @@ router.post('/import', upload.single('excel'), async (req, res) => {
   for (let i = 0; i < DoctorArray.length; i += 1) {
     DoctorArray[i].$class = 'org.xuyuntech.health.Doctor';
     const body = DoctorArray[i];
-
     await bfetch(API.Doctor.Create(), {
       method: 'POST',
       req,
@@ -164,14 +163,9 @@ router.post('/import', upload.single('excel'), async (req, res) => {
     });
   }
 
-  res.json({
-    status: 0,
-    results: 'success',
-  });
-
   // 处理后删除文件
   fs.unlinkSync(req.file.path);
-  res.send('finished');
+  res.send('upload finished');
 });
 
 export default router;
