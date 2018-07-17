@@ -9,7 +9,15 @@ const acls =  {
             principalType: 'ROLE'
         },
     ],
-    ArrangementHistory: [
+    Doctor: [
+        {
+            accessType: 'READ',
+            permission: 'ALLOW',
+            principalId: '$everyone',
+            principalType: 'ROLE'
+        },
+    ],
+    Query: [
         {
             accessType: 'READ',
             permission: 'ALLOW',

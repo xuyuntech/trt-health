@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 import express from 'express';
 import uuidv1 from 'uuid/v1';
-import moment from 'moment';
+// import moment from 'moment';
 import { bfetch, getFilterParams } from '../utils';
 import { API } from '../../const';
 
@@ -136,6 +137,24 @@ router.get('/aaa', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+  const arrangementErr = { status: 422, err: '医生已经排班了' };
+  try {
+    const data = await bfetch('http://localhost:3000/api/queries/selectDoctorsByArrangementDate', {
+      req,
+      params: {
+        visitDate: req.body.visitDate,
+        doctor: `resource:org.xuyuntech.health.Doctor#${req.body.doctor}`,
+        visitTime: req.body.visitTime,
+      },
+    });
+    if (data.length !== 0) {
+      throw arrangementErr;
+    }
+  } catch (err) {
+    console.log('err', err);
+    res.json(err);
+    return;
+  }
   const body = {
     ...req.body,
     id: uuidv1(),

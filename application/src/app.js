@@ -19,10 +19,10 @@ app.use(bodyParser.json());
 app.use(async (req, res, next) => {
   if ([
     '/hospital',
-    '/arrangement_history',
     '/auth/wechat/callback',
     '/auth/wechat/success',
     '/auth/users/login',
+    '/arrangement_history',
   ].indexOf(req.path) >= 0) {
     next();
     return;

@@ -1,12 +1,12 @@
 /** Sample queries for Commodity Trading business network
 */
 
-// query selectDoctorsByArrangementDate {
-//   description: "根据排班日期查询出诊医师"
-//   statement:
-//     SELECT org.xuyuntech.health.ArrangementHistory
-//       WHERE (visitDate == _$visitDate AND department2 == _$department2)
-// }
+query selectDoctorsByArrangementDate {
+  description: "根据排班日期查询出诊医师"
+  statement:
+    SELECT org.xuyuntech.health.ArrangementHistory
+      WHERE (visitDate == _$visitDate AND doctor == _$doctor AND visitTime == _$visitTime )
+}
 
 // query selectArrangementHistoryByDoctorAndHospital {
 //   description: "selectArrangementHistoryByDoctorAndHospital"
