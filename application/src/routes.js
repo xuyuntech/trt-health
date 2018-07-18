@@ -1,3 +1,4 @@
+import express from 'express';
 import initRoute from './api/init';
 import wechatRoute from './api/wechat';
 import usersRoute from './api/users';
@@ -11,6 +12,7 @@ import department1 from './api/department1';
 import department2 from './api/department2';
 import hospitalAdmin from './api/hospitalAdmin';
 import orderRoute from './api/order';
+
 
 export default function (app) {
   app.use('/init', initRoute);
@@ -26,4 +28,5 @@ export default function (app) {
   app.use('/department2', department2);
   app.use('/hospital_admin', hospitalAdmin);
   app.use('/order', orderRoute);
+  app.use('/apidoc', express.static('/home/windghoul/gitProject/trt-health/application/src/apidoc'));
 }
