@@ -146,12 +146,14 @@ router.post('/', async (req, res) => {
 // });
 
 
-// 使用 multer 上传文件，读取、导入 excel，
+// 使用 multer 上传文件，用 xlsx 读取、导入 excel，
 router.post('/upload', upload.single('excel'), async (req, res) => {
   const workbook = xlsx.readFile(req.file.path);
   const sheetNameList = workbook.SheetNames;
   const worksheet = workbook.Sheets[sheetNameList[0]];
   const DoctorArray = xlsx.utils.sheet_to_json(worksheet);
+
+  res.setTimeout(10 * 60000);
 
   for (let i = 0; i < DoctorArray.length; i += 1) {
     DoctorArray[i].$class = 'org.xuyuntech.health.Doctor';
