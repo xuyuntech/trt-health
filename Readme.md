@@ -37,6 +37,17 @@ X 药品出库
 新添接口功能如下：
 ---
 
+# 0.上传Excel(只做了医师信息的上传导入，其他可以移植)
+
+## (1)配置
+在 `application` 下的 `package.json` 中添加 `multer、xlsx` 依赖，并 `npm install`
+
+## (2)注意事项
+```
+muilter.single(‘file’)
+```
+`file`为上传字段名称，当使用`form`表单`submit`方式上传时，必须与表单上传的`name`属性保持一致
+
 # 1.patient(病人的新建、查询)
 
 ## (1)新建：需要访问 patient 接口的 POST 方法，传入的参数是 json 字符串，具体格式如下
@@ -60,7 +71,7 @@ X 药品出库
 }
 ```
 
-## (2)查询：需要访问 patient 接口的 GET 方法，分为整体查询和带 '/name' 查询
+## (2)查询：需要访问 patient 接口的 GET 方法，分为整体查询和带 `/name` 查询
 
 整体查询实例结果：
 ```
@@ -101,7 +112,7 @@ X 药品出库
 }
 ```
 
-带 '/xiaoming' 查询实例结果：
+带 `/xiaoming` 查询实例结果：
 ```
 {
     "status": 0,
@@ -141,7 +152,7 @@ X 药品出库
 }
 ```
 
-## (2)查询：需要访问 supplier 接口的 GET 方法，分为整体查询和带 '/id' 查询
+## (2)查询：需要访问 supplier 接口的 GET 方法，分为整体查询和带 `/id` 查询
 
 整体查询实例结果：
 ```
@@ -172,7 +183,7 @@ X 药品出库
 }
 ```
 
-带 '/123' 查询实例结果：
+带 `/123` 查询实例结果：
 ```
 {
     "status": 0,
@@ -189,9 +200,9 @@ X 药品出库
 }
 ```
 
-## (3)更新：需要访问 supplier 接口的 PUT 方法，需要带上 '/id'，传入的参数是 json 字符串，具体格式如下
+## (3)更新：需要访问 supplier 接口的 PUT 方法，需要带上 `/id`，传入的参数是 json 字符串，具体格式如下
 
-带 '/123' 更新实例：修改 id 为 123 的供应商 "webSite"
+带 `/123` 更新实例：修改 id 为 123 的供应商 `webSite`
 ```
 {
     "$class": "org.xuyuntech.health.Supplier",
@@ -225,7 +236,7 @@ X 药品出库
 }
 ```
 
-## (2)查询：需要访问 medicalItems 接口的GET方法，分为整体查询和带 '/id' 查询
+## (2)查询：需要访问 medicalItems 接口的GET方法，分为整体查询和带 `/id` 查询
 
 整体查询实例结果：
 ```
@@ -280,7 +291,7 @@ X 药品出库
 }
 ```
 
-带 '/111' 查询实例结果：
+带 `/111` 查询实例结果：
 ```
 {
     "status": 0,
@@ -309,9 +320,9 @@ X 药品出库
 }
 ```
 
-## (3)更新：需要访问 medicalItems 接口的PUT方法，需要带上 '/id'，传入的参数是 json 字符串，具体格式如下
+## (3)更新：需要访问 medicalItems 接口的PUT方法，需要带上 `/id`，传入的参数是 json 字符串，具体格式如下
 
-带 '/111' 更新实例：修改 id 为 111 的药品价格 "price"
+带 `/111` 更新实例：修改 id 为 111 的药品价格 `price`
 ```
 {
   "$class": "org.xuyuntech.health.MedicalItem",
@@ -329,7 +340,7 @@ X 药品出库
 
 # 4.caseItem(病例的查询)
 
-## 查询时需要访问 caseItem 接口的GET方法，分为整体查询和带 '/id' 查询
+## 查询时需要访问 caseItem 接口的GET方法，分为整体查询和带 `/id` 查询
 
 整体查询实例结果：
 ```
@@ -358,7 +369,7 @@ X 药品出库
 }
 ```
 
-带 '/13' 查询实例结果：
+带 `/13` 查询实例结果：
 ```
 {
     "status": 0,
@@ -376,20 +387,20 @@ X 药品出库
 
 # 5.order(订单的查询)
 
-查询方式同caseItem
+查询方式同 `caseItem`
 
 # 6.orderItem(订单明细的查询)
 
-查询方式同caseItem
+查询方式同 `caseItem`
 
 # 7.prescription(处方的查询)
 
-查询方式同caseItem
+查询方式同 `caseItem`
 
 # 8.paymentHistory(支付记录的查询)
 
-查询方式同caseItem
+查询方式同 `caseItem`
 
 # 9.outboundHistory(出库记录的查询)
 
-查询方式同caseItem
+查询方式同 `caseItem`
