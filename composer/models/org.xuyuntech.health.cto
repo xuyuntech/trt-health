@@ -165,11 +165,17 @@ asset RegisterHistory identified by id {
   --> ArrangementHistory arrangementHistory // 排班记录
 }
 
+enum ArrangementState {
+  o Init
+  o Cancel
+}
+
 // ArrangementHistory 排班
 asset ArrangementHistory identified by id {
   o String id
   o String description optional
   o Double fee optional
+  o ArrangementState state optional
   o DateTime visitDate // 出诊日期
   o VisitTime visitTime // 出诊时间(上午|下午)
   o String hospitalName optional
@@ -261,6 +267,11 @@ asset OrderItem  identified by id {
 
 
 /* ================= transaction: 主流程 ===================== */
+
+transaction OperateArrangementAction {
+  o String operate
+  --> ArrangementHistory arrangementHistory
+}
 
 transaction InitDepartment {
   o Department1 [] department1s

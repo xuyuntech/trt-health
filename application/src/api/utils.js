@@ -109,13 +109,13 @@ export function getFilterParams({
 
 export async function bfetch(url, {
   req, method = 'GET', headers = {}, body = {}, params = {},
-}) {
+} = {}) {
   const options = {
     method,
     headers: {
       ...headers,
       'Content-Type': 'application/json',
-      'X-Access-Token': req.header('X-Access-Token'),
+      'X-Access-Token': req ? req.header('X-Access-Token') : '',
     },
     // body: JSON.stringify(body),
   };

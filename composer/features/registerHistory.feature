@@ -89,3 +89,16 @@ Feature: Sample
         And I should have the following participant of type org.xuyuntech.health.Doctor
             |name |realName |title |description |skilledIn |reservationQuantity |
             |san.zhang |医师一 |主任医师 |医生描述信息 |医生 skilledIn 信息 |1 |
+    Scenario: OperateArrangementAction
+        When I use the identity si.li
+        And I submit the following transaction of type org.xuyuntech.health.OperateArrangementAction
+        """
+        {
+            "operate": "cancel",
+            "arrangementHistory": "arrangement-1",
+            "$class": "org.xuyuntech.health.OperateArrangementAction"
+        }
+        """
+        Then I should have the following assets of type org.xuyuntech.health.ArrangementHistory
+            |id             |visitDate                  |visitTime  |hospital   |doctor     |department1    |department2    |state      |
+            |arrangement-1  |2018-07-16T05:00:00.000Z   |AM         |hospital-1 |san.zhang  |dep1-1         |dep2-1         |Cancel     |

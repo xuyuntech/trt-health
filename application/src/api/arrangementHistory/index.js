@@ -5,6 +5,31 @@ import { API } from '../../const';
 
 const router = express.Router();
 
+function filterResult(item) {
+  const {
+    department1, department2, hospital, doctor,
+  } = item;
+  return {
+    ...item,
+    department1: {
+      id: department1.id,
+      name: department1.name,
+    },
+    department2: {
+      id: department2.id,
+      name: department2.name,
+    },
+    hospital: {
+      id: hospital.id,
+      name: hospital.name,
+    },
+    doctor: {
+      realName: doctor.realName,
+      name: doctor.name,
+    },
+  };
+}
+
 router.get('/all', async (req, res) => {
   const { visitDate } = req.query;
   try {
@@ -14,9 +39,28 @@ router.get('/all', async (req, res) => {
     });
     res.json({
       status: 0,
-      results: data,
+      results: req.query.full ? data : data.map(item => filterResult(item)),
     });
   } catch (err1) {
+    res.json(err1);
+  }
+});
+
+router.put('/:id/cancel', async (req, res) => {
+  try {
+    await bfetch(API.ArrangementHistory.Cancel(), {
+      req,
+      method: 'POST',
+      body: {
+        arrangementHistory: req.params.id,
+        operate: 'cancel',
+      },
+    });
+    res.json({
+      status: 0,
+    });
+  } catch (err1) {
+    console.error(err1);
     res.json(err1);
   }
 });
@@ -35,7 +79,7 @@ router.get('/:id', async (req, res) => {
     });
     res.json({
       status: 0,
-      result: data,
+      result: req.query.full ? data : filterResult(data),
     });
   } catch (err) {
     res.json(err);
@@ -103,61 +147,6 @@ router.get('/', async (req, res) => {
   } catch (err1) {
     console.error(err1);
     res.json(err1);
-  }
-});
-
-router.get('/aaa', async (req, res) => {
-  const {
-    visitDate, f, doctorName, hospitalID,
-  } = req.query;
-  console.log('doctorName', doctorName);
-  const where = {};
-  const filter = {
-    include: 'resolve',
-  };
-  if (f === 'true') {
-    if (visitDate) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(visitDate)) {
-        res.json({
-          status: 1,
-          err: '日期格式错误',
-        });
-        return;
-      }
-      where.visitDate = new Date(visitDate).toISOString();
-    }
-
-    if (doctorName) {
-      if (!/^[0-9a-zA-Z._]+$/.test(doctorName)) {
-        res.json({
-          status: 1,
-          err: '医师名称格式不正确',
-        });
-        return;
-      }
-      where.doctor = `resource:org.xuyuntech.health.Doctor#${doctorName}`;
-    }
-
-    if (hospitalID) {
-      where.hospital = `resource:org.xuyuntech.health.Hospital#${hospitalID}`;
-    }
-  }
-
-  if (Object.keys(where).length > 0) {
-    filter.where = where;
-  }
-
-  try {
-    const data = await bfetch(API.ArrangementHistory.Query(), {
-      req,
-      params: { filter: JSON.stringify(filter) },
-    });
-    res.json({
-      status: 0,
-      results: data,
-    });
-  } catch (err) {
-    res.json(err);
   }
 });
 

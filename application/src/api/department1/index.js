@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
     });
     res.json({
       status: 0,
-      results: data,
+      results: req.query.full ? data : data.map(item => ({ id: item.id, name: item.name })),
     });
   } catch (err1) {
     res.json(err1);
@@ -164,33 +164,33 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.delete('/del', async (req, res) => {
-  try {
-    // department1
-    const dep1 = initData.department1;
-    if (dep1.length) {
-      await Promise.all(dep1.map(async (item) => {
-        await bfetch(API.Department1.Delete(item.id), { req, method: 'DELETE' });
-        console.log(`Delete ${item.name} successfull.`);
-      }));
-      console.log('Delete department1 ok.');
-    }
-    const dep2 = initData.department2;
-    if (dep2.length) {
-      await Promise.all(dep2.map(async (item) => {
-        await bfetch(API.Department2.Delete(item.id), { req, method: 'DELETE' });
-        console.log(`Delete ${item.name} successfull.`);
-      }));
-      console.log('Delete department2 ok.');
-    }
-    res.json({
-      status: 0,
-    });
-  } catch (err) {
-    console.error(err);
-    res.json(err);
-  }
-});
+// router.delete('/del', async (req, res) => {
+//   try {
+//     // department1
+//     const dep1 = initData.department1;
+//     if (dep1.length) {
+//       await Promise.all(dep1.map(async (item) => {
+//         await bfetch(API.Department1.Delete(item.id), { req, method: 'DELETE' });
+//         console.log(`Delete ${item.name} successfull.`);
+//       }));
+//       console.log('Delete department1 ok.');
+//     }
+//     const dep2 = initData.department2;
+//     if (dep2.length) {
+//       await Promise.all(dep2.map(async (item) => {
+//         await bfetch(API.Department2.Delete(item.id), { req, method: 'DELETE' });
+//         console.log(`Delete ${item.name} successfull.`);
+//       }));
+//       console.log('Delete department2 ok.');
+//     }
+//     res.json({
+//       status: 0,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.json(err);
+//   }
+// });
 
 // router.post('/init', async (req, res) => {
 //   try {

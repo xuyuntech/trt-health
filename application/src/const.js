@@ -8,6 +8,19 @@ const { httpURL } = RestServerConfig;
 const BASE_URL = `http://${httpURL}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
 const AUTH_URL = `http://${httpURL}`;
 
+export const HospitalGrade = {
+  ThirdSpecial: '三级特等', // 三级特等
+  ThridA: '三级甲等', // 三级甲等，下面以此类推
+  ThridB: '三级乙等',
+  ThirdC: '三级丙等',
+  SecondA: '二级甲等',
+  SecondB: '二级乙等',
+  SecondC: '二级丙等',
+  FirstA: '一级甲等',
+  FirstB: '一级乙等',
+  FirstC: '一级甲等',
+};
+
 export const API = {
 
   // auth
@@ -75,6 +88,7 @@ export const API = {
     Create: () => `${BASE_URL}/ArrangementHistory`,
     Query: () => `${BASE_URL}/ArrangementHistory`,
     FindByID: id => `${BASE_URL}/ArrangementHistory/${id}`,
+    Cancel: () => `${BASE_URL}/OperateArrangementAction`,
   },
   RegisterHistory: {
     Create: () => `${BASE_URL}/RegisterHistory`,
@@ -111,5 +125,6 @@ export const API = {
     Update: id => `${BASE_URL}/Hospital/${id}`,
     Create: () => `${BASE_URL}/Hospital`,
     FindByID: id => `${BASE_URL}/Hospital/${id}`,
+    Delete: id => `${BASE_URL}/Hospital/${id}`,
   },
 };
