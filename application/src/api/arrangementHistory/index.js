@@ -1,6 +1,5 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
-import moment from 'moment';
 import { bfetch, getFilterParams } from '../utils';
 import { API } from '../../const';
 
@@ -48,10 +47,6 @@ router.get('/', async (req, res) => {
     query: req.query,
     include: true,
     paramsMapFunc: {
-      // hospital: { test: 'required', errMsg: '需要指定医院', getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
-      // doctor: { test: 'required', errMsg: '需要指定医师', getValue: v => `resource:org.xuyuntech.health.Doctor#${v}` },
-      // department1: { test: 'required', errMsg: '需要指定一级科室', getValue: v => `resource:org.xuyuntech.health.Department1#${v}` },
-      // department2: { test: 'required', errMsg: '需要指定二级科室', getValue: v => `resource:org.xuyuntech.health.Department2#${v}` },
       visitDate: { getValue: v => new Date(v).toISOString(), type: 'date' },
       hospital: { getValue: v => `resource:org.xuyuntech.health.Hospital#${v}` },
       doctor: { getValue: v => `resource:org.xuyuntech.health.Doctor#${v}` },
@@ -67,15 +62,46 @@ router.get('/', async (req, res) => {
     return;
   }
   try {
+    let arrangements = [];
+    if (req.currentUser) {
+      arrangements = await bfetch(API.RegisterHistory.Query(), {
+        req,
+        params: {
+          filter: JSON.stringify({
+            where: {
+              patient: `resource:org.xuyuntech.health.Patient#${req.currentUser.username}`,
+            },
+          }),
+        },
+      });
+      console.log('arrangements>>>', arrangements);
+    }
+    // 获取用户已预约的挂号单
     const data = await bfetch(API.ArrangementHistory.Query(), {
       req,
       params: { filter: JSON.stringify(filter) },
     });
     res.json({
       status: 0,
-      results: data,
+      results: data.map((item) => {
+        const { department1, department2 } = item;
+        const registerHistory = arrangements.find(a => a.arrangementHistory === `resource:org.xuyuntech.health.ArrangementHistory#${item.id}`);
+        return {
+          ...item,
+          department1: {
+            id: department1.id,
+            name: department1.name,
+          },
+          department2: {
+            id: department2.id,
+            name: department2.name,
+          },
+          registerHistoryID: registerHistory && registerHistory.id,
+        };
+      }),
     });
   } catch (err1) {
+    console.error(err1);
     res.json(err1);
   }
 });

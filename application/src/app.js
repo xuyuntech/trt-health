@@ -19,7 +19,8 @@ app.use(bodyParser.json());
 app.use(async (req, res, next) => {
   if ([
     '/hospital',
-    '/arrangement_history',
+    '/department1',
+    '/department2',
     '/auth/wechat/callback',
     '/auth/wechat/success',
     '/auth/users/login',

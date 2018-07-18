@@ -55,17 +55,6 @@ participant Patient extends Person {
   o Double totalSpend optional
 }
 
-participant Hospital identified by id {
-  o String id
-  o String name
-  o HospitalGrade grade optional // 评级
-  o Integer reservationQuantity optional // 预约量
-  o String address optional
-  o String phone1 optional // 座机区号
-  o String phone2 optional // 座机号码 或 手机号
-  o String zipCode optional // 邮编
-  o String headImg optional // 头图
-}
 participant StoreKeeper extends Person {
   --> Hospital hospital
 }
@@ -75,8 +64,8 @@ participant Doctor extends Person {
   o String title // 职称
   o String description // 描述
   o String skilledIn // 擅长什么什么
+  o Integer reservationQuantity optional // 预约量
   --> Hospital hospital optional
-  --> Department2 department2 optional
 }
 
 participant Supplier identified by id {
@@ -92,6 +81,18 @@ participant Supplier identified by id {
 /* ==================  asset  ==================== */
 
 
+asset Hospital identified by id {
+  o String id
+  o String name
+  o HospitalGrade grade optional // 评级
+  o Integer reservationQuantity optional // 预约量
+  o String address optional
+  o String phone1 optional // 座机区号
+  o String phone2 optional // 座机号码 或 手机号
+  o String zipCode optional // 邮编
+  o String headImg optional // 头图
+}
+
 asset Department1 identified by id {
   o String id
   o String name
@@ -102,7 +103,7 @@ asset Department1 identified by id {
 asset Department2 identified by id {
   o String id
   o String name
-  // --> Doctor[] doctors optional
+  --> Doctor[] doctors optional
   --> Department1 department1
 }
 
@@ -149,13 +150,17 @@ enum RegisterType {
 // RegisterHistory 挂号记录
 asset RegisterHistory identified by id {
   o String id
+  // 挂号单编号 TODO optional 去除
+  o String number optional 
   o RegisterState state // 状态
   o String diseaseInfo optional// 疾病信息
   o RegisterType type // 初复诊
-  o DateTime created // 创建时间
   o Visitor visitor // 就诊人
   o String visitorName optional
   o String patientName optional
+  o String doctorName optional
+  o String hospitalName optional
+  o DateTime visitDateTime optional
   --> Patient patient // 由哪位患者创建的
   --> ArrangementHistory arrangementHistory // 排班记录
 }
@@ -169,6 +174,8 @@ asset ArrangementHistory identified by id {
   o VisitTime visitTime // 出诊时间(上午|下午)
   o String hospitalName optional
   o String doctorName optional
+  o String department1Name optional
+  o String department2Name optional
   --> Hospital hospital
   --> Doctor doctor
   --> Department1 department1
@@ -255,6 +262,11 @@ asset OrderItem  identified by id {
 
 /* ================= transaction: 主流程 ===================== */
 
+transaction InitDepartment {
+  o Department1 [] department1s
+  o Department2 [] department2s
+}
+
 /*
   排班 (使用rest服务器生成的API，暂时不做开发)
 */
@@ -267,10 +279,14 @@ transaction Arrangement {
 
 /*
   挂号: 生成挂号单 (使用rest服务器生成的API，暂时不做开发)
-    params: Patient, ArrangementHistory
+    params: ArrangementHistory
 */
-transaction RegisterAction {
-  --> RegisterHistory registerHistory
+transaction InitRegisterAction {
+  o String diseaseInfo optional// 疾病信息
+  o RegisterType type // 初复诊
+  o Visitor visitor // 就诊人
+  o String number // 挂号单编号
+  --> ArrangementHistory arrangementHistory
 }
 // 核销挂号
 transaction VerifyRegisterAction {

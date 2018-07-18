@@ -6,8 +6,8 @@ import * as jwt from 'jwt-simple';
 // import { AdminConnection } from 'composer-admin';
 // import { IdCard } from 'composer-common';
 import fetch from 'isomorphic-fetch';
-
-import { addParticipantIdentity } from '../utils';
+import { API } from '../../const';
+import { bfetch, addParticipantIdentity } from '../utils';
 
 // userID = bjtrt-ts01
 // userSecret = kZYafhQWZnMw
@@ -114,6 +114,89 @@ router.post('/hospitalAdmin', async (req, res) => {
     });
   }
 });
+
+
+const depMap = {
+  中医: [
+    { name: '中医一', doctors: ['songqing.zuo', 'qiuxia.zhang'] }, // doctor 临时添加占位
+    { name: '中医二', doctors: ['liangyuan.li'] },
+    { name: '中医三', doctors: ['songqing.zuo', 'qiuxia.zhang'] }, // doctor 临时添加占位
+    { name: '中医五', doctors: ['zhuhe.liu'] },
+    { name: '中医六', doctors: ['ying.liu'] },
+    { name: '中医七', doctors: ['songqing.zuo', 'hongge.xing'] }, // doctor 临时添加占位
+    { name: '中医八', doctors: ['songqing.zuo', 'qiuxia.zhang', 'hongge.xing', 'zhiguo.wang', 'yun.zhao'] },
+    { name: '中医九', doctors: ['hailong.shu'] },
+  ],
+  针灸理疗科: [{
+    name: '针灸理疗科',
+    doctors: ['zhuhe.liu'],
+  }],
+  中医妇科: [{ name: '中医妇科', doctors: ['jianxun.zhou'] }],
+  简易门诊: [{ name: '简易门诊', doctors: ['songqing.zuo', 'zhiguo.wang'] }], // doctor 临时添加占位
+  慢病门诊: [{ name: '慢病门诊', doctors: ['songqing.zuo', 'yun.zhao'] }], // doctor 临时添加占位
+  综合病房: [{ name: '综合病房', doctors: ['hailong.shu'] }],
+};
+
+function getDepInitData(hospital) {
+  const initData = {
+    department1: [],
+    department2: [],
+  };
+  Object.keys(depMap).forEach((name, k) => {
+    const dep1id = `${hospital}-dep1-${k + 1}`;
+    const dep1 = {
+      id: dep1id,
+      name,
+      hospital,
+      $class: 'org.xuyuntech.health.Department1',
+    };
+    initData.department1.push(dep1);
+    const dep2 = depMap[name].map((item, k1) => {
+      const id = `${dep1id}-${k1 + 1}`;
+      // item.doctors.forEach((doctor) => {
+      //   if (!initData.doctors[doctor]) {
+      //     initData.doctors[doctor] = [];
+      //   }
+      //   const doctorDep2s = initData.doctors[doctor];
+      //   doctorDep2s.push(id);
+      // });
+      return {
+        id,
+        ...item,
+        department1: dep1id,
+        $class: 'org.xuyuntech.health.Department2',
+      };
+    });
+    initData.department2 = initData.department2.concat(dep2);
+  });
+  return initData;
+}
+router.post('/department', async (req, res) => {
+  try {
+    const hospitals = await bfetch(API.Hospitals.Query(), { req });
+    // let department1s = [];
+    // let department2s = [];
+    // hospitals.slice(0, 1).forEach((hospital) => {
+    //   const { id } = hospital;
+    //   const initData = getDepInitData(id);
+    //   department1s = department1s.concat(initData.department1);
+    //   department2s = department2s.concat(initData.department2);
+    // });
+    await Promise.all(hospitals.map(async (hospital) => {
+      const { id } = hospital;
+      const initData = getDepInitData(id);
+      const { department1, department2 } = initData;
+      await bfetch(API.Department.Init(), { req, method: 'POST', body: { department1s: department1, department2s: department2 } });
+    }));
+    res.json({
+      status: 0,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
+
 
 export default router;
 

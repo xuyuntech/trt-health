@@ -81,6 +81,9 @@ export const API = {
     Query: () => `${BASE_URL}/RegisterHistory`,
     FindByID: id => `${BASE_URL}/RegisterHistory/${id}`,
   },
+  Department: {
+    Init: () => `${BASE_URL}/InitDepartment`,
+  },
   Department1: {
     Create: () => `${BASE_URL}/Department1`,
     Delete: id => `${BASE_URL}/Department1/${id}`,
@@ -93,10 +96,14 @@ export const API = {
     Query: () => `${BASE_URL}/Department2`,
     FindByID: id => `${BASE_URL}/Department2/${id}`,
   },
+  Order: {
+    Register: () => `${BASE_URL}/InitRegisterAction`,
+  },
   Visitor: {
     Create: () => `${BASE_URL}/Visitor`,
     Query: () => `${BASE_URL}/Visitor`,
     FindByID: id => `${BASE_URL}/Visitor/${id}`,
+    Update: id => `${BASE_URL}/Visitor/${id}`,
     DeleteByID: id => `${BASE_URL}/Visitor/${id}`,
   },
   Hospitals: {

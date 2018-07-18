@@ -6,6 +6,7 @@ import doctorRoute from './api/doctor';
 import arrangementHistoryRoute from './api/arrangementHistory';
 import registerHistoryRoute from './api/registerHistory';
 import visitorRoute from './api/visitor';
+import department from './api/department';
 import department1 from './api/department1';
 import department2 from './api/department2';
 import hospitalAdmin from './api/hospitalAdmin';
@@ -20,6 +21,7 @@ export default function (app) {
   app.use('/arrangement_history', arrangementHistoryRoute);
   app.use('/register_history', registerHistoryRoute);
   app.use('/visitor', visitorRoute);
+  app.use('/department', department);
   app.use('/department1', department1);
   app.use('/department2', department2);
   app.use('/hospital_admin', hospitalAdmin);

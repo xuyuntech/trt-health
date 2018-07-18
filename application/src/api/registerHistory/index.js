@@ -1,6 +1,6 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
-import { bfetch, getFilterParams } from '../utils';
+import { bfetch } from '../utils';
 import { API } from '../../const';
 
 const router = express.Router();
@@ -26,36 +26,10 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const { filter, err } = getFilterParams({
-    query: req.query,
-    include: true,
-    paramsMapFunc: {
-      patient: { getValue: v => `resource:org.xuyuntech.health.Patient#${v}` },
-    },
-  });
-  if (err) {
-    res.json(err);
-    return;
+  const filter = { include: 'resolve' };
+  if (req.query.type === 'own') {
+    filter.where = { patient: `resource:org.xuyuntech.health.Patient#${req.currentUser.username}` };
   }
-
-  // const {
-  //   f, username,
-  // } = req.query;
-
-  // const where = {};
-  // const filter = {
-  //   include: 'resolve',
-  // };
-  // if (f === 'true') {
-  //   if (username) {
-  //     where.patient = `resource:org.xuyuntech.health.Patient#${username}`;
-  //   }
-  // }
-
-  // if (Object.keys(where).length > 0) {
-  //   filter.where = where;
-  // }
-
   try {
     const data = await bfetch(API.RegisterHistory.Query(), {
       req,
@@ -63,7 +37,31 @@ router.get('/', async (req, res) => {
     });
     res.json({
       status: 0,
-      results: data,
+      results: data.map((item) => {
+        const {
+          id, number, state, type, arrangementHistory, visitor,
+        } = item;
+        const {
+          visitDate, visitTime, doctor, hospital,
+        } = arrangementHistory;
+        return {
+          id,
+          number,
+          state,
+          type,
+          visitDate,
+          visitTime,
+          visitor: {
+            realName: visitor.realName,
+            sid: visitor.sid,
+            phone: visitor.phone,
+            gender: visitor.gender,
+            age: visitor.age,
+          },
+          doctorName: doctor.realName,
+          hospitalName: hospital.name,
+        };
+      }),
     });
   } catch (err1) {
     res.json(err1);

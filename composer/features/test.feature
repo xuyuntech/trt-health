@@ -58,3 +58,4 @@ Feature: Sample
         And I have added the following asset of type org.xuyuntech.health.RegisterHistory
             | id  | state | created | patient | arrangementHistory |diseaseInfo|type|visitor|
             |1234|Register|2018-06-22T11:17:43.855Z|5671|4313|123|First|1|
+    

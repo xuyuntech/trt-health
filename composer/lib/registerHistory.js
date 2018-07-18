@@ -1,6 +1,49 @@
 'use strict';
 
-
+/**
+ * 用户挂号操作:  RegisterState(Null -> Init)
+ * @param {org.xuyuntech.health.InitRegisterAction} tx - create register history
+ * @transaction
+ */
+async function InitRegisterAction(tx) {
+  const factory = getFactory();
+  const patient = getCurrentParticipant();
+  if (patient.getFullyQualifiedType() !== 'org.xuyuntech.health.Patient') {
+    throw new Error(`Current participant is not a patient, got (${patient.getFullyQualifiedType()})`);
+  }
+  const patientID = patient.name;
+  const arrangement = tx.arrangementHistory;
+  const arrangementID = arrangement.id;
+  const registerHistory = factory.newResource('org.xuyuntech.health', 'RegisterHistory', `${patientID}-${arrangementID}`);
+  registerHistory.state = 'Init';
+  registerHistory.number = tx.number;
+  registerHistory.diseaseInfo = tx.diseaseInfo;
+  registerHistory.visitor = tx.visitor;
+  registerHistory.type = tx.type;
+  registerHistory.arrangementHistory = arrangement;
+  registerHistory.patient = patient;
+  // registerHistory.patientName = patient.realName;
+  // registerHistory.visitorName = tx.visitor.realName;
+  // registerHistory.doctorName = arrangement.doctor.realName;
+  // registerHistory.hospitalName = arrangement.hospital.name;
+  // registerHistory.visitDateTime = arrangement.visitDate;
+  const registry_RegisterHistory = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
+  await registry_RegisterHistory.addAll([registerHistory]);
+  const {hospital} = arrangement;
+  if (!hospital.reservationQuantity) {
+    hospital.reservationQuantity = 0;
+  }
+  hospital.reservationQuantity += 1;
+  const hospitalRegistry = await getAssetRegistry('org.xuyuntech.health.Hospital');
+  await hospitalRegistry.update(hospital);
+  const {doctor} = arrangement;
+  if (!doctor.reservationQuantity) {
+    doctor.reservationQuantity = 0;
+  }
+  doctor.reservationQuantity += 1;
+  const doctorRegistry = await getParticipantRegistry('org.xuyuntech.health.Doctor');
+  await doctorRegistry.update(doctor);
+}
 
 /**
  * 支付挂号费:  Init-> Paid
@@ -30,9 +73,10 @@ async function verifyRegisterHistoryAction(tx){
   const registry_RegisterHistory = await getAssetRegistry('org.xuyuntech.health.RegisterHistory');
   await registry_RegisterHistory.update(item);
   // update hospital reservationQuantity
-  const pr = await getParticipantRegistry('org.xuyuntech.health.Hospital');
-  hospital.reservationQuantity += 1;
-  await pr.update(hospital);
+  // 这步操作在 InitRegisterAction 里做了
+  // const pr = await getParticipantRegistry('org.xuyuntech.health.Hospital');
+  // hospital.reservationQuantity += 1;
+  // await pr.update(hospital);
 }
 /**
  * 更新挂号单状态: Visiting -> Finish

@@ -4,6 +4,7 @@
 import { BusinessNetworkConnection } from 'composer-client';
 import FormData from 'form-data';
 import fetch from 'isomorphic-fetch';
+import moment from 'moment';
 
 import { AdminConnection } from 'composer-admin';
 import { IdCard } from 'composer-common';
@@ -12,6 +13,18 @@ import { API } from '../const';
 export const ErrNotFound = { status: 404, err: 'not found' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 export const ErrInternalServerError = msg => ({ status: 500, err: msg });
+
+// 获取各种单据的编号
+export function getNumber(type) {
+  const now = moment().format('YYYYMMDDhhmm');
+  const rand = Math.ceil(Math.random() * 10000);
+  switch (type) {
+    case 'RegisterHistory':
+      return `RH${now}${rand}`;
+    default:
+      return '';
+  }
+}
 
 export function getFilterParams({
   query = {}, paramsMapFunc = {}, include = false,
