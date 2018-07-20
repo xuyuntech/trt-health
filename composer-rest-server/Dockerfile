@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY . .
 RUN chmod +x cli.js
-RUN npm install --registry=https://registry.npm.taobao.org
+RUN npm install 
+#--registry=https://registry.npm.taobao.org
 
 CMD ./cli.js -c admin@trt-health -a true -w true -n never -m true
