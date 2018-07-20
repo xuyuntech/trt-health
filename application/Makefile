@@ -16,8 +16,10 @@ container:
 	docker build -t ${IMAGE_NAME} .
 push: container
 	docker push ${IMAGE_NAME}
-restart:
+pull:
 	docker pull ${IMAGE_NAME}
+restart: pull start_pro
+start_pro:
 	docker rm -f trt-health-application || true
 	docker run --restart=always -d \
 			-p 3002:3002 \

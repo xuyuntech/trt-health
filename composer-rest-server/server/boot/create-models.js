@@ -55,11 +55,11 @@ module.exports = function(app) {
         }
         console.log('user', user);
         if (!user) {
-            app.models.user.create([{
+            app.models.user.create({
                 username: 'trt-admin',
                 email: 'trt-admin@example.com',
                 password: 'trt-adminpw',
-            }], function(err, res) {
+            }, function(err, res) {
                 if (err) {throw err;}
                 console.log('trt-admin created: \n', res);
                 createRole(res.id);

@@ -105,8 +105,10 @@ container:
 	docker build -t registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest .
 push: container
 	docker push registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
-restart:
+pull:
 	docker pull registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server:latest
+restart: pull start_pro
+start_pro:
 	docker rm -f trt-health-compsoer-rest-server || true
 	docker run --restart=always -d -p 3000:3000 \
 		--name trt-health-compsoer-rest-server \
