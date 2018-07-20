@@ -13,6 +13,10 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca.org1.example.com
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
 
   orderer.example.com:
     container_name: orderer.example.com
@@ -31,6 +35,10 @@ services:
     volumes:
         - ./:/etc/hyperledger/configtx
         - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/etc/hyperledger/msp/orderer/msp
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -59,6 +67,10 @@ services:
     depends_on:
       - orderer.example.com
       - couchdb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
 
   couchdb:
     container_name: couchdb
@@ -69,5 +81,8 @@ services:
     - ./db_data:/opt/couchdb/data
     environment:
       DB_URL: http://localhost:5984/member_db
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
 
