@@ -39,6 +39,7 @@ app.use(async (req, res, next) => {
       req,
     });
     req.currentUser = user;
+    req.hospitalID = req.header('X-Access-HospitalID');
     next();
   } catch (err) {
     res.json(err);

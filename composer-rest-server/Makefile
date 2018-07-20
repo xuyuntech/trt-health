@@ -96,7 +96,7 @@ COMPOSER_DATASOURCES_PRO='{ \
 
 mongo:
 	docker rm -f mongo || true
-	docker run -d --name mongo --network composer_default -p 27017:27017 mongo
+	docker run -d --name mongo --network composer_default -v `pwd`/db_data:/data/db -p 27017:27017 mongo
 rest-build:
 	docker build -t localhost/composer-rest-server .
 

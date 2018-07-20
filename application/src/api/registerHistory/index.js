@@ -26,9 +26,12 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const filter = { include: 'resolve' };
+  const filter = { include: 'resolve', where: {} };
   if (req.query.type === 'own') {
-    filter.where = { patient: `resource:org.xuyuntech.health.Patient#${req.currentUser.username}` };
+    filter.where.patient = `resource:org.xuyuntech.health.Patient#${req.currentUser.username}`;
+  }
+  if (req.hospitalID) {
+    filter.where.hospital = `resource:org.xuyuntech.health.Hospital#${req.hospitalID}`;
   }
   try {
     const data = await bfetch(API.RegisterHistory.Query(), {

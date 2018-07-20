@@ -62,7 +62,12 @@ export const API = {
   // participant
   Users: {
     FindByID: id => `${BASE_URL}/users/${id}`,
+    FindOne: () => `${BASE_URL}/users/findOne`,
+    ResetPassword: () => `${BASE_URL}/users/reset-password`,
     Login: () => `${BASE_URL}/users/login`,
+    Logout: () => `${BASE_URL}/users/logout`,
+    Create: () => `${BASE_URL}/users`,
+    Update: id => `${BASE_URL}/users/${id}`,
   },
   Patient: {
     Query: () => `${BASE_URL}/Patient`,
@@ -80,7 +85,13 @@ export const API = {
     Create: () => `${BASE_URL}/HospitalAdmin`,
     Query: () => `${BASE_URL}/HospitalAdmin`,
     Update: id => `${BASE_URL}/HospitalAdmin/${id}`,
-    FindByID: id => `${BASE_URL}/HospitalAdmin/${id}`,
+    FindByName: name => `${BASE_URL}/HospitalAdmin/${name}`,
+  },
+  OrgAdmin: {
+    Create: () => `${BASE_URL}/OrgAdmin`,
+    Query: () => `${BASE_URL}/OrgAdmin`,
+    Update: id => `${BASE_URL}/OrgAdmin/${id}`,
+    FindByName: name => `${BASE_URL}/OrgAdmin/${name}`,
   },
 
   // asset

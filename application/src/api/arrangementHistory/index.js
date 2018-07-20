@@ -35,7 +35,15 @@ router.get('/all', async (req, res) => {
   try {
     const data = await bfetch(API.ArrangementHistory.Query(), {
       req,
-      params: { filter: JSON.stringify({ include: 'resolve', where: { visitDate: new Date(visitDate).toISOString() } }) },
+      params: {
+        filter: JSON.stringify({
+          include: 'resolve',
+          where: {
+            visitDate: new Date(visitDate).toISOString(),
+            hospital: `resource:org.xuyuntech.health.Hospital#${req.hospitalID}`,
+          },
+        }),
+      },
     });
     res.json({
       status: 0,
@@ -119,6 +127,10 @@ router.get('/', async (req, res) => {
         },
       });
       console.log('arrangements>>>', arrangements);
+    }
+    const { fromVisitDate } = req.query;
+    if (fromVisitDate) {
+      filter.where.visitDate = { gte: new Date(fromVisitDate).toISOString() };
     }
     // 获取用户已预约的挂号单
     const data = await bfetch(API.ArrangementHistory.Query(), {

@@ -45,8 +45,8 @@ participant OrgAdmin extends Person {
 }
 
 participant HospitalAdmin extends Person {
-  o DateTime created
   --> OrgAdmin creator
+  --> Hospital hospital
 }
 
 
@@ -160,9 +160,12 @@ asset RegisterHistory identified by id {
   o String patientName optional
   o String doctorName optional
   o String hospitalName optional
-  o DateTime visitDateTime optional
+  o DateTime visitDate optional
+  o VisitTime visitTime optional
   --> Patient patient // 由哪位患者创建的
   --> ArrangementHistory arrangementHistory // 排班记录
+  --> Hospital hospital optional
+  --> Doctor doctor optional
 }
 
 enum ArrangementState {
@@ -388,4 +391,8 @@ transaction FinishAction {
   o DateTime created
   --> Order order
   --> StoreKeeper storekeeper
+ }
+
+ transaction QueryRegisterHistoryByHospital {
+   --> Hospital hospital
  }

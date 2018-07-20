@@ -11,6 +11,7 @@ import { IdCard } from 'composer-common';
 import { API } from '../const';
 
 export const ErrNotFound = { status: 404, err: 'not found' };
+export const ErrNoContent = { status: 204, err: 'no content' };
 export const ErrUnauthorized = { status: 401, err: 'Unauthorized' };
 export const ErrInternalServerError = msg => ({ status: 500, err: msg });
 
@@ -113,9 +114,9 @@ export async function bfetch(url, {
   const options = {
     method,
     headers: {
-      ...headers,
       'Content-Type': 'application/json',
       'X-Access-Token': req ? req.header('X-Access-Token') : '',
+      ...headers,
     },
     // body: JSON.stringify(body),
   };
@@ -129,13 +130,14 @@ export async function bfetch(url, {
     options.body = JSON.stringify(body);
   }
   console.log('----------->>>');
-  console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)}`);
+  console.log(`request [${method}]-> ${uri} \n\tparams: ${JSON.stringify(params)} \n\tbody: ${JSON.stringify(body)} \n\theaders: ${JSON.stringify(options.headers)}`);
   try {
     const res = await fetch(uri, options);
     if (res.status === 204) {
       if (method === 'DELETE') {
         return {};
       }
+      throw ErrNoContent;
     }
     console.log(`response -> [${res.status}]:${res.statusText}]`);
     const data = await res.json();
@@ -173,11 +175,49 @@ export async function bfetch(url, {
   }
 }
 
+const ns = 'org.xuyuntech.health';
+
+
+export async function checkUserLogin({ username, resourceType }) {
+  const businessNetworkConnection = new BusinessNetworkConnection();
+  try {
+    await businessNetworkConnection.connect('admin@trt-health');
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
+    const exists = await participantRegistry.exists(username);
+    await businessNetworkConnection.disconnect();
+    return exists;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export class Ticker {
+  start() {
+    this.t = new Date();
+    return this;
+  }
+  getDuration(t, type = 'seconds') {
+    const d = t.getTime() - this.t.getTime();
+    switch (type) {
+      case 'seconds':
+        return Number.prototype.toFixed.call(d / 1000, 3);
+      default:
+        return 0;
+    }
+  }
+  tick(msg) {
+    const t = new Date();
+    console.log(`${msg}: ${this.getDuration(t)}`);
+    this.t = t;
+    return this;
+  }
+}
 
 export async function addParticipantIdentity({
-  currentCardName, username, accessToken, resourceType, participantData,
+  currentCardName, username, accessToken, resourceType, participantData = {},
 }) {
-  // const ns = 'org.xuyuntech.health';
+  const ticker = new Ticker().start();
+  const tTicker = new Ticker().start();
   console.log('addParticipantIdentity -->>>', {
     currentCardName, username, accessToken, resourceType,
   });
@@ -185,27 +225,48 @@ export async function addParticipantIdentity({
   try {
     // add participant
     const bConnect = await businessNetworkConnection.connect(currentCardName);
+    ticker.tick('businessNetworkConnection.connect');
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
+    ticker.tick('businessNetworkConnection.getParticipantRegistry');
     const participantExists = await participantRegistry.exists(username);
+    ticker.tick('participantRegistry.exists');
     console.log(`participant:${resourceType}#${username} exists: ${participantExists}`);
+    const factory = bConnect.getFactory();
     if (!participantExists) {
-      const factory = bConnect.getFactory();
       const participant = factory.newResource('org.xuyuntech.health', resourceType, username);
-      Object.assign(participant, participantData);
+      Object.keys(participantData).forEach((k) => {
+        let item = participantData[k];
+        if (item && item.relation === true && item.type && item.id) {
+          item = factory.newRelationship(ns, item.type, item.id);
+        }
+        participant[k] = item;
+      });
       // participant.phone = HospitalAdmin.phone;
       await participantRegistry.addAll([participant]);
+      ticker.tick('participantRegistry.addAll');
     } else {
       // console.log(`participant ${username} already exists, start to update.`);
       const participantSaved = await participantRegistry.get(username);
-      Object.assign(participantSaved, participantData);
+      // Object.assign(participantSaved, participantData);
+      Object.keys(participantData).forEach((k) => {
+        let item = participantData[k];
+        if (item && item.relation === true && item.type && item.id) {
+          item = factory.newRelationship(ns, item.type, item.id);
+        }
+        participantSaved[k] = item;
+      });
       await participantRegistry.update(participantSaved);
+      ticker.tick('participantRegistry.update');
       console.log(`participant ${username} updated successfully.`);
     }
     // get identity, add new one when not exists
     const adminConnection = new AdminConnection();
     const issuingCard = await adminConnection.exportCard('admin@trt-health');
+    ticker.tick('adminConnection.exportCard');
     const result = await businessNetworkConnection.issueIdentity(`org.xuyuntech.health.${resourceType}#${username}`, `${username}-${new Date().getTime()}`, { issuer: true });
+    ticker.tick('businessNetworkConnection.issueIdentity');
     await businessNetworkConnection.disconnect();
+    ticker.tick('businessNetworkConnection.disconnect');
     console.log('issueIdentity result', result);
     const metadata = {
       userName: result.userID,
@@ -216,20 +277,28 @@ export async function addParticipantIdentity({
     // issueIdentity
     const cardName = `${username}@trt-health`;
     const hasCard = await adminConnection.hasCard(cardName);
+    ticker.tick('adminConnection.hasCard');
     console.log(`participant ${username} card exists: ${hasCard}`);
-    if (!hasCard) {
-      const card = new IdCard(metadata, issuingCard.getConnectionProfile());
-      await adminConnection.importCard(cardName, card);
-      console.log('import card %s success.', cardName);
-      await businessNetworkConnection.connect(cardName);
-      const pingResult = await businessNetworkConnection.ping();
-      console.log('ping card %s success.', cardName);
-      console.log('ping result', pingResult);
-      await businessNetworkConnection.disconnect();
+    if (hasCard) {
+      await adminConnection.deleteCard(cardName);
+      ticker.tick('adminConnection.deleteCard');
     }
-
+    const card = new IdCard(metadata, issuingCard.getConnectionProfile());
+    await adminConnection.importCard(cardName, card);
+    ticker.tick('adminConnection.importCard');
+    console.log('import card %s success.', cardName);
+    await businessNetworkConnection.connect(cardName);
+    ticker.tick(`adminConnection.connect ${cardName}`);
+    const pingResult = await businessNetworkConnection.ping();
+    ticker.tick('businessNetworkConnection.ping');
+    console.log('ping card %s success.', cardName);
+    console.log('ping result', pingResult);
+    await businessNetworkConnection.disconnect();
+    ticker.tick('businessNetworkConnection.disconnect');
     const expCard = await adminConnection.exportCard(cardName);
+    ticker.tick('adminConnection.exportCard');
     const expCardBuffer = await expCard.toArchive({ type: 'nodebuffer' });
+    ticker.tick('expCard.toArchive');
     // import card to wallet
     const form = new FormData(); // eslint-disable-line
     form.append('card', expCardBuffer, `${username}.card`);
@@ -242,12 +311,15 @@ export async function addParticipantIdentity({
       },
       body: form,
     });
+    ticker.tick('wallet import');
+    tTicker.tick('----> Whole process cost');
     if (importRes.status === 204) {
       console.log('wallet import success', importRes.statusText);
     } else {
       throw new Error(`wallet import failed: ${importRes.statusText}`);
     }
   } catch (error) {
+    console.error('addParticipantIdentity err: ', error);
     throw error;
   }
 }

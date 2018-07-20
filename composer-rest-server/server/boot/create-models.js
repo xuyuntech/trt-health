@@ -1,19 +1,52 @@
 'use strict';
 
 module.exports = function(app) {
-        //FIXME only run this script AT first TIME . For create table.
-        // app.dataSources.db.automigrate(['user', 'userIdentity', 'accessToken', 'ACL', 'RoleMapping', 'Role'], function(err) {
-        //     if (err) throw err;
-        //     app.models.user.create([{
-        //         username: 'admin',
-        //         email:'admin@email.com',
-        //         password: 'adminpw',
-        //     }], function(err, coffeeShops) {
-        //         if (err) throw err;
-        //         console.log('Models created: \n', coffeeShops);
-        //     });
-        // });
+    //FIXME only run this script AT first TIME . For create table.
+    // app.dataSources.db.automigrate(['user', 'userIdentity', 'accessToken', 'ACL', 'RoleMapping', 'Role'], function(err) {
+    //     if (err) throw err;
+    //     app.models.user.create([{
+    //         username: 'admin',
+    //         email:'admin@email.com',
+    //         password: 'adminpw',
+    //     }], function(err, coffeeShops) {
+    //         if (err) throw err;
+    //         console.log('Models created: \n', coffeeShops);
+    //     });
+    // });
 
+    app.models.RoleMapping.find({
+        where: {principalType: 'USER'}
+    }, function(err, ins){
+        console.log('>>>', err, ins);
+    });
+
+    // eslint-disable-next-line
+    function createRole(userId){
+        app.models.Role.findOne({
+            where: {name: 'admin'}
+        }, function(err, role){
+            if(err) {
+                throw err;
+            }
+            if (!role) {
+                app.models.Role.create({
+                    name: 'admin',
+                }, function (err, role) {
+                    if (err) {
+                        throw err;
+                    }
+                    role.principals.create({
+                        principalType: app.models.RoleMapping.USER,
+                        principalId: userId,
+                    }, function(err, principal){
+                        if (err) {throw err;}
+                        console.log('role and principal: ', role, principal);
+                    });
+                });
+            }
+        });
+
+    }
     app.models.user.findOne({
         where: {username: 'trt-admin'},
     }, function(err, user){
@@ -29,7 +62,10 @@ module.exports = function(app) {
             }], function(err, res) {
                 if (err) {throw err;}
                 console.log('trt-admin created: \n', res);
+                createRole(res.id);
             });
+        } else {
+            createRole(user.id);
         }
     });
 
@@ -78,13 +114,13 @@ module.exports = function(app) {
 
     app.models.user.disableRemoteMethodByName('confirm');                              // disables GET /app.models.users/confirm
     app.models.user.disableRemoteMethodByName('count');                                // disables GET /app.models.users/count
-    app.models.user.disableRemoteMethodByName('findOne');                              // disables GET /app.models.users/findOne
+    // app.models.user.disableRemoteMethodByName('findOne');                              // disables GET /app.models.users/findOne
 
     //app.models.user.disableRemoteMethodByName("login");                                // disables POST /app.models.users/login
     //app.models.user.disableRemoteMethodByName("logout");                               // disables POST /app.models.users/logout
 
     app.models.user.disableRemoteMethodByName('resetPassword');                        // disables POST /app.models.users/reset
-    app.models.user.disableRemoteMethodByName('setPassword');                          // disables POST /app.models.users/reset-password
+    // app.models.user.disableRemoteMethodByName('setPassword');                          // disables POST /app.models.users/reset-password
     app.models.user.disableRemoteMethodByName('update');                               // disables POST /app.models.users/update
     app.models.user.disableRemoteMethodByName('upsertWithWhere');                      // disables POST /app.models.users/upsertWithWhere
 

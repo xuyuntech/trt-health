@@ -45,7 +45,37 @@ Feature: Sample
         And I have added the following assets of type org.xuyuntech.health.ArrangementHistory
             |id |visitDate |visitTime |hospital |doctor |department1 |department2 |
             |arrangement-1 |2018-07-16T05:00:00.000Z |AM |hospital-1 |san.zhang |dep1-1 |dep2-1 |
+        And I have added the following assets of type org.xuyuntech.health.ArrangementHistory
+            |id |visitDate |visitTime |hospital |doctor |department1 |department2 |
+            |arrangement-2 |2018-07-16T05:00:00.000Z |AM |hospital-1 |san.zhang |dep1-1 |dep2-1 |
+        And I have added the following assets of type org.xuyuntech.health.RegisterHistory
+            """
+            {
+                "id": "si.li-arrangement-2",
+                "state": "Init",
+                "diseaseInfo": "diseaseInfo...",
+                "type": "First",
+                "visitor": {
+                    "id": "visitor-1",
+                    "sid": "13271637821678",
+                    "realName": "就诊人",
+                    "creator": "si.li"
+                },
+                "number": "RH201898989800332",
+                "patient": "resource:org.xuyuntech.health.Patient#si.li",
+                "arrangementHistory": "resource:org.xuyuntech.health.ArrangementHistory#arrangement-2",
+                "$class": "org.xuyuntech.health.RegisterHistory"
+            }
+            """
         And I have issued the participant org.xuyuntech.health.Patient#si.li with the identity si.li
+    Scenario: QueryRHByHospital
+        When I submit the following transaction of type org.xuyuntech.health.QueryRegisterHistoryByHospital
+        """
+        {
+            "hospital": "resource:org.xuyuntech.health.Hospital#hospital-1",
+            "$class": "org.xuyuntech.health.QueryRegisterHistoryByHospital"
+        }
+        """
     Scenario: InitRegisterAction
         When I use the identity si.li
         And I submit the following transaction of type org.xuyuntech.health.InitRegisterAction

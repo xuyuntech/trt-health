@@ -65,6 +65,8 @@ services:
     image: hyperledger/fabric-couchdb:$ARCH-0.4.6
     ports:
       - 5984:5984
+    volumes:
+    - ./db_data:/opt/couchdb/data
     environment:
       DB_URL: http://localhost:5984/member_db
 
