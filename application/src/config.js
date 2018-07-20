@@ -3,6 +3,8 @@ import config from 'config';
 
 let restServerConfig;
 
+console.log('process.env.REST_SERVER_CONFIG', process.env.REST_SERVER_CONFIG);
+
 try {
   restServerConfig = Object.assign({}, config.get('restServer'));
 } catch (err) {

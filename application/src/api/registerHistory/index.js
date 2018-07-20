@@ -33,6 +33,9 @@ router.get('/', async (req, res) => {
   if (req.hospitalID) {
     filter.where.hospital = `resource:org.xuyuntech.health.Hospital#${req.hospitalID}`;
   }
+  if (Object.keys(filter.where).length <= 0) {
+    delete filter.where;
+  }
   try {
     const data = await bfetch(API.RegisterHistory.Query(), {
       req,
