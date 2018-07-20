@@ -28,6 +28,13 @@
     },
     "validations": [],
     "acls": [
+        {
+            "accessType": "*",
+            "permission": "ALLOW",
+            "principalId": "$authenticated",
+            "principalType": "ROLE",
+            "property": ["find", "findOne"]
+        }
     ],
     "methods": []
 }

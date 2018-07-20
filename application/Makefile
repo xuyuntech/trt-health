@@ -27,3 +27,5 @@ restart:
 			-e NODE_ENV=production \
 			--name trt-health-application \
 			${IMAGE_NAME}
+apidoc:
+	apidoc -i src/ -o src/apidoc/ 

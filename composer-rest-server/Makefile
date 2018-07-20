@@ -86,18 +86,17 @@ COMPOSER_DATASOURCES_PRO='{ \
 	} \
 }'
 
-rest:
-	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS='${COMPOSER_PROVIDERS}' COMPOSER_DATASOURCES='${COMPOSER_DATASOURCES}' ./node_modules/composer-rest-server/cli.js
-rest-test:
-	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_TEST} COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
-rest-noauth:
-	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_MULTIUSER=true COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
+# rest:
+# 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS='${COMPOSER_PROVIDERS}' COMPOSER_DATASOURCES='${COMPOSER_DATASOURCES}' ./node_modules/composer-rest-server/cli.js
+# rest-test:
+# 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_AUTHENTICATION=true COMPOSER_MULTIUSER=true COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_TEST} COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
+# rest-noauth:
+# 	COMPOSER_CARD=admin@trt-health COMPOSER_NAMESPACES=never COMPOSER_MULTIUSER=true COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./node_modules/composer-rest-server/cli.js
 
 
 mongo:
 	docker rm -f mongo || true
-	docker run -d --name mongo --network composer_default -p 27017:27017 mongo
-
+	docker run -d --name mongo --network composer_default -v `pwd`/db_data:/data/db -p 27017:27017 mongo
 rest-build:
 	docker build -t localhost/composer-rest-server .
 
@@ -113,3 +112,6 @@ restart:
 		--name trt-health-compsoer-rest-server \
 		--add-host orderer.example.com:10.6.29.108 --add-host peer0.org1.example.com:10.6.29.108 --add-host ca.org1.example.com:10.6.29.108 \
 		-v /root/.composer:/root/.composer -e COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS_PRO} -e COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES_PRO} registry.cn-beijing.aliyuncs.com/xuyuntech/trt-health-compsoer-rest-server
+
+start:
+	COMPOSER_PROVIDERS=${COMPOSER_PROVIDERS} COMPOSER_DATASOURCES=${COMPOSER_DATASOURCES} ./cli.js -c admin@trt-health -a true -w true -n never -m true

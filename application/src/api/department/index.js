@@ -48,21 +48,28 @@ router.get('/', async (req, res) => {
       req,
       params: { filter: JSON.stringify(filter) },
     });
+    console.log('data', data);
+    const depData = await Promise.all(data.map(async (item) => {
+      const { id } = item;
+      const dep2 = await bfetch(API.Department2.Query(), {
+        req,
+        params: {
+          filter: JSON.stringify({
+            where: { department1: id },
+          }),
+        },
+      });
+      return dep2;
+    }));
     res.json({
       status: 0,
-      results: req.query.full ? data : data.map(item => ({ id: item.id, name: item.name })),
+      results: depData,
     });
   } catch (err1) {
     res.json(err1);
   }
 });
 
-// const hospital = 'hospital-1';
-
-// const ns = 'org.xuyuntech.health';
-// const hospital = `resource:${ns}.Hospital#$${hospitalID}`;
-
-// 胡桂荣，张慧月, 宋瑞华,
 const depMap = {
   中医: [
     { name: '中医一', doctors: ['songqing.zuo', 'qiuxia.zhang'] }, // doctor 临时添加占位
@@ -100,13 +107,6 @@ function getDepInitData(hospital) {
     initData.department1.push(dep1);
     const dep2 = depMap[name].map((item, k1) => {
       const id = `${dep1id}-${k1 + 1}`;
-      // item.doctors.forEach((doctor) => {
-      //   if (!initData.doctors[doctor]) {
-      //     initData.doctors[doctor] = [];
-      //   }
-      //   const doctorDep2s = initData.doctors[doctor];
-      //   doctorDep2s.push(id);
-      // });
       return {
         id,
         ...item,
@@ -118,37 +118,6 @@ function getDepInitData(hospital) {
   });
   return initData;
 }
-// const initData = {
-//   department1: [],
-//   department2: [],
-// };
-/*
-deps.map((name, k) => ({
-    id: `${hospital}-department1-${k + 1}`,
-    name,
-    hospital,
-    $class: 'org.xuyuntech.health.Department1',
-  })),
-*/
-
-// Object.keys(depMap).forEach((name, k) => {
-//   const dep2 = depMap[name];
-//   const dep1id = `${hospital}-dep1-${k + 1}`;
-//   const dep2s = dep2.map((item, k1) => ({
-//     id: `${dep1id}-${k1 + 1}`,
-//     ...item,
-//     $class: 'org.xuyuntech.health.Department2',
-//   }));
-//   initData.department2 = initData.department2.concat(dep2s);
-//   const dep1 = {
-//     id: dep1id,
-//     name,
-//     hospital,
-//     department2s: dep2s.map(item => item.id),
-//     $class: 'org.xuyuntech.health.Department1',
-//   };
-//   initData.department1.push(dep1);
-// });
 
 router.post('/', async (req, res) => {
   try {
@@ -163,55 +132,6 @@ router.post('/', async (req, res) => {
     res.json(err);
   }
 });
-
-// router.delete('/del', async (req, res) => {
-//   try {
-//     // department1
-//     const dep1 = initData.department1;
-//     if (dep1.length) {
-//       await Promise.all(dep1.map(async (item) => {
-//         await bfetch(API.Department1.Delete(item.id), { req, method: 'DELETE' });
-//         console.log(`Delete ${item.name} successfull.`);
-//       }));
-//       console.log('Delete department1 ok.');
-//     }
-//     const dep2 = initData.department2;
-//     if (dep2.length) {
-//       await Promise.all(dep2.map(async (item) => {
-//         await bfetch(API.Department2.Delete(item.id), { req, method: 'DELETE' });
-//         console.log(`Delete ${item.name} successfull.`);
-//       }));
-//       console.log('Delete department2 ok.');
-//     }
-//     res.json({
-//       status: 0,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.json(err);
-//   }
-// });
-
-// router.post('/init', async (req, res) => {
-//   try {
-//     const oData = await bfetch(API.Hospitals.FindByID(hospital), { req });
-//     const resData = await bfetch(API.Hospitals.Update(hospital), {
-//       req,
-//       method: 'PUT',
-//       body: {
-//         ...oData,
-//         department: JSON.stringify(depMap),
-//       },
-//     });
-//     res.json({
-//       status: 0,
-//       result: resData,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.json(err);
-//   }
-// });
 
 router.post('/init', async (req, res) => {
   try {

@@ -18,6 +18,10 @@ app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
   if ([
+    '/apidoc',
+    '/hospital',
+    '/department1',
+    '/department2',
     '/auth/wechat/callback',
     '/auth/wechat/success',
     '/auth/users/login',
@@ -35,6 +39,7 @@ app.use(async (req, res, next) => {
       req,
     });
     req.currentUser = user;
+    req.hospitalID = req.header('X-Access-HospitalID');
     next();
   } catch (err) {
     res.json(err);

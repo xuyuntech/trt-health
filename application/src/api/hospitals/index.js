@@ -1,11 +1,28 @@
 import express from 'express';
 import uuidv1 from 'uuid/v1';
 import Promise from 'promise';
-import { bfetch } from '../utils';
-import { API } from '../../const';
+import { bfetch, getFilterParams } from '../utils';
+import { API, HospitalGrade } from '../../const';
 import initData from './data';
 
 const router = express.Router();
+
+function filterResult(item) {
+  return item;
+}
+
+router.get('/clear', async (req, res) => {
+  try {
+    const data = await bfetch(API.Hospitals.Query());
+    await Promise.all(data.map(async (item) => {
+      await bfetch(API.Hospitals.Delete(item.id), { req, method: 'DELETE' });
+    }));
+    res.json({ status: 0 });
+  } catch (err) {
+    console.error(err);
+    res.json(err);
+  }
+});
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -13,7 +30,7 @@ router.get('/:id', async (req, res) => {
     const data = await bfetch(API.Hospitals.FindByID(id), { req });
     res.json({
       status: 0,
-      result: data,
+      result: req.query.full ? data : filterResult(data),
     });
   } catch (err) {
     res.json(err);
@@ -21,15 +38,26 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const { filter, err } = getFilterParams({
+    query: req.query,
+    include: true,
+  });
+  if (err) {
+    res.json(err);
+    return;
+  }
   try {
-    const data = await bfetch(API.Hospitals.Query(), { req });
+    const data = await bfetch(API.Hospitals.Query(), {
+      req,
+      params: { filter: JSON.stringify(filter) },
+    });
     res.json({
       status: 0,
-      results: data,
+      results: req.query.full ? data : data.map(item => filterResult(item)),
     });
-  } catch (err) {
-    console.error(err);
-    res.json(err);
+  } catch (err1) {
+    console.error(err1);
+    res.json(err1);
   }
 });
 
@@ -63,16 +91,23 @@ router.post('/init', async (req, res) => {
     {
       name: '北京同仁堂唐山中医医院',
       address: '唐山市路北区河东路三益楼5-12号',
+      grade: 'FirstA',
       phone1: '0575',
       phone2: '5918781',
     },
   ];
+  const grades = Object.keys(HospitalGrade).slice(1);
   Object.keys(initData.data).forEach((key) => {
     const {
       name, address, phone1, phone2,
     } = initData.data[key];
     ds.push({
-      name, address, phone1, phone2,
+      name,
+      address,
+      phone1,
+      phone2,
+      grade: grades[Math.floor(Math.random() * grades.length)],
+      reservationQuantity: 0,
     });
   });
   try {
