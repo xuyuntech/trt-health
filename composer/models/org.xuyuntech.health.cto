@@ -65,6 +65,7 @@ participant Doctor extends Person {
   o String description // 描述
   o String skilledIn // 擅长什么什么
   o Integer reservationQuantity optional // 预约量
+  o String[] Tag optional
   --> Hospital hospital optional
 }
 
