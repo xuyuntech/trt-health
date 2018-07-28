@@ -1,7 +1,0 @@
-{
-  "db": {
-    "name": "mongo",
-    "connector": "mongodb",
-    "host": "localhost"
-   }
-}

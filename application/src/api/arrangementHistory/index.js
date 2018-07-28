@@ -33,15 +33,18 @@ function filterResult(item) {
 router.get('/all', async (req, res) => {
   const { visitDate } = req.query;
   try {
+    const where = {
+      visitDate: new Date(visitDate).toISOString(),
+    };
+    if (req.hospitalID) {
+      where.hospital = `resource:org.xuyuntech.health.Hospital#${req.hospitalID}`;
+    }
     const data = await bfetch(API.ArrangementHistory.Query(), {
       req,
       params: {
         filter: JSON.stringify({
           include: 'resolve',
-          where: {
-            visitDate: new Date(visitDate).toISOString(),
-            hospital: `resource:org.xuyuntech.health.Hospital#${req.hospitalID}`,
-          },
+          where,
         }),
       },
     });
