@@ -306,8 +306,11 @@ transaction InitRegisterAction {
 transaction VerifyRegisterAction {
   --> RegisterHistory registerHistory
 }
-// 完成挂号单
 transaction FinishRegisterAction {
+  --> RegisterHistory registerHistory
+}
+// 完成挂号单
+transaction FinishRegisterAction1 {
   --> RegisterHistory registerHistory
   o String id
   o Double points

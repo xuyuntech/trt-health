@@ -38,7 +38,10 @@ router.post('/register', async (req, res) => {
     });
     res.json({
       status: 0,
-      result,
+      result: {
+        ...result,
+        registerHistory: `${req.currentUser.username}-${arrangementHistory}`,
+      },
     });
   } catch (err) {
     console.error(err);
