@@ -185,14 +185,14 @@ router.put('/finish/:id', async (req, res) => {
   try {
     const body = {
       registerHistory: `resource:org.xuyuntech.health.RegisterHistory#${req.params.id}`,
-      id: uuidv1(),
-      complained: req.body.complained,
-      diagnose: req.body.diagnose,
-      history: req.body.history,
-      familyHistory: req.body.familyHistory,
-      created: new Date().toISOString(),
-      medicallistform: req.body.medicallistform,
-      points: req.body.points,
+      // id: uuidv1(),
+      // complained: req.body.complained || 'for test',
+      // diagnose: req.body.diagnose || 'for test',
+      // history: req.body.history || 'for test',
+      // familyHistory: req.body.familyHistory,
+      // created: new Date().toISOString(),
+      // medicallistform: req.body.medicallistform || [],
+      // points: req.body.points || 1,
     };
     const result = await bfetch(API.FinishRegisterAction.Create(), {
       method: 'POST',
