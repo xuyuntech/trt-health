@@ -27,6 +27,7 @@
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
     "promise": "^8.0.1",
+    "tls-sig-api": "^1.0.1",
     "uuid": "^3.3.2",
     "ws": "^5.2.1"
   },
@@ -49,7 +50,7 @@
     "description": "trt-health apidoc",
     "apidoc": {
       "title": "Custom apiDoc browser title",
-      "url" : "localhost:3002"
+      "url": "localhost:3002"
     }
   }
 }

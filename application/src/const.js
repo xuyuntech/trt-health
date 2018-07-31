@@ -7,6 +7,7 @@ const { httpURL } = RestServerConfig;
 // const BASE_HOST = process.env.NODE_ENV === 'production' ? '10.6.29.108:3000' : 'localhost:3000';
 const BASE_URL = `http://${httpURL}/api`; // ? 'http://10.6.29.108:3000/api' : 'http://localhost:3000/api';
 const AUTH_URL = `http://${httpURL}`;
+const TENCENT_URL = 'https://console.tim.qq.com';
 
 export const HospitalGrade = {
   ThirdSpecial: '三级特等', // 三级特等
@@ -137,5 +138,8 @@ export const API = {
     Create: () => `${BASE_URL}/Hospital`,
     FindByID: id => `${BASE_URL}/Hospital/${id}`,
     Delete: id => `${BASE_URL}/Hospital/${id}`,
+  },
+  Imtencent: {
+    Url: (servicename, command, sdkappid, usersig) => `${TENCENT_URL}/v4/${servicename}/${command}?sdkappid=${sdkappid}&identifier=admin&usersig=${usersig}&random=99999999&contenttype=json`,
   },
 };
