@@ -185,8 +185,10 @@ export async function checkUserLogin({ username, resourceType }) {
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(`org.xuyuntech.health.${resourceType}`);
     const exists = await participantRegistry.exists(username);
     await businessNetworkConnection.disconnect();
+    console.log(exists);
     return exists;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 }

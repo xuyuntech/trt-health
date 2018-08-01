@@ -12,6 +12,7 @@ import department1 from './api/department1';
 import department2 from './api/department2';
 import hospitalAdmin from './api/hospitalAdmin';
 import orderRoute from './api/order';
+import chatRoom from './api/chatRoom';
 
 
 export default function (app) {
@@ -29,4 +30,5 @@ export default function (app) {
   app.use('/hospital_admin', hospitalAdmin);
   app.use('/order', orderRoute);
   app.use('/apidoc', express.static('/home/windghoul/gitProject/trt-health/application/src/apidoc'));
+  app.use('/chatroom', chatRoom);
 }

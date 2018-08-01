@@ -140,6 +140,7 @@ export const API = {
     Delete: id => `${BASE_URL}/Hospital/${id}`,
   },
   Imtencent: {
-    Url: (servicename, command, sdkappid, usersig) => `${TENCENT_URL}/v4/${servicename}/${command}?sdkappid=${sdkappid}&identifier=admin&usersig=${usersig}&random=99999999&contenttype=json`,
+    Import: (sdkappid, usersig) => `${TENCENT_URL}/v4/im_open_login_svc/account_import?sdkappid=${sdkappid}&identifier=admin&usersig=${usersig}&random=99999999&contenttype=json`,
+    Send: (sdkappid, usersig) => `${TENCENT_URL}/v4/openim/sendmsg?sdkappid=${sdkappid}&identifier=admin&usersig=${usersig}&random=99999999&contenttype=json`,
   },
 };
