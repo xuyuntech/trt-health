@@ -16,47 +16,47 @@ enum HospitalGrade {
   o FirstB
   o FirstC
 }
-
+//性别
 enum Gender {
   o UNKNOW
   o MALE
   o FEMALE
 }
-
+//排班时间，分为上午或者下午
 enum VisitTime {
   o AM
   o PM
 }
-
+//参与者人类抽象定义
 participant Person identified by name {
   o String name // 用户名, 登录用，唯一
   o String realName optional // 真名
-  o String phone optional
-  o String sid optional
-  o String email optional
-  o String address optional
-  o String birthday optional
+  o String phone optional//电话
+  o String sid optional//sid
+  o String email optional//邮箱
+  o String address optional//地址
+  o String birthday optional//出生日期
   o String avatar optional
-  o Gender gender optional
-  o Integer age optional
+  o Gender gender optional//性别
+  o Integer age optional//年龄
 }
-
+//组织管理员，继承自人类抽象类
 participant OrgAdmin extends Person {
 }
-
+//医院管理员，继承自人类抽象类
 participant HospitalAdmin extends Person {
-  --> OrgAdmin creator
-  --> Hospital hospital
+  --> OrgAdmin creator//连接组织管理员，说明该管理员由哪个组织管理员创建
+  --> Hospital hospital//连接医院，说明该医院管理员属于哪个医院
 }
 
-
+//患者，继承自人类抽象类
 participant Patient extends Person {
-  o Double points optional
-  o Double totalSpend optional
+  o Double points optional//积分，积分可以看作系统中的token，token设计系统还未实现
+  o Double totalSpend optional//总计花费
 }
-
+//库管员，继承自人类抽象类
 participant StoreKeeper extends Person {
-  --> Hospital hospital
+  --> Hospital hospital//说明库管员属于哪家医院
 }
 
 // Doctor 医师
@@ -65,7 +65,7 @@ participant Doctor extends Person {
   o String description // 描述
   o String skilledIn // 擅长什么什么
   o Integer reservationQuantity optional // 预约量
-  --> Hospital hospital optional
+  --> Hospital hospital optional//说明医生从属的医院()
 }
 
 participant Supplier identified by id {
