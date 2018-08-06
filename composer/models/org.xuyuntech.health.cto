@@ -27,6 +27,8 @@ enum VisitTime {
   o AM
   o PM
 }
+
+/* ==================  participant  ==================== */
 //参与者人类抽象定义
 participant Person identified by name {
   o String name // 用户名, 登录用，唯一
@@ -65,22 +67,22 @@ participant Doctor extends Person {
   o String description // 描述
   o String skilledIn // 擅长什么什么
   o Integer reservationQuantity optional // 预约量
-  --> Hospital hospital optional//说明医生从属的医院()
+  --> Hospital hospital optional//说明医生从属的医院(查看逻辑之后，没有相关联系可以删除)
 }
-
+//供货商
 participant Supplier identified by id {
-  o String id
-  o String name
-  o String address
-  o String zipCode
-  o String telephone
-  o String fax
-  o String webSite
+  o String id//唯一标识
+  o String name//供货商名称
+  o String address//地址
+  o String zipCode//邮编
+  o String telephone//电话
+  o String fax//传真
+  o String webSite//网址
 }
 
 /* ==================  asset  ==================== */
-
-
+//资产定义
+//医院定义
 asset Hospital identified by id {
   o String id
   o String name
@@ -92,14 +94,14 @@ asset Hospital identified by id {
   o String zipCode optional // 邮编
   o String headImg optional // 头图
 }
-
+//一级科室定义
 asset Department1 identified by id {
   o String id
   o String name
   --> Hospital hospital
   // --> Department2[] department2s optional
 }
-
+//二级科室定义
 asset Department2 identified by id {
   o String id
   o String name
@@ -107,7 +109,7 @@ asset Department2 identified by id {
   --> Department1 department1
 }
 
-
+//就诊者（患者作为系统登陆的角色，每一个患者可以创建不同的就诊者，就诊者作为挂号的参与者存在）
 asset Visitor identified by id {
   o String id
   o String realName
@@ -117,7 +119,7 @@ asset Visitor identified by id {
   o Integer age optional
   --> Patient creator
 }
-
+// 药品资产 
 asset MedicalItem identified by id {
   o String id
   o String title // 药品名称
@@ -130,7 +132,7 @@ asset MedicalItem identified by id {
   o DateTime expiredDate // 过期日期
   --> Supplier supplier
 }
-//药品列表概念
+//药品列表概念（用来记录处方开具时，患者的购药明细，包括药品的名称和数量。并且在概念列表中保存的药物快照，不会随着药品资产的变动而变动。）
 concept MedicalListForm {
   --> MedicalItem medicalItem
   o Double count
