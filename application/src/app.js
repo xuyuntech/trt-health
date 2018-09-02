@@ -5,11 +5,17 @@ import WebSocket from 'ws';
 import http from 'http';
 import url from 'url';
 import morgan from 'morgan';
+import log4js from 'log4js';
+
+import UserModel from './models/user';
+import db from './db';
 import { RestServerConfig } from './config';
 import routes from './routes';
 import { bfetch, ErrUnauthorized } from './api/utils';
 import { API } from './const';
 
+const logger = log4js.getLogger('app');
+logger.level = 'debug';
 const app = express();
 const server = http.createServer(app);
 app.use(morgan('combined'));
@@ -29,20 +35,27 @@ app.use(async (req, res, next) => {
     next();
     return;
   }
-  const userID = req.header('X-Access-UserID');
-  if (!userID) {
-    res.json(ErrUnauthorized);
-    return;
-  }
   try {
-    const user = await bfetch(API.Users.FindByID(userID), {
-      req,
-    });
-    req.currentUser = user;
+    const token = req.header('X-Access-Token');
+    if (!token) {
+      res.json(ErrUnauthorized);
+      return;
+    }
+    const user = await bfetch(API.AccessTokens.FindUser(token));
+    const roleMappings = await db.getRoleMappingByUserID(user.id);
+
+    const roles = await Promise.all(roleMappings.map(async (roleMapping) => {
+      const { roleId } = roleMapping;
+      return db.getRoleById(roleId);
+    }));
+    user.roles = roles.map(role => role.name);
+
+    req.currentUser = new UserModel(user);
     req.hospitalID = req.header('X-Access-HospitalID');
     next();
   } catch (err) {
-    res.json(err);
+    logger.error(`parse token err: ${err}`);
+    res.json(ErrUnauthorized);
   }
 });
 
@@ -92,4 +105,5 @@ wss.on('connection', (ws) => {
 server.listen(3002, () => {
   // print a message when the server starts listening
   console.log('server starting on http://localhost:3002');
+  db.initDB();
 });

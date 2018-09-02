@@ -2,8 +2,9 @@ import express from 'express';
 import uuidv1 from 'uuid/v1';
 import Promise from 'promise';
 import { bfetch, getFilterParams } from '../utils';
-import { API, HospitalGrade } from '../../const';
-import initData from './data';
+import { API } from '../../const';
+// import { API, HospitalGrade } from '../../const';
+// import initData from './data';
 
 const router = express.Router();
 
@@ -91,25 +92,32 @@ router.post('/init', async (req, res) => {
     {
       name: '北京同仁堂唐山中医医院',
       address: '唐山市路北区河东路三益楼5-12号',
+      province: '河北省',
+      city: '唐山市',
+      area: '路北区',
       grade: 'FirstA',
       phone1: '0575',
       phone2: '5918781',
+      location: {
+        lng: '118.200640',
+        lat: '39.660550',
+      },
     },
   ];
-  const grades = Object.keys(HospitalGrade).slice(1);
-  Object.keys(initData.data).forEach((key) => {
-    const {
-      name, address, phone1, phone2,
-    } = initData.data[key];
-    ds.push({
-      name,
-      address,
-      phone1,
-      phone2,
-      grade: grades[Math.floor(Math.random() * grades.length)],
-      reservationQuantity: 0,
-    });
-  });
+  // const grades = Object.keys(HospitalGrade).slice(1);
+  // Object.keys(initData.data).forEach((key) => {
+  //   const {
+  //     name, address, phone1, phone2,
+  //   } = initData.data[key];
+  //   ds.push({
+  //     name,
+  //     address,
+  //     phone1,
+  //     phone2,
+  //     grade: grades[Math.floor(Math.random() * grades.length)],
+  //     reservationQuantity: 0,
+  //   });
+  // });
   try {
     const results = await Promise.all(ds.map(async (item, k) => {
       const res1 = await bfetch(API.Hospitals.Create(), {

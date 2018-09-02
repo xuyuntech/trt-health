@@ -75,17 +75,8 @@ router.post('/logout', async (req, res) => {
   }
 });
 
-const resourceTypes = ['OrgAdmin', 'HospitalAdmin', 'Patient', 'Doctor'];
 router.post('/login', async (req, res) => {
-  const { username, password, resourceType = 'HospitalAdmin' } = req.body;
-  let role = resourceType;
-  if (resourceTypes.indexOf(resourceType) < 0) {
-    res.json({
-      status: 1,
-      err: `错误的用户类型 ${resourceType}`,
-    });
-    return;
-  }
+  const { username, password } = req.body;
   try {
     const res1 = await fetch(API.Users.Login(), {
       method: 'POST',
@@ -101,22 +92,21 @@ router.post('/login', async (req, res) => {
       });
       return;
     }
-    if (!await checkUserLogin({ username, resourceType })) {
-      if (!await checkUserLogin({ username, resourceType: 'OrgAdmin' })) {
-        res.json({
-          status: 1,
-          err: `用户 ${username} 还未认证成功`,
-        });
-        return;
-      }
-      role = 'OrgAdmin';
-    }
+    // if (!await checkUserLogin({ username, resourceType })) {
+    //   if (!await checkUserLogin({ username, resourceType: 'OrgAdmin' })) {
+    //     res.json({
+    //       status: 1,
+    //       err: `用户 ${username} 还未认证成功`,
+    //     });
+    //     return;
+    //   }
+    //   role = 'OrgAdmin';
+    // }
     const data = await res1.json();
     res.json({
       status: 0,
       result: {
         ...data,
-        role,
       },
     });
   } catch (err) {

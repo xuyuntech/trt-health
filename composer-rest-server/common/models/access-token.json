@@ -11,6 +11,14 @@
       "foreignKey": "userId"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "permission": "ALLOW",
+      "principalId": "$everyone",
+      "principalType": "ROLE",
+      "property": ["find", "findById", "__get__user"]
+    }
+  ],
   "methods": []
 }

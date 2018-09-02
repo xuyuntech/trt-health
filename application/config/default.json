@@ -1,6 +1,7 @@
 {
   "restServer": {
     "webSocketURL": "ws://localhost:3000",
-    "httpURL": "localhost:3000"
+    "httpURL": "localhost:3000",
+    "MONGO_URL": ""
   }
 }
